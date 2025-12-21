@@ -72,7 +72,7 @@
             });
             //登录成功
             if (ajaxResult.code === "0000") {
-                window.location.href="${ctx}/index.do";
+                window.location.href="${ctx}/index";
                 top.layer.close(loginLoading);
                 return false;
             } else {

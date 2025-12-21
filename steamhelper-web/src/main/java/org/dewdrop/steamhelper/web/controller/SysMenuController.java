@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.dewdrop.steamhelper.bean.IReturnBean;
 import org.dewdrop.steamhelper.entity.SysMenu;
-import org.dewdrop.steamhelper.util.util.JsonUtil;
 import org.dewdrop.steamhelper.web.bean.LayPage;
 import org.dewdrop.steamhelper.web.bean.response.SysMenuResp;
 import org.dewdrop.steamhelper.web.service.SysMenuService;
@@ -39,13 +38,12 @@ public class SysMenuController extends BasicController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/left.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/left.do")
 	@ResponseBody
-	public String left(HttpServletRequest request) {
+	public List<SysMenuResp> left(HttpServletRequest request) {
 		log.info("getCurrentUser-----------------------{}",getCurrentUser());
 		try {
-			List<SysMenuResp> list = sysMenuService.getLeft(getCurrentRoleId());
-			return JsonUtil.toJson(list);
+			return sysMenuService.getLeft(getCurrentRoleId());
 		} catch (Exception e) {
 			log.error("获取左菜单栏 error:", e);
 		}
@@ -57,7 +55,7 @@ public class SysMenuController extends BasicController {
 	 * @description 菜单管理-跳转
 	 * @return
 	 */
-	@RequestMapping(value = "/toList.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/list")
 	@RequiresPermissions("sys:menu:view")
 	public String toList() {
 		return "sys_menu/list";
@@ -70,16 +68,16 @@ public class SysMenuController extends BasicController {
 	 * @param page
 	 * @return
 	 */
-	@RequestMapping(value = "/list.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/list.do")
 	@ResponseBody
 	@RequiresPermissions("sys:menu:view")
-	public String list(HttpServletRequest request, SysMenu query, LayPage page) {
+	public IReturnBean<List<SysMenu>> list(HttpServletRequest request, SysMenu query, LayPage page) {
 		try {
 			PageInfo<SysMenu> result = sysMenuService.allOfPage(query, page);
-			return JsonUtil.toJson(IReturnBean.success(result.getTotal(), result.getList()));
+			return IReturnBean.success(result.getTotal(), result.getList());
 		} catch (Exception e) {
 			log.error("查询菜单列表 error:", e);
-			return JsonUtil.toJson(IReturnBean.error());
+			return IReturnBean.error();
 		}
 	}
 	
@@ -89,7 +87,7 @@ public class SysMenuController extends BasicController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/toAdd.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/add")
 	@RequiresPermissions("sys:menu:add")
 	public String toAdd(HttpServletRequest request) {
 		request.setAttribute("pageFlag", "add");
@@ -103,21 +101,21 @@ public class SysMenuController extends BasicController {
 	 * @param menu
 	 * @return
 	 */
-	@RequestMapping(value = "/add.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/add.do")
 	@ResponseBody
 	@RequiresPermissions("sys:menu:add")
-	public String add(HttpServletRequest request, SysMenu menu) {
+	public IReturnBean<?> add(HttpServletRequest request, SysMenu menu) {
 		try {
 			menu.setCreator(getCurrentLoginId());
 			boolean b = sysMenuService.saveOrUpd(menu, true);
 			if (b) {
-				return JsonUtil.toJson(IReturnBean.success());
+				return IReturnBean.success();
 			}
 		} catch (Exception e) {
 			log.error("add menu error:", e);
-			return JsonUtil.toJson(IReturnBean.error());
+			return IReturnBean.error();
 		}
-		return JsonUtil.toJson(IReturnBean.fail());
+		return IReturnBean.fail();
 	}
 	
 	/**
@@ -127,7 +125,7 @@ public class SysMenuController extends BasicController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value = "/toUpd.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/upd")
 	@RequiresPermissions("sys:menu:upd")
 	public String toUpd(HttpServletRequest request, Integer id) {
 		SysMenu menu = sysMenuService.selectByPrimaryKey(id);
@@ -143,21 +141,21 @@ public class SysMenuController extends BasicController {
 	 * @param menu
 	 * @return
 	 */
-	@RequestMapping(value = "/upd.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/upd.do")
 	@ResponseBody
 	@RequiresPermissions("sys:menu:upd")
-	public String upd(HttpServletRequest request, SysMenu menu) {
+	public IReturnBean<?> upd(HttpServletRequest request, SysMenu menu) {
 		try {
 			menu.setCreator(getCurrentLoginId());
 			boolean b = sysMenuService.saveOrUpd(menu, false);
 			if (b) {
-				return JsonUtil.toJson(IReturnBean.success());
+				return IReturnBean.success();
 			}
 		} catch (Exception e) {
 			log.error("upd menu error:", e);
-			return JsonUtil.toJson(IReturnBean.error());
+			return IReturnBean.error();
 		}
-		return JsonUtil.toJson(IReturnBean.fail());
+		return IReturnBean.fail();
 	}
 	
 	/**
@@ -167,17 +165,17 @@ public class SysMenuController extends BasicController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value = "/del.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/del.do")
 	@ResponseBody
 	@RequiresPermissions("sys:menu:del")
-	public String del(HttpServletRequest request, Integer id) {
+	public IReturnBean<?> del(HttpServletRequest request, Integer id) {
 		try {
 			sysMenuService.del(id);
 		} catch (Exception e) {
 			log.error("del menu error:", e);
-			return JsonUtil.toJson(IReturnBean.error());
+			return IReturnBean.error();
 		}
-		return JsonUtil.toJson(IReturnBean.fail());
+		return IReturnBean.fail();
 	}
 	
 	/**
@@ -186,17 +184,17 @@ public class SysMenuController extends BasicController {
 	 * @param level 当前level
 	 * @return
 	 */
-	@RequestMapping(value = "/findParentMenu.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/findParentMenu.do")
 	@ResponseBody
 	@RequiresPermissions("sys:menu:view")
-	public String findParentMenu(Integer level) {
+	public IReturnBean<List<SysMenu>> findParentMenu(Integer level) {
 		try{
 			List<SysMenu> list = sysMenuService.getHigherLevel(level);
-			return JsonUtil.toJson(IReturnBean.success((long) list.size(), list));
+			return IReturnBean.success((long) list.size(), list);
 		} catch (Exception e) {
 			log.error("findParentMenu err", e);
 		}
-		return JsonUtil.toJson(IReturnBean.fail());
+		return IReturnBean.fail();
 	}
 	
 	/**
@@ -204,7 +202,7 @@ public class SysMenuController extends BasicController {
 	 * @description 获取图标
 	 * @return
 	 */
-	@RequestMapping(value = "/icon.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/icon")
 	@RequiresPermissions("sys:menu:view")
 	public String icon() {
 		return "sys_menu/icon";

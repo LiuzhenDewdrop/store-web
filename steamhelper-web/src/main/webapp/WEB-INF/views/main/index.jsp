@@ -23,12 +23,10 @@
 var tab;
 layui.config({
 	base : "${ctx}/static/js/"
-}).use(['jquery', 'commCms','layer','element','bodyTab', 'form', 'image', 'upload'], function () {
+}).use(['jquery', 'commCms','layer','element','bodyTab', 'upload'], function () {
 	var $ = layui.jquery,
 	layer = layui.layer,
 	common = layui.commCms,
-	form = layui.form,
-	image = layui.image,
 	upload = layui.upload,
 	element = layui.element;  //导航的hover效果、二级菜单等功能，需要依赖element模块
 	tab = layui.bodyTab();
@@ -47,40 +45,38 @@ layui.config({
 			data:{
 			},
 			success : function(data) {
-				if(data !== "") {
-					var pdata = $.parseJSON(data);
-					var ulHtml = '<ul class="layui-nav layui-nav-tree layui-left-nav">';
-					$.each(pdata,function(index,item) {
-						ulHtml += '<li class="layui-nav-item">';
-
-						if(item.children != null ) {
-							ulHtml += '<a href="javascript:;">';
-							ulHtml += '<i class="layui-icon '+item.icon+' " data-icon="'+item.icon+'"></i>';
-							ulHtml += '<cite>'+item.name+'</cite>';
-							ulHtml += '<span class="layui-nav-more"></span>';
-							ulHtml += '</a>';
-							ulHtml += '<dl class="layui-nav-child">';
-							$.each(item.children,function(index,child) {
-								ulHtml += '<dd><a href="javascript:;" data-url="'+child.url+'">';
-								if(child.icon != null) {
-									ulHtml += '<i class="layui-icon '+child.icon+'" data-icon="'+child.icon+'"></i>';
-								}
-								ulHtml += '<cite>'+child.name+'</cite></a></dd>';
-							});
-							ulHtml += "</dl>"
-						}else{
-							ulHtml += '<a href="javascript:;" data-url="">';
-							ulHtml += '<i class="layui-icon '+item.icon+'" data-icon="'+item.icon+'"></i>';
-							ulHtml += '<cite>'+item.name+'</cite></a>';
-						}
-						ulHtml += '</li>'
-					});
-					ulHtml += '</ul>';
-					$(".navBar").html(ulHtml);
-					element.init();  //初始化页面元素
-				}  else{
+				if(!data) {
 					$("#navBarId").empty();
 				}
+				var ulHtml = '<ul class="layui-nav layui-nav-tree layui-left-nav">';
+				$.each(data,function(index,item) {
+					ulHtml += '<li class="layui-nav-item">';
+
+					if(item.children != null ) {
+						ulHtml += '<a href="javascript:;">';
+						ulHtml += '<i class="layui-icon '+item.icon+' " data-icon="'+item.icon+'"></i>';
+						ulHtml += '<cite>'+item.name+'</cite>';
+						ulHtml += '<span class="layui-nav-more"></span>';
+						ulHtml += '</a>';
+						ulHtml += '<dl class="layui-nav-child">';
+						$.each(item.children,function(index,child) {
+							ulHtml += '<dd><a href="javascript:;" data-url="'+child.url+'">';
+							if(child.icon != null) {
+								ulHtml += '<i class="layui-icon '+child.icon+'" data-icon="'+child.icon+'"></i>';
+							}
+							ulHtml += '<cite>'+child.name+'</cite></a></dd>';
+						});
+						ulHtml += "</dl>"
+					}else{
+						ulHtml += '<a href="javascript:;" data-url="">';
+						ulHtml += '<i class="layui-icon '+item.icon+'" data-icon="'+item.icon+'"></i>';
+						ulHtml += '<cite>'+item.name+'</cite></a>';
+					}
+					ulHtml += '</li>'
+				});
+				ulHtml += '</ul>';
+				$(".navBar").html(ulHtml);
+				element.init();  //初始化页面元素
 			}
 		});
 	}
@@ -101,7 +97,7 @@ layui.config({
 
 	//退出
 	$('#logout').on('click', function () {
-		var url = '${ctx}/logout.do';
+		var url = '${ctx}/logout';
 		console.info("logout...");
 		common.logOut("退出","退出",url);
 	});
@@ -146,7 +142,7 @@ layui.config({
 
 	//修改密码
 	$("#upadtePassword").on('click', function () {
-		var url = '${ctx}/user/toUpdPwd.do';
+		var url = '${ctx}/user/updPwd';
 		common.cmsLayOpen('修改密码',url,'450px','400px');
 	});
 
@@ -260,15 +256,9 @@ function addTab(_this) {
             <ul class="layui-tab-title top_tab" id="top_tabs">
                 <li class="layui-this" lay-id=""><i class="layui-icon layui-icon-home"></i></li>
             </ul>
-            <div class="larry-title-box" style="height: 41px;" >
-                <div class="go-left key-press pressKey" id="titleLeft" title="滚动至最右侧"><i class="layui-icon layadmin-tabs-control layui-icon-prev"></i> </div>
-                <div class="title-right" id="titleRbox">
-                    <div class="go-right key-press pressKey" id="titleRight" title="滚动至最左侧"><i class="layui-icon layadmin-tabs-control layui-icon-next"></i></div>
-                </div>
-            </div>
             <div class="layui-tab-content clildFrame" style="height:793px;">
                 <div class="layui-tab-item layui-show layui-anim layui-anim-upbit" >
-                    <iframe src="${ctx}/home.do" data-id="0" name="ifr_0" id="ifr_0"></iframe>
+                    <iframe src="${ctx}/home" data-id="0" name="ifr_0" id="ifr_0"></iframe>
                 </div>
                 <div style="height: 10px;"></div>
             </div>

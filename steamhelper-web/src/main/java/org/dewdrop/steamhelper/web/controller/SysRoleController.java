@@ -44,7 +44,7 @@ public class SysRoleController extends BasicController {
 	 * @return
 	 */
 	@RequiresPermissions("sys:role:view")
-	@RequestMapping(value = "/toList.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/list")
 	public String toList() {
 		return "sys_role/list";
 	}
@@ -56,16 +56,16 @@ public class SysRoleController extends BasicController {
 	 * @param page
 	 * @return
 	 */
-	@RequestMapping(value = "/list.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/list.do")
 	@ResponseBody
 	@RequiresPermissions("sys:role:view")
-	public String list(HttpServletRequest request, SysRole query, LayPage page) {
+	public IReturnBean<List<SysRole>> list(HttpServletRequest request, SysRole query, LayPage page) {
 		try {
 			PageInfo<SysRole> result = sysRoleService.allOfPage(query, page);
-			return IReturnBean.success(result.getTotal(), result.getList()).toJson();
+			return IReturnBean.success(result.getTotal(), result.getList());
 		} catch (Exception e) {
 			log.error("查询角色列表 error:", e);
-			return IReturnBean.error().toJson();
+			return IReturnBean.error();
 		}
 	}
 	
@@ -75,7 +75,7 @@ public class SysRoleController extends BasicController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/toAdd.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/add")
 	@RequiresPermissions("sys:role:add")
 	public String toAdd(HttpServletRequest request) {
 		request.setAttribute("pageFlag", "add");
@@ -89,15 +89,15 @@ public class SysRoleController extends BasicController {
 	 * @param role
 	 * @return
 	 */
-	@RequestMapping(value = "/add.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/add.do")
 	@ResponseBody
 	@RequiresPermissions("sys:role:add")
-	public String add(HttpServletRequest request, SysRole role) {
+	public IReturnBean<?> add(HttpServletRequest request, SysRole role) {
 		try {
-			return sysRoleService.saveOrUpd(role, true, getCurrentUser()).toJson();
+			return sysRoleService.saveOrUpd(role, true, getCurrentUser());
 		} catch (Exception e) {
 			log.error("add role error:"+e.getMessage());
-			return IReturnBean.error().toJson();
+			return IReturnBean.error();
 		}
 	}
 	
@@ -108,7 +108,7 @@ public class SysRoleController extends BasicController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value = "/toUpd.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/upd")
 	@RequiresPermissions("sys:role:upd")
 	public String toUpd(HttpServletRequest request, Integer id) {
 		SysRole role = sysRoleService.selectByPrimaryKey(id);
@@ -124,15 +124,15 @@ public class SysRoleController extends BasicController {
 	 * @param role
 	 * @return
 	 */
-	@RequestMapping(value = "/upd.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/upd.do")
 	@ResponseBody
 	@RequiresPermissions("sys:role:upd")
-	public String upd(HttpServletRequest request, SysRole role) {
+	public IReturnBean<?> upd(HttpServletRequest request, SysRole role) {
 		try {
-			return sysRoleService.saveOrUpd(role, false, getCurrentUser()).toJson();
+			return sysRoleService.saveOrUpd(role, false, getCurrentUser());
 		} catch (Exception e) {
 			log.error("upd role error:"+e.getMessage());
-			return IReturnBean.error().toJson();
+			return IReturnBean.error();
 		}
 	}
 	
@@ -143,15 +143,15 @@ public class SysRoleController extends BasicController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value = "/del.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/del.do")
 	@ResponseBody
 	@RequiresPermissions("sys:role:del")
-	public String del(HttpServletRequest request, Integer id) {
+	public IReturnBean<?> del(HttpServletRequest request, Integer id) {
 		try {
-			return sysRoleService.del(id).toJson();
+			return sysRoleService.del(id);
 		} catch (Exception e) {
 			log.error("del role error:", e);
-			return IReturnBean.error().toJson();
+			return IReturnBean.error();
 		}
 	}
 	
@@ -162,7 +162,7 @@ public class SysRoleController extends BasicController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value = "/toGrant.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/grant")
 	@RequiresPermissions("sys:role:grant")
 	public String toGrant(HttpServletRequest request, Integer id) {
 		List<SysMenuResp> tree = sysMenuService.getTree(id);
@@ -179,10 +179,10 @@ public class SysRoleController extends BasicController {
 	 * @param menuIds
 	 * @return
 	 */
-	@RequestMapping(value = "/grant.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/grant.do")
 	@ResponseBody
 	@RequiresPermissions("sys:role:grant")
-	public IReturnBean grant(HttpServletRequest request, @RequestParam("roleId") Integer roleId, @RequestParam("menuIds[]") List<Integer> menuIds) {
+	public IReturnBean<?> grant(HttpServletRequest request, @RequestParam("roleId") Integer roleId, @RequestParam("menuIds[]") List<Integer> menuIds) {
 		try {
 			return sysRoleService.grant(roleId, menuIds, getCurrentUser());
 		} catch (Exception e) {

@@ -33,7 +33,7 @@ public class SysRoleService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
-	public IReturnBean saveOrUpd(SysRole role, boolean saveFlag, SysUser operator) {
+	public IReturnBean<?> saveOrUpd(SysRole role, boolean saveFlag, SysUser operator) {
 		SysRole opRole = mapperSupport.sysRoleMapper.selectByPrimaryKey(operator.getRoleId());
 		if (opRole.getLevel() <= role.getLevel()) {
 			return IReturnBean.get(IReturnEnum.INADEQUATE_PERMISSIONS);
@@ -51,7 +51,7 @@ public class SysRoleService {
 		return mapperSupport.sysRoleMapper.selectByPrimaryKey(id);
 	}
 	
-	public IReturnBean del(Integer id) {
+	public IReturnBean<?> del(Integer id) {
 		if (id == CommonConstant.ROLE_ID_SUPER_ADMIN || id == CommonConstant.ROLE_ID_GUEST) {
 			return IReturnBean.fail("不能删除该角色");
 		}
@@ -59,7 +59,7 @@ public class SysRoleService {
 		return IReturnBean.success();
 	}
 	
-	public IReturnBean grant(Integer roleId, List<Integer> menuIds, SysUser operator) {
+	public IReturnBean<?> grant(Integer roleId, List<Integer> menuIds, SysUser operator) {
 		// 判断授权资格
 		if (roleId == CommonConstant.ROLE_ID_SUPER_ADMIN) {
 			return IReturnBean.fail("超级管理员无需授权");

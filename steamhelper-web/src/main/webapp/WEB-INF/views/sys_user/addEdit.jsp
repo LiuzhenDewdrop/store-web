@@ -78,7 +78,7 @@
 		</div>
 	</c:if>
     <div class="layui-form-item" style="text-align: center;">
-        <button class="layui-btn" lay-submit="" lay-filter="saveBtn">保存</button>
+        <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="saveBtn">保存</button>
         <button type="layui-btn" id="cancle" class="layui-btn layui-btn-primary">取消</button>
 
     </div>
@@ -130,7 +130,7 @@ layui.config({
 			async: false,
 			data : data.field,
 			success : function(data) {
-				if(JSON.parse(data).code === "0000"){
+				if(data.code === "0000"){
 					if(pageFlag === 'addPage'){
 						common.cmsLaySucMsg("保存成功,默认密码123456,请及时修改")
 					}else {

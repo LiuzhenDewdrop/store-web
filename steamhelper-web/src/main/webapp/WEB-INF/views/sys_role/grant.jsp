@@ -86,13 +86,13 @@ layui.config({
 				menuIds: menuIds
 			},
 			success : function(data) {
-				if(JSON.parse(data).code === "0000") {
+				if(data.code === "0000") {
 					common.cmsLaySucMsg("角色授权信息保存成功")
 					var index = parent.layer.getFrameIndex(window.name);
 					parent.layer.close(index);
 					parent.location.reload();
 				}else{
-					common.cmsLayErrorMsg(JSON.parse(data).msg);
+					common.cmsLayErrorMsg(data.msg);
 				}
 			}
 		});

@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.dewdrop.steamhelper.entity.SysMenu;
+import org.dewdrop.steamhelper.util.constant.CommonConstant;
 import org.dewdrop.steamhelper.util.util.CollectionUtil;
 import org.dewdrop.steamhelper.web.bean.LayPage;
 import org.dewdrop.steamhelper.web.bean.response.SysMenuResp;
@@ -26,7 +27,7 @@ public class SysMenuService {
 	private MapperSupport mapperSupport;
 	
 	public List<SysMenu> getListByRole(Integer roleId) {
-		if (roleId == 1) {
+		if (roleId == CommonConstant.ROLE_ID_SUPER_ADMIN) {
 			return mapperSupport.sysMenuMapper.findAll(new SysMenu());
 		}
 		return mapperSupport.sysMenuMapper.getListByRole(roleId);

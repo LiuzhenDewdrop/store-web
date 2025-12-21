@@ -66,8 +66,8 @@
 			<div class="larry-separate"></div>
 			<!-- 角色列表 -->
 			<div class="layui-tab-item layui-show" style="padding: 10px 15px;">
-				<shiro:hasPermission name="sys:menu:add">
-					<div class="layui-inline">
+				<shiro:hasPermission name="sys:user:add">
+					<div class="layui-inline" style="margin-bottom: 10px;">
 						<a class="layui-btn layui-btn-normal  resAdd_btn"> <i class="layui-icon  layui-icon-add-circle"></i>新增角色</a>
 					</div>
 				</shiro:hasPermission>
@@ -95,9 +95,9 @@
 				data : {
 				},
 				success : function(data) {
-					if(JSON.parse(data).code === "0000"){
+					if(data.code === "0000"){
 						$('#resRole option').not(":first").remove();
-						roleList = JSON.parse(data).data;
+						roleList = data.data;
 						roleList.forEach(item => {
 							$("#resRole").append(
 								'<option value="'+item.id+'">'+item.name+'</option>'
@@ -159,7 +159,7 @@
 
 		/**新增角色*/
 		$(".resAdd_btn").click(function(){
-			var url = "${ctx}/user/toAdd.do";
+			var url = "${ctx}/user/add";
 			common.cmsLayOpen('新增角色',url,'880px','500px');
 		});
 
@@ -170,7 +170,7 @@
 			var url;
 			switch (layEvent) {
 				case 'res_edit':
-					url =  '${ctx}/user/toUpd.do?id=' + data.id;
+					url =  '${ctx}/user/upd?id=' + data.id;
 					common.cmsLayOpen('编辑角色',url,'880px','500px');
 					break;
 				case 'res_del':
@@ -202,11 +202,11 @@
 <!--工具条 -->
 <script type="text/html" id="resBar">
 	<div class="layui-btn-group">
-		<shiro:hasPermission name="sys:menu:upd">
-			<a class="layui-btn layui-btn-xs" lay-event="res_edit"><i class="layui-icon  layui-icon-edit"></i>编辑</a>
+		<shiro:hasPermission name="sys:user:upd">
+			<a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="res_edit"><i class="layui-icon  layui-icon-edit"></i>编辑</a>
 		</shiro:hasPermission>
-		<shiro:hasPermission name="sys:menu:del">
-			<a class="layui-btn layui-btn-xs" lay-event="res_del"><i class="layui-icon  layui-icon-delete"></i>删除</a>
+		<shiro:hasPermission name="sys:user:del">
+			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="res_del"><i class="layui-icon  layui-icon-delete"></i>删除</a>
 		</shiro:hasPermission>
 	</div>
 </script>

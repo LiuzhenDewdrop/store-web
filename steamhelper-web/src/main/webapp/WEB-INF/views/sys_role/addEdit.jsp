@@ -22,13 +22,13 @@
 	<div class="layui-form-item">
 		<label class="layui-form-label">角色编码</label>
 		<div class="layui-input-inline">
-			<input type="text" class="layui-input"  name="roleCode" value="${role.roleCode}" lay-verify="required|resRoleCode" maxlength="10"  style="height: 38px;" placeholder="请输入角色编码">
+			<input type="text" class="layui-input"  name="roleCode" value="${role.roleCode}" lay-verify="required|resRoleCode" maxlength="50"  style="height: 38px;" placeholder="请输入角色编码">
 		</div>
 	</div>
 	<div class="layui-form-item">
 		<label class="layui-form-label">角色名称</label>
 		<div class="layui-input-inline">
-			<input type="text" class="layui-input" name="name" value="${role.name}" lay-verify="required|resName" maxlength="10" style="height: 38px;" placeholder="请输入角色名称">
+			<input type="text" class="layui-input" name="name" value="${role.name}" lay-verify="required|resName" maxlength="30" style="height: 38px;" placeholder="请输入角色名称">
 		</div>
 	</div>
 	<div class="layui-form-item">
@@ -44,7 +44,7 @@
 		</div>
 	</div>
 	<div class="layui-form-item" style="text-align: center;">
-		<button class="layui-btn" lay-submit="" lay-filter="saveRes">保存</button>
+		<button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="saveRes">保存</button>
 		<button type="layui-btn" id="cancle" class="layui-btn layui-btn-primary">取消</button>
 	</div>
 </form>
@@ -89,14 +89,14 @@ layui.config({
 			async: false,
 			data : data.field,
 			success : function(data) {
-				if (JSON.parse(data).code === "0000") {
+				if (data.code === "0000") {
 					location.reload();
 					common.cmsLaySucMsg("保存成功");
 					var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
 					parent.layer.close(index); //再执行关闭
 					parent.location.reload();
 				} else {
-					common.cmsLayErrorMsg(JSON.parse(data).msg);
+					common.cmsLayErrorMsg(data.msg);
 				}
 			}, error:function(data) {
 				layer.close(index);

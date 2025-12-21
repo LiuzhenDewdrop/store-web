@@ -109,7 +109,7 @@
 		</div>
 	</div>
     <div class="layui-form-item" style="text-align: center;margin-top: 18px;">
-        <button class="layui-btn" lay-submit="" lay-filter="saveRes">保存</button>
+        <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="saveRes">保存</button>
         <button type="layui-btn" id="cancle" class="layui-btn layui-btn-primary">取消</button>
     </div>
 </form>
@@ -211,8 +211,8 @@ layui.config({
 				level: level
 			},
 			success : function(data) {
-				if (JSON.parse(data).code === "0000") {
-					$(JSON.parse(data).data).each(function(index, item) {
+				if (data.code === "0000") {
+					$(data.data).each(function(index, item) {
 						$("#resParentId").append(
 							'<option value="'+item.id+'">'+item.name+'</option>'
 						);
@@ -224,8 +224,8 @@ layui.config({
 
 	/**选择图标*/
 	$(".select_img").click(function() {
-		var url = "${ctx}/menu/icon.do";
-		common.cmsLayOpen('选择图标', url, '485px', '500px');
+		var url = "${ctx}/menu/icon";
+		common.cmsLayOpen('选择图标', url, '485px', '520px');
 	});
 
 	/**表单验证*/
@@ -287,14 +287,14 @@ layui.config({
 			async: false,
 			data : data.field,
 			success : function(data) {
-				if (JSON.parse(data).code === "0000") {
+				if (data.code === "0000") {
 					location.reload();
 					common.cmsLaySucMsg("保存成功");
 					var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
 					parent.layer.close(index); //再执行关闭
 					parent.location.reload();
 				} else {
-					common.cmsLayErrorMsg(JSON.parse(data).msg);
+					common.cmsLayErrorMsg(data.msg);
 				}
 			}, error:function(data) {
 				layer.close(index);

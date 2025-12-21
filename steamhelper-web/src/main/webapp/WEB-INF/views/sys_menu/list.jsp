@@ -58,7 +58,7 @@
             <!-- 菜单列表 -->
             <div class="layui-tab-item layui-show" style="padding: 10px 15px;">
                 <shiro:hasPermission name="sys:menu:add">
-                    <div class="layui-inline">
+                    <div class="layui-inline" style="margin-bottom: 10px;">
                         <a class="layui-btn layui-btn-normal  resAdd_btn"> <i class="layui-icon  layui-icon-add-circle"></i>新增菜单</a>
                     </div>
                 </shiro:hasPermission>
@@ -117,8 +117,8 @@
 
 		/**新增菜单*/
 		$(".resAdd_btn").click(function(){
-			var url = "${ctx}/menu/toAdd.do";
-			common.cmsLayOpen('新增菜单',url,'880px','450px');
+			var url = "${ctx}/menu/add";
+			common.cmsLayOpen('新增菜单',url,'880px','600px');
 		});
 
 		/**监听工具条*/
@@ -128,8 +128,8 @@
 			var url;
 			switch (layEvent) {
 				case 'res_edit':
-					url =  '${ctx}/menu/toUpd.do?id=' + data.id;
-					common.cmsLayOpen('编辑菜单',url,'880px','450px');
+					url =  '${ctx}/menu/upd?id=' + data.id;
+					common.cmsLayOpen('编辑菜单',url,'880px','600px');
 					break;
 				case 'res_del':
 					url = "${ctx}/menu/del.do";
@@ -172,10 +172,10 @@
 <script type="text/html" id="resBar">
 	<div class="layui-btn-group">
 		<shiro:hasPermission name="sys:menu:upd">
-			<a class="layui-btn layui-btn-xs" lay-event="res_edit"><i class="layui-icon  layui-icon-edit"></i>编辑</a>
+			<a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="res_edit"><i class="layui-icon  layui-icon-edit"></i>编辑</a>
 		</shiro:hasPermission>
 		<shiro:hasPermission name="sys:menu:del">
-			<a class="layui-btn layui-btn-xs" lay-event="res_del"><i class="layui-icon  layui-icon-delete"></i>删除</a>
+			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="res_del"><i class="layui-icon  layui-icon-delete"></i>删除</a>
 		</shiro:hasPermission>
 	</div>
 </script>

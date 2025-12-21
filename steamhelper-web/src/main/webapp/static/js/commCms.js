@@ -30,11 +30,11 @@ layui.define(['layer'], function (exports) {
                     async: false,
                     data : param,
                     success : function(data) {
-                        if(JSON.parse(data).code == "0000"){
-                            layer.msg(JSON.parse(data).msg,{time: 3000,offset: "t",icon: 6});
+                        if(data.code == "0000"){
+                            layer.msg(data.msg,{time: 3000,offset: "t",icon: 6});
                             reloadWindow.reload();
                         }else{
-                            layer.msg(JSON.parse(data).msg,{time: 3000,offset: "t",icon: 5});
+                            layer.msg(data.msg,{time: 3000,offset: "t",icon: 5});
                         }
                     },error:function(data){
 
@@ -59,16 +59,16 @@ layui.define(['layer'], function (exports) {
                         shade: [0.1,'#fff'] //0.1透明度的白色背景
                     });
     	        },success : function(data) {
-                    if(JSON.parse(data).code == "0000"){
+                    if(data.code == "0000"){
                     	layer.msg(
-                    			JSON.parse(data).msg,
+                    			data.msg,
                     			{time: 3000,offset: "t",icon: 6},
                     			function(){
                     		 		var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                     		 		parent.layer.close(index); //再执行关闭
                     			});
                     }else{
-                    	layer.msg(JSON.parse(data).msg,
+                    	layer.msg(data.msg,
                     			{time: 3000,offset: "t",icon: 5});
                     }
                 },error:function(data){
@@ -88,7 +88,7 @@ layui.define(['layer'], function (exports) {
                 offset: '50px',
                 content : url,
                 area: [width, height],
-                resize:false,
+                resize:true,
                 anim:1,
                 success : function(layero, index){
 

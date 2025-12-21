@@ -46,7 +46,7 @@ public class SysUserController extends BasicController {
 	 * @description 用户管理-跳转
 	 * @return
 	 */
-	@RequestMapping(value = "/toList.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/list")
 	@RequiresPermissions("sys:user:view")
 	public String toList() {
 		return "sys_user/list";
@@ -59,16 +59,16 @@ public class SysUserController extends BasicController {
 	 * @param page
 	 * @return
 	 */
-	@RequestMapping(value = "/list.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/list.do")
 	@ResponseBody
 	@RequiresPermissions("sys:user:view")
-	public String list(HttpServletRequest request, SysUser query, LayPage page) {
+	public IReturnBean<List<SysUser>> list(HttpServletRequest request, SysUser query, LayPage page) {
 		try {
 			PageInfo<SysUser> result = sysUserService.allOfPage(query, page);
-			return IReturnBean.success(result.getTotal(), result.getList()).toJson();
+			return IReturnBean.success(result.getTotal(), result.getList());
 		} catch (Exception e) {
 			log.error("查询用户列表 error:", e);
-			return IReturnBean.error().toJson();
+			return IReturnBean.error();
 		}
 	}
 	
@@ -78,7 +78,7 @@ public class SysUserController extends BasicController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/toAdd.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/add")
 	@RequiresPermissions("sys:user:add")
 	public String toAdd(HttpServletRequest request) {
 		request.setAttribute("pageFlag", "add");
@@ -92,15 +92,15 @@ public class SysUserController extends BasicController {
 	 * @param user
 	 * @return
 	 */
-	@RequestMapping(value = "/add.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/add.do")
 	@ResponseBody
 	@RequiresPermissions("sys:user:add")
-	public String add(HttpServletRequest request, SysUser user) {
+	public IReturnBean<?> add(HttpServletRequest request, SysUser user) {
 		try {
-			return sysUserService.saveOrUpd(user, true, getCurrentUser()).toJson();
+			return sysUserService.saveOrUpd(user, true, getCurrentUser());
 		} catch (Exception e) {
 			log.error("add user error:", e);
-			return IReturnBean.error().toJson();
+			return IReturnBean.error();
 		}
 	}
 	
@@ -111,7 +111,7 @@ public class SysUserController extends BasicController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value = "/toUpd.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/upd")
 	@RequiresPermissions("sys:user:upd")
 	public String toUpd(HttpServletRequest request, Integer id) {
 		SysUser user = sysUserService.selectByPrimaryKey(id);
@@ -129,16 +129,16 @@ public class SysUserController extends BasicController {
 	 * @param user
 	 * @return
 	 */
-	@RequestMapping(value = "/upd.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/upd.do")
 	@ResponseBody
 	@RequiresPermissions("sys:user:upd")
-	public String upd(HttpServletRequest request, SysUser user) {
+	public IReturnBean<?> upd(HttpServletRequest request, SysUser user) {
 		try {
 			user.setCreator(getCurrentLoginId());
-			return sysUserService.saveOrUpd(user, false, getCurrentUser()).toJson();
+			return sysUserService.saveOrUpd(user, false, getCurrentUser());
 		} catch (Exception e) {
 			log.error("upd user error:", e);
-			return IReturnBean.error().toJson();
+			return IReturnBean.error();
 		}
 	}
 	
@@ -149,17 +149,16 @@ public class SysUserController extends BasicController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value = "/del.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/del.do")
 	@ResponseBody
 	@RequiresPermissions("sys:user:del")
-	public String del(HttpServletRequest request, Integer id) {
+	public IReturnBean<?> del(HttpServletRequest request, Integer id) {
 		try {
-			sysUserService.del(id, getCurrentUser());
+			return sysUserService.del(id, getCurrentUser());
 		} catch (Exception e) {
 			log.error("del user error:", e);
-			return IReturnBean.error().toJson();
+			return IReturnBean.error();
 		}
-		return IReturnBean.fail().toJson();
 	}
 	
 	/**
@@ -168,7 +167,7 @@ public class SysUserController extends BasicController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/toUpdPwd.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/updPwd")
 	public String toUpdPwd(HttpServletRequest request) {
 		request.setAttribute("user" ,getCurrentUser());
 		return "sys_user/updPwd";
@@ -177,33 +176,33 @@ public class SysUserController extends BasicController {
 	/**
 	 *  修改密码
 	 */
-	@RequestMapping(value = "/updPwd.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/updPwd.do")
 	@ResponseBody
-	public String updPwd(HttpServletRequest request, SysUser user, String newPassword) {
+	public IReturnBean<?> updPwd(HttpServletRequest request, SysUser user, String newPassword) {
 		try{
-			IReturnBean result = sysUserService.updPwd(user, newPassword, getCurrentUser());
+			IReturnBean<?> result = sysUserService.updPwd(user, newPassword, getCurrentUser());
 			if (result.isSuccess()) {
 				Subject currentUser = SecurityUtils.getSubject();
 				currentUser.logout();
 			}
-			return result.toJson();
+			return result;
 		} catch (Exception e) {
 			log.error("updatePassword error:"+e);
-			return IReturnBean.error().toJson();
+			return IReturnBean.error();
 		}
 	}
 	
 	/**
 	 *  修改头像
 	 */
-	@RequestMapping(value = "/updAvatar.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/updAvatar.do")
 	@ResponseBody
-	public String updAvatar(HttpServletRequest request, MultipartFile file) {
+	public IReturnBean<String> updAvatar(HttpServletRequest request, MultipartFile file) {
 		try{
-			return sysUserService.updAvatar(getCurrentUser(), file).toJson();
+			return sysUserService.updAvatar(getCurrentUser(), file);
 		} catch (Exception e) {
 			log.error("updatePassword error:"+e);
-			return IReturnBean.error().toJson();
+			return IReturnBean.error();
 		}
 	}
 }

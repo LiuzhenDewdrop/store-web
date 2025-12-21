@@ -43,7 +43,7 @@ public class SysUserService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
-	public IReturnBean saveOrUpd(SysUser user, boolean saveFlag, SysUser operator) {
+	public IReturnBean<?> saveOrUpd(SysUser user, boolean saveFlag, SysUser operator) {
 		int i;
 		String loginName = StringUtil.trimToNull(user.getLoginName());
 		String userName = StringUtil.trimToNull(user.getUserName());
@@ -85,7 +85,7 @@ public class SysUserService {
 		return mapperSupport.sysUserMapper.selectByPrimaryKey(id);
 	}
 	
-	public IReturnBean del(Integer id, SysUser operator) {
+	public IReturnBean<?> del(Integer id, SysUser operator) {
 		// 校验权限
 		SysUser user = mapperSupport.sysUserMapper.selectByPrimaryKey(id);
 		if (checkRole(user, operator)) {
@@ -129,7 +129,7 @@ public class SysUserService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
-	public IReturnBean updPwd(SysUser user, String newPassword, SysUser operator) {
+	public IReturnBean<?> updPwd(SysUser user, String newPassword, SysUser operator) {
 		if(!operator.getUserName().equals(user.getUserName())){
 			return IReturnBean.fail("禁止修改他人账户密码");
 		}
@@ -143,7 +143,7 @@ public class SysUserService {
 		return IReturnBean.success();
 	}
 	
-	public IReturnBean updAvatar(SysUser user, MultipartFile file) throws IOException {
+	public IReturnBean<String> updAvatar(SysUser user, MultipartFile file) throws IOException {
 		IReturnBean<String> saveFile = fileService.saveFile("avatar", file);
 		if (saveFile.isNotSuccess()) {
 			return saveFile;

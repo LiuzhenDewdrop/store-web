@@ -44,7 +44,7 @@
             <div class="larry-separate"></div>
             <!-- 角色列表 -->
             <div class="layui-tab-item  layui-show" style="padding: 10px 15px;">
-                <div class="layui-inline">
+                <div class="layui-inline" style="margin-bottom: 10px;">
                     <shiro:hasPermission name="sys:role:add">
                         <a class="layui-btn layui-btn-normal  roleAdd_btn"> <i class="layui-icon  layui-icon-add-circle"></i>新增角色</a>
                     </shiro:hasPermission>
@@ -99,8 +99,8 @@ layui.config({
 
 	/**角色新增*/
 	$(".roleAdd_btn").click(function(){
-		var url = "${ctx}/role/toAdd.do";
-		common.cmsLayOpen('新增角色',url,'550px','360px');
+		var url = "${ctx}/role/add";
+		common.cmsLayOpen('新增角色',url,'880px','410px');
 	});
 
 	/**监听工具条*/
@@ -110,7 +110,7 @@ layui.config({
 		var url;
 		switch (layEvent) {
 			case 'res_edit':
-				url =  '${ctx}/role/toUpd.do?id=' + data.id;
+				url =  '${ctx}/role/upd?id=' + data.id;
 				common.cmsLayOpen('编辑角色',url,'880px','410px');
 				break;
 			case 'res_del':
@@ -119,7 +119,7 @@ layui.config({
 				common.ajaxCmsConfirm('系统提示', '确定删除该角色?',url,param);
 				break;
 			case 'res_grant':
-				url =  '${ctx}/role/toGrant.do?id=' + data.id;
+				url =  '${ctx}/role/grant?id=' + data.id;
 				common.cmsLayOpen('角色授权',url,'880px','520px');
 				break;
 			default:
@@ -132,8 +132,8 @@ layui.config({
 <!--工具条 -->
 <script type="text/html" id="roleBar">
 	<div class="layui-btn-group">
-		<shiro:hasPermission name="sys:role:update">
-			<a class="layui-btn layui-btn-xs" lay-event="res_edit"><i class="layui-icon  layui-icon-edit"></i>编辑</a>
+		<shiro:hasPermission name="sys:role:upd">
+			<a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="res_edit"><i class="layui-icon  layui-icon-edit"></i>编辑</a>
 		</shiro:hasPermission>
 		<shiro:hasPermission name="sys:role:del">
 			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="res_del"><i class="layui-icon  layui-icon-delete"></i>删除</a>

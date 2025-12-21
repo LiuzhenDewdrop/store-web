@@ -21,17 +21,17 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class LoginController extends BasicController {
 
-	@RequestMapping("/index.do")
+	@RequestMapping("/index")
 	public String toIndexPage() {
 		return "main/index";
 	}
 
-	@RequestMapping("/home.do")
+	@RequestMapping("/home")
 	public String toHomePage() {
 		return "main/home";
 	}
 
-	@RequestMapping("/toLogin.do")
+	@RequestMapping("/login")
 	public String toLoginPage() {
 		return "login";
 	}
@@ -41,16 +41,16 @@ public class LoginController extends BasicController {
 		return "login";
 	}
 
-	@RequestMapping("/unauthorized.do")
+	@RequestMapping("/unauthorized")
 	public String toUnauthorizedPage() {
 		return "error/unauthorized";
 	}
 
 	@RequestMapping("/login.do")
 	@ResponseBody
-	public IReturnBean<Object> login(HttpServletRequest request, String loginName, String password){
+	public IReturnBean<?> login(HttpServletRequest request, String loginName, String password){
 		log.info("login loginName:" + loginName);
-		IReturnBean<Object> returnBean = new IReturnBean<>(IReturnBean.SUCCESS_CODE,IReturnBean.SUCCESS_DESC);
+		IReturnBean<?> returnBean = new IReturnBean<>(IReturnBean.SUCCESS_CODE,IReturnBean.SUCCESS_DESC);
 		long start = System.currentTimeMillis();
 		try {
 			if (StringUtil.isEmpty(loginName)) {
@@ -84,7 +84,7 @@ public class LoginController extends BasicController {
 		return returnBean;
 	}
 	
-	@RequestMapping(value = "/logout.do", produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/logout", produces = "text/html; charset=UTF-8")
 	public String logout(){
 		Subject currentUser = SecurityUtils.getSubject();
 		log.info("logout currentUser:"+currentUser.getPrincipals().oneByType(SysUser.class).getUserName());
