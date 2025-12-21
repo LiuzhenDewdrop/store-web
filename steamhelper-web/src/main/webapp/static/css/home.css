@@ -1,0 +1,53 @@
+.home-head{
+    display: block;
+    background-color: #E0E0E0;
+}
+.home-left{
+    display: block;
+    padding: 10px;
+    margin-top:5px;
+}
+
+.home-right{
+    display: block;
+    padding: 10px;
+    margin-top:5px;
+
+}
+
+.home-table{
+    margin-top:5px;
+    background-color: #E0E0E0;
+}
+.table-title{
+    height: 40px;
+}
+.table-content{
+    display: block;
+    background-color:#9F9F9F;
+    height: 400px;
+    padding: 10px;
+    margin-top:5px;
+}
+
+.home-rank{
+    display: block;
+    height: 400px;
+    padding: 10px;
+    margin-top:5px;
+    background-color: #E0E0E0;
+}
+.rankTable th,.rankTable td{
+    background-color: #E8E8E8;
+    border:1px solid #000000;
+    text-align: center;
+    width:  100px;
+    height: 30px;
+}
+p{
+    font-size: 20px;
+
+}
+li{
+    float: left;
+}

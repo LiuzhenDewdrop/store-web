@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dewdrop.steamhelper.mapper.ScheduledTaskMapper">
+  <resultMap id="BaseResultMap" type="org.dewdrop.steamhelper.entity.ScheduledTask">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="optimistic" jdbcType="INTEGER" property="optimistic" />
+    <result column="cron_key" jdbcType="VARCHAR" property="cronKey" />
+    <result column="bean_name" jdbcType="VARCHAR" property="beanName" />
+    <result column="cron_expression" jdbcType="VARCHAR" property="cronExpression" />
+    <result column="able_status" jdbcType="VARCHAR" property="ableStatus" />
+    <result column="task_remark" jdbcType="VARCHAR" property="taskRemark" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, optimistic, cron_key, bean_name, cron_expression, able_status, task_remark, create_time, 
+    last_update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from scheduled_task
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from scheduled_task
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="org.dewdrop.steamhelper.entity.ScheduledTask">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into scheduled_task (optimistic, cron_key, bean_name, 
+      cron_expression, able_status, task_remark, 
+      create_time, last_update_time)
+    values (#{optimistic,jdbcType=INTEGER}, #{cronKey,jdbcType=VARCHAR}, #{beanName,jdbcType=VARCHAR}, 
+      #{cronExpression,jdbcType=VARCHAR}, #{ableStatus,jdbcType=VARCHAR}, #{taskRemark,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="org.dewdrop.steamhelper.entity.ScheduledTask">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into scheduled_task
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="optimistic != null">
+        optimistic,
+      </if>
+      <if test="cronKey != null">
+        cron_key,
+      </if>
+      <if test="beanName != null">
+        bean_name,
+      </if>
+      <if test="cronExpression != null">
+        cron_expression,
+      </if>
+      <if test="ableStatus != null">
+        able_status,
+      </if>
+      <if test="taskRemark != null">
+        task_remark,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="lastUpdateTime != null">
+        last_update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="optimistic != null">
+        #{optimistic,jdbcType=INTEGER},
+      </if>
+      <if test="cronKey != null">
+        #{cronKey,jdbcType=VARCHAR},
+      </if>
+      <if test="beanName != null">
+        #{beanName,jdbcType=VARCHAR},
+      </if>
+      <if test="cronExpression != null">
+        #{cronExpression,jdbcType=VARCHAR},
+      </if>
+      <if test="ableStatus != null">
+        #{ableStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="taskRemark != null">
+        #{taskRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null">
+        #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.dewdrop.steamhelper.entity.ScheduledTask">
+    update scheduled_task
+    <set>
+      <if test="optimistic != null">
+        optimistic = #{optimistic,jdbcType=INTEGER},
+      </if>
+      <if test="cronKey != null">
+        cron_key = #{cronKey,jdbcType=VARCHAR},
+      </if>
+      <if test="beanName != null">
+        bean_name = #{beanName,jdbcType=VARCHAR},
+      </if>
+      <if test="cronExpression != null">
+        cron_expression = #{cronExpression,jdbcType=VARCHAR},
+      </if>
+      <if test="ableStatus != null">
+        able_status = #{ableStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="taskRemark != null">
+        task_remark = #{taskRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null">
+        last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.dewdrop.steamhelper.entity.ScheduledTask">
+    update scheduled_task
+    set optimistic = #{optimistic,jdbcType=INTEGER},
+      cron_key = #{cronKey,jdbcType=VARCHAR},
+      bean_name = #{beanName,jdbcType=VARCHAR},
+      cron_expression = #{cronExpression,jdbcType=VARCHAR},
+      able_status = #{ableStatus,jdbcType=VARCHAR},
+      task_remark = #{taskRemark,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="findList" resultMap="BaseResultMap" parameterType="org.dewdrop.steamhelper.entity.ScheduledTask">
+    SELECT <include refid="Base_Column_List"/>
+    FROM scheduled_task
+    WHERE 1=1
+    <if test="cronKey != null and cronKey != ''">
+      AND cron_key = #{cronKey,jdbcType=VARCHAR}
+    </if>
+    <if test="beanName != null and beanName != ''">
+      AND bean_name = #{beanName,jdbcType=VARCHAR}
+    </if>
+    <if test="cronExpression != null and cronExpression != ''">
+      AND cron_expression = #{cronExpression,jdbcType=VARCHAR}
+    </if>
+    <if test="ableStatus != null and ableStatus != ''">
+      AND able_status = #{ableStatus,jdbcType=VARCHAR}
+    </if>  
+  </select>
+
+  <select id="findOne" resultMap="BaseResultMap" parameterType="org.dewdrop.steamhelper.entity.ScheduledTask">
+    SELECT <include refid="Base_Column_List"/>
+    FROM scheduled_task
+    WHERE 1=1
+    <if test="cronKey != null">
+      AND cron_key = #{cronKey,jdbcType=VARCHAR}
+    </if>
+    <if test="beanName != null">
+      AND bean_name = #{beanName,jdbcType=VARCHAR}
+    </if>
+    <if test="ableStatus != null">
+      AND able_status = #{cronKey,jdbcType=VARCHAR}
+    </if>
+  </select>
+</mapper>

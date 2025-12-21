@@ -1,0 +1,22 @@
+package org.dewdrop.steamhelper.web.mapper;
+
+import javax.annotation.Resource;
+
+import org.dewdrop.steamhelper.mapper.SysMenuMapper;
+import org.dewdrop.steamhelper.mapper.SysRoleMapper;
+import org.dewdrop.steamhelper.mapper.SysRoleMenuMapper;
+import org.dewdrop.steamhelper.mapper.SysUserMapper;
+import org.springframework.stereotype.Component;
+
+@Component
+public class MapperSupport {
+	
+	@Resource
+	public SysUserMapper sysUserMapper;
+	@Resource
+	public SysMenuMapper sysMenuMapper;
+	@Resource
+	public SysRoleMapper sysRoleMapper;
+	@Resource
+	public SysRoleMenuMapper sysRoleMenuMapper;
+}
