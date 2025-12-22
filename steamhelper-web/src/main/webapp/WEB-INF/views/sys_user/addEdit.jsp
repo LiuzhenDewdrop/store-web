@@ -63,8 +63,7 @@
 			<div class="layui-input-inline">
 				<select name="roleId" id="roleId">
 					<c:forEach items="${roles}" var="item">
-					<option value="${item.id}">${item.name}</option>
-<%--					<option value="${item.id}" <c:if test="${user.roleId} eq ${item.id}">selected</c:if>>${item.name}</option>--%>
+					<option value="${item.key}">${item.value}</option>
 					</c:forEach>
 				</select>
 			</div>

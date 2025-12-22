@@ -9,10 +9,10 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
 import org.dewdrop.steamhelper.bean.IReturnBean;
-import org.dewdrop.steamhelper.entity.SysRole;
 import org.dewdrop.steamhelper.entity.SysUser;
+import org.dewdrop.steamhelper.util.constant.CommonConstant;
 import org.dewdrop.steamhelper.web.bean.LayPage;
-import org.dewdrop.steamhelper.web.service.SysRoleService;
+import org.dewdrop.steamhelper.web.service.SysDictUtil;
 import org.dewdrop.steamhelper.web.service.SysUserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,10 +36,6 @@ public class SysUserController extends BasicController {
 	
 	@Resource
 	private SysUserService sysUserService;
-	@Resource
-	private SysRoleService sysRoleService;
-
-
 	
 	/**
 	 * @title  toList
@@ -116,8 +112,7 @@ public class SysUserController extends BasicController {
 	public String toUpd(HttpServletRequest request, Integer id) {
 		SysUser user = sysUserService.selectByPrimaryKey(id);
 		request.setAttribute("user", user);
-		List<SysRole> roleList = sysRoleService.allOfPage(new SysRole(), new LayPage()).getList();
-		request.setAttribute("roles", roleList);
+		request.setAttribute("roles", SysDictUtil.getGroup(CommonConstant.DICT_GROUP_ROLE));
 		request.setAttribute("pageFlag", "upd");
 		return "sys_user/addEdit";
 	}

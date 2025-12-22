@@ -1,6 +1,8 @@
 package org.dewdrop.steamhelper.util.constant;
 
 public class CommonConstant {
+	
+	public static final String DICT_GROUP_ROLE = "ROLE";
 
 	public static final String INIT = "INIT";
 	public static final String COMPLETE = "COMPLETE";

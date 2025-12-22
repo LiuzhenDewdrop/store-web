@@ -3,7 +3,6 @@ package org.dewdrop.steamhelper.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
-
 import org.dewdrop.steamhelper.entity.SysDict;
 
 public interface SysDictMapper {
@@ -55,9 +54,8 @@ public interface SysDictMapper {
      */
     int updateByPrimaryKey(SysDict record);
 	
-	List<SysDict> selectByKey(@Param("dictKey") String dictKey);
+	SysDict selectOne(@Param("dictGroup") String dictGroup, @Param("dictKey") String dictKey);
 	
-	List<SysDict> selectAll();
-
+	List<SysDict> findAll(@Param("query") SysDict query);
 
 }

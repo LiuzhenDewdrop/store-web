@@ -2,6 +2,7 @@ package org.dewdrop.steamhelper.web.mapper;
 
 import javax.annotation.Resource;
 
+import org.dewdrop.steamhelper.mapper.SysDictMapper;
 import org.dewdrop.steamhelper.mapper.SysMenuMapper;
 import org.dewdrop.steamhelper.mapper.SysRoleMapper;
 import org.dewdrop.steamhelper.mapper.SysRoleMenuMapper;
@@ -19,4 +20,6 @@ public class MapperSupport {
 	public SysRoleMapper sysRoleMapper;
 	@Resource
 	public SysRoleMenuMapper sysRoleMenuMapper;
+	@Resource
+	public SysDictMapper sysDictMapper;
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.dewdrop.steamhelper.bean.IReturnBean;
+import org.dewdrop.steamhelper.entity.SysDict;
 import org.dewdrop.steamhelper.entity.SysRole;
 import org.dewdrop.steamhelper.entity.SysRoleMenu;
 import org.dewdrop.steamhelper.entity.SysUser;
@@ -23,6 +24,8 @@ import com.github.pagehelper.PageInfo;
 @Service
 public class SysRoleService {
 	
+	@Resource
+	private SysDictService  sysDictService;
 	@Resource
 	private MapperSupport mapperSupport;
 	
@@ -44,6 +47,13 @@ public class SysRoleService {
 		} else {
 			i = mapperSupport.sysRoleMapper.updateByPrimaryKey(role);
 		}
+		SysDict sysDict = new SysDict();
+//		sysDict.setId();
+		sysDict.setDictGroup(CommonConstant.DICT_GROUP_ROLE);
+		sysDict.setDictKey(role.getName());
+		sysDict.setDictValue(role.getId() + "");
+		sysDict.setDictSort(-role.getLevel());
+		sysDictService.putDict(sysDict);
 		return i == 1 ? IReturnBean.success() : IReturnBean.fail();
 	}
 	
@@ -55,7 +65,15 @@ public class SysRoleService {
 		if (id == CommonConstant.ROLE_ID_SUPER_ADMIN || id == CommonConstant.ROLE_ID_GUEST) {
 			return IReturnBean.fail("不能删除该角色");
 		}
+		SysRole role = mapperSupport.sysRoleMapper.selectByPrimaryKey(id);
 		mapperSupport.sysRoleMapper.deleteByPrimaryKey(id);
+		SysDict sysDict = new SysDict();
+//		sysDict.setId();
+		sysDict.setDictGroup(CommonConstant.DICT_GROUP_ROLE);
+		sysDict.setDictKey(role.getName());
+//		sysDict.setDictValue();
+//		sysDict.setDictSort();
+		sysDictService.delDict(sysDict);
 		return IReturnBean.success();
 	}
 	
