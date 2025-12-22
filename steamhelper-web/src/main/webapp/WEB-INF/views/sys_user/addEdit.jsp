@@ -27,7 +27,7 @@
 			</div>
 		</div>
 		<div class="layui-input-block">
-			<input type="text" class="layui-input" name="loginName" style="height: 38px;" lay-verify="required|loginName" maxlength="20"  value="${user.loginName}" placeholder="请输入登录账号" >
+			<input type="text" class="layui-input" name="loginName" style="height: 38px;" lay-verify="required" maxlength="20"  value="${user.loginName}" placeholder="请输入登录账号" >
 			<span style="color:red">*</span>
 		</div>
 	</div>
@@ -38,7 +38,7 @@
 			</div>
 		</div>
 		<div class="layui-input-block">
-			<input type="text" class="layui-input" name="userName" style="height: 38px;" lay-verify="required|userName" maxlength="20"  value="${user.userName}" placeholder="请输入用户昵称" ><span style="color:red">*</span>
+			<input type="text" class="layui-input" name="userName" style="height: 38px;" lay-verify="required" maxlength="20"  value="${user.userName}" placeholder="请输入用户昵称" ><span style="color:red">*</span>
 		</div>
 	</div>
 	<div class="layui-form-item">
@@ -63,7 +63,7 @@
 			<div class="layui-input-inline">
 				<select name="roleId" id="roleId">
 					<c:forEach items="${roles}" var="item">
-					<option value="${item.key}">${item.value}</option>
+					<option value="${item.dictValue}">${item.dictKey}</option>
 					</c:forEach>
 				</select>
 			</div>

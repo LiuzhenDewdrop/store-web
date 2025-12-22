@@ -27,7 +27,7 @@
 </fieldset>
 <input id="roleId" type="hidden"  value="${roleId}" >
 <div class="layui-form-item" style="text-align: center;">
-    <button class="layui-btn" id="saveRoleGrant">保存</button>
+    <button class="layui-btn layui-btn-normal" id="saveRoleGrant">保存</button>
     <button id="cancle" class="layui-btn layui-btn-primary">取消</button>
 </div>
 

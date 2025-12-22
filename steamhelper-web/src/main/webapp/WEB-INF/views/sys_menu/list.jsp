@@ -49,7 +49,7 @@
                                 		<option value="2">3级菜单</option>
                                 	</select>
                                 </div>
-                                <a class="layui-btn searchList_btn" lay-submit lay-filter="searchFilter"><i class="layui-icon  layui-icon-search"></i>查询</a>
+                                <a class="layui-btn layui-btn-normal searchList_btn" lay-submit lay-filter="searchFilter"><i class="layui-icon  layui-icon-search"></i>查询</a>
                             </div>
                         </form>
                     </div>

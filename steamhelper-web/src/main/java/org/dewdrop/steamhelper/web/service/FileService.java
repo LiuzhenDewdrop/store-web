@@ -20,12 +20,7 @@ public class FileService {
 	@Value("${imagePath.server:}")
 	private String serverPath;
 	
-	public static final long M_1 = 1 << 20;
-	
 	public IReturnBean<String> saveFile(String sub, MultipartFile file) throws IOException {
-		if (file.getSize() > M_1) {
-			return IReturnBean.fail("本地存储失败，图片不能超过1M");
-		}
 		String originalFilename = file.getOriginalFilename();
 		if (StringUtil.isBlank(originalFilename)) {
 			return IReturnBean.fail("本地存储失败，未获取图片名称");

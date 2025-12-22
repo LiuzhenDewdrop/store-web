@@ -26,30 +26,35 @@
         <div class="layui-tab">
             <blockquote class="layui-elem-quote mylog-info-tit">
                 <div class="layui-inline">
-                    <form class="layui-form" id="roleSearchForm">
+                    <form class="layui-form" id="accSearchForm">
                         <div class="layui-form-item" style="margin-bottom:3px;">
-                            <label class="layui-form-label">角色名称:</label>
+                            <label class="layui-form-label">用户昵称</label>
                             <div class="layui-input-inline" style="width:140px;">
-                                <input type="text" name="name" value="" placeholder="请输入角色名称" class="layui-input search_input">
+                                <input type="text" name="userName" value="" placeholder="请输入" class="layui-input search_input">
                             </div>
-                            <label class="layui-form-label">角色编码:</label>
-                            <div class="layui-input-inline" style="width:140px;">
-                                <input type="text" name="roleCode" value="" placeholder="请输入角色编码" class="layui-input search_input">
-                            </div>
-                            <a class="layui-btn layui-btn-normal roleSearchList_btn" lay-submit lay-filter="roleSearchFilter"><i class="layui-icon  layui-icon-search"></i>查询</a>
+							<label class="layui-form-label">所属平台</label>
+							<div class="layui-input-inline">
+								<select name="platformId" id="platformId">
+									<option value="">请选择</option>
+									<c:forEach items="${platforms}" var="item">
+										<option value="${item.dictValue}">${item.dictKey}</option>
+									</c:forEach>
+								</select>
+							</div>
+                            <a class="layui-btn layui-btn-normal accSearchList_btn" lay-submit lay-filter="searchFilter"><i class="layui-icon  layui-icon-search"></i>查询</a>
                         </div>
                     </form>
                 </div>
             </blockquote>
             <div class="larry-separate"></div>
-            <!-- 角色列表 -->
+            <!-- 账号列表 -->
             <div class="layui-tab-item  layui-show" style="padding: 10px 15px;">
                 <div class="layui-inline" style="margin-bottom: 10px;">
-                    <shiro:hasPermission name="sys:role:add">
-                        <a class="layui-btn layui-btn-normal  roleAdd_btn"> <i class="layui-icon  layui-icon-add-circle"></i>新增角色</a>
+                    <shiro:hasPermission name="res:acc:add">
+                        <a class="layui-btn layui-btn-normal  accAdd_btn"> <i class="layui-icon  layui-icon-add-circle"></i>新增账号</a>
                     </shiro:hasPermission>
                 </div>
-                <table id="roleTableList" lay-filter="resTableId"></table>
+                <table id="accTableList" lay-filter="resTableId"></table>
             </div>
 
         </div>
@@ -64,12 +69,13 @@ layui.config({
 			table = layui.table,
 			layer = layui.layer,
 			common = layui.commCms;
+	var platforms = JSON.parse('${platforms}');
 
 	function searchList(data) {
 		var field = data && data.field
 		table.render({
-			elem: '#roleTableList',
-			url: '${ctx}/role/list.do',
+			elem: '#accTableList',
+			url: '${ctx}/acc/list.do',
 			id:'resTableId',
 			method: 'post',
 			loading:true,
@@ -78,11 +84,27 @@ layui.config({
 			size: 'sm',
 			where: field,
 			cols: [[
-				{field:'level', title: '等级', width: '15%', align:'center'},
-				{field:'roleCode', title: '角色编码', width: '20%', align:'center' },
-				{field:'name', title: '角色名称', width: '20%', align:'center' },
-				{field:'remark', title: '备注', width: '26%', align:'center'},
-				{fixed:'right',title: '操作', width: '20%', align:'center',toolbar: '#roleBar'}
+				{field:'id', title: '序号', width: '6%', align:'center'},
+				{field:'userId', title: '用户id', width: '9%', align:'center' },
+				{field:'platformId', title: '所属平台', width: '9%', align:'center',templet: function (d) {
+						var name = '';
+						platforms.forEach(item => {
+							if (item.dictValue == d.platformId) {
+								name = item.dictKey;
+								return ;
+							}
+						})
+						return name;
+					}},
+				{field:'loginName', title: '登录账号', width: '9%', align:'center'},
+				{field:'userName', title: '用户昵称', width: '9%', align:'center'},
+				{field:'platformUserId', title: '平台账号id', width: '9%', align:'center'},
+				{field:'platformUserNo', title: '平台账号No', width: '9%', align:'center'},
+				{field:'numType', title: '使用id还是no', width: '6%', align:'center', templet: '#numTypeTpl'},
+				{field:'accountToken', title: '账号token', width: '9%', align:'center'},
+				{field:'mainAccount', title: '主账号', width: '6%', align:'center'},
+				{field:'accountSort',title: '排序', width: '6%', align:'center'},
+				{fixed:'right',title: '操作', width: '15%', align:'center',toolbar: '#accBar'}
 			]],
 			page: true,
 			limit: 20
@@ -91,16 +113,16 @@ layui.config({
 
 	searchList();
 
-	$(".roleSearchList_btn").click(function(){
-		form.on('submit(roleSearchFilter)', function (data) {
+	$(".accSearchList_btn").click(function(){
+		form.on('submit(searchFilter)', function (data) {
 			searchList(data);
 		});
 	});
 
-	/**角色新增*/
-	$(".roleAdd_btn").click(function(){
-		var url = "${ctx}/role/add";
-		common.cmsLayOpen('新增角色',url,'880px','410px');
+	/**账号新增*/
+	$(".accAdd_btn").click(function(){
+		var url = "${ctx}/acc/add";
+		common.cmsLayOpen('新增账号',url,'880px','410px');
 	});
 
 	/**监听工具条*/
@@ -110,17 +132,13 @@ layui.config({
 		var url;
 		switch (layEvent) {
 			case 'res_edit':
-				url =  '${ctx}/role/upd?id=' + data.id;
-				common.cmsLayOpen('编辑角色',url,'880px','410px');
+				url =  '${ctx}/acc/upd?id=' + data.id;
+				common.cmsLayOpen('编辑账号',url,'880px','410px');
 				break;
 			case 'res_del':
-				url = "${ctx}/role/del.do";
+				url = "${ctx}/acc/del.do";
 				var param = {id: data.id};
-				common.ajaxCmsConfirm('系统提示', '确定删除该角色?',url,param);
-				break;
-			case 'res_grant':
-				url =  '${ctx}/role/grant?id=' + data.id;
-				common.cmsLayOpen('角色授权',url,'880px','520px');
+				common.ajaxCmsConfirm('系统提示', '确定删除该账号?',url,param);
 				break;
 			default:
 				break;
@@ -129,17 +147,22 @@ layui.config({
 });
 </script>
 
+<script type="text/html" id="numTypeTpl">
+	{{# if(d.numType == 1){ }}
+	<span>id</span>
+	{{# } else if(d.numType == 2){ }}
+	<span>no</span>
+	{{# } }}
+</script>
+
 <!--工具条 -->
-<script type="text/html" id="roleBar">
+<script type="text/html" id="accBar">
 	<div class="layui-btn-group">
-		<shiro:hasPermission name="sys:role:upd">
+		<shiro:hasPermission name="res:acc:upd">
 			<a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="res_edit"><i class="layui-icon  layui-icon-edit"></i>编辑</a>
 		</shiro:hasPermission>
-		<shiro:hasPermission name="sys:role:del">
+		<shiro:hasPermission name="res:acc:del">
 			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="res_del"><i class="layui-icon  layui-icon-delete"></i>删除</a>
-		</shiro:hasPermission>
-		<shiro:hasPermission name="sys:role:grant">
-			<a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="res_grant"><i class="layui-icon layui-icon-auz"></i>权限</a>
 		</shiro:hasPermission>
 	</div>
 </script>

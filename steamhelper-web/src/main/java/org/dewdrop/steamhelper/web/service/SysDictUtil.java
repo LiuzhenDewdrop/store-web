@@ -108,6 +108,11 @@ public class SysDictUtil {
 	}
 	
 	private static SortedSet<SysDict> createSortedSet() {
-		return new TreeSet<>(Comparator.comparing(SysDict::getDictSort));
+		return new TreeSet<SysDict>(Comparator.comparing(SysDict::getDictSort)){
+			@Override
+			public String toString() {
+				return super.toString();
+			}
+		};
 	}
 }

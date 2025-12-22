@@ -58,7 +58,7 @@
 										<option value="DISABLE">不可用</option>
 									</select>
 								</div>
-								<a class="layui-btn searchList_btn" lay-submit lay-filter="searchFilter"><i class="layui-icon  layui-icon-search"></i>查询</a>
+								<a class="layui-btn layui-btn-normal searchList_btn" lay-submit lay-filter="searchFilter"><i class="layui-icon  layui-icon-search"></i>查询</a>
 							</div>
 						</form>
 					</div>
@@ -68,7 +68,7 @@
 			<div class="layui-tab-item layui-show" style="padding: 10px 15px;">
 				<shiro:hasPermission name="sys:user:add">
 					<div class="layui-inline" style="margin-bottom: 10px;">
-						<a class="layui-btn layui-btn-normal  resAdd_btn"> <i class="layui-icon  layui-icon-add-circle"></i>新增角色</a>
+						<a class="layui-btn layui-btn-normal  resAdd_btn"> <i class="layui-icon  layui-icon-add-circle"></i>新增用户</a>
 					</div>
 				</shiro:hasPermission>
 				<table id="resTableList" lay-filter="resTableId"></table>

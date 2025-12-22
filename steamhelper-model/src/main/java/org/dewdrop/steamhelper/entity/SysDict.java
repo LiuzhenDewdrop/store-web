@@ -182,4 +182,9 @@ public class SysDict {
     public void setDictSort(Integer dictSort) {
         this.dictSort = dictSort;
     }
+	
+	@Override
+	public String toString() {
+		return "{" + "\"id\":" + id + ", \"dictGroup\":\"" + dictGroup + "\", \"dictKey\":\"" + dictKey + "\", \"dictValue\":\"" + dictValue + "\", \"dictSort\":" + dictSort + "}";
+	}
 }

@@ -39,8 +39,8 @@
             </div>
         </div>
         <div class="layui-form-item" style="text-align: center;">
-            <button class="layui-btn" lay-submit="" lay-filter="saveUser">保存</button>
-            <button type="layui-btn" id="cancle" class="layui-btn layui-btn-primary">取消</button>
+            <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="saveUser">保存</button>
+            <button class="layui-btn layui-btn-primary" type="layui-btn" id="cancle">取消</button>
 
         </div>
     </form>

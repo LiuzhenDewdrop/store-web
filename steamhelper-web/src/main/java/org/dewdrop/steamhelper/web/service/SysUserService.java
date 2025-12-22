@@ -72,7 +72,7 @@ public class SysUserService {
 			i = mapperSupport.sysUserMapper.insert(user);
 		} else {
 			// 校验权限
-			if (checkRole(user, operator)) {
+			if (!checkRole(user, operator)) {
 				return IReturnBean.get(IReturnEnum.INADEQUATE_PERMISSIONS);
 			}
 			user.setPassword(null);
@@ -99,25 +99,25 @@ public class SysUserService {
 		SysUser sysUser = null;
 		if (StringUtil.isNotBlank(user.getLoginName())) {
 			sysUser = mapperSupport.sysUserMapper.findLoginUser(user.getLoginName(), null);
-			if (sysUser != null) {
+			if (sysUser != null && !sysUser.getId().equals(user.getId())) {
 				return false;
 			}
 		}
 		if (StringUtil.isNotBlank(user.getUserName())) {
 			sysUser = mapperSupport.sysUserMapper.findLoginUser(user.getUserName(), null);
-			if (sysUser != null) {
+			if (sysUser != null && !sysUser.getId().equals(user.getId())) {
 				return false;
 			}
 		}
 		if (StringUtil.isNotBlank(user.getPhoneNo())) {
 			sysUser = mapperSupport.sysUserMapper.findLoginUser(user.getPhoneNo(), null);
-			if (sysUser != null) {
+			if (sysUser != null && !sysUser.getId().equals(user.getId())) {
 				return false;
 			}
 		}
 		if (StringUtil.isNotBlank(user.getEmail())) {
 			sysUser = mapperSupport.sysUserMapper.findLoginUser(user.getEmail(), null);
-			return sysUser == null;
+			return sysUser == null ||  sysUser.getId().equals(user.getId());
 		}
 		return true;
 	}
