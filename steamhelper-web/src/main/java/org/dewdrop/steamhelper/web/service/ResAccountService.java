@@ -25,11 +25,11 @@ public class ResAccountService {
 	private MapperSupport mapperSupport;
 	
 	public PageInfo<ResAccount> allOfPage(ResAccount query, LayPage layPage, SysUser operator) {
-		PageHelper.startPage(layPage.getPage(), layPage.getLimit());
 		SysRole operatorRole = mapperSupport.sysRoleMapper.selectByPrimaryKey(operator.getRoleId());
 		if (operatorRole.getLevel() < CommonConstant.ROLE_NORMAL_LINE) {
 			query.setUserId(operator.getId());
 		}
+		PageHelper.startPage(layPage.getPage(), layPage.getLimit());
 		List<ResAccount> list = mapperSupport.resAccountMapper.findAll(query);
 		return new PageInfo<>(list);
 	}

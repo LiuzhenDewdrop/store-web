@@ -30,7 +30,7 @@
 		<sqlMapGenerator targetPackage="org.dewdrop.steamhelper.mapper" targetProject="src/main/resources"/>
 		<javaClientGenerator targetPackage="org.dewdrop.steamhelper.mapper" targetProject="src/main/java" type="XMLMAPPER"/>
 
-		<table tableName="res_account"
+		<table tableName="res_game_classification"
 			   enableCountByExample="false"
 			   enableUpdateByExample="false"
 			   enableDeleteByExample="false"

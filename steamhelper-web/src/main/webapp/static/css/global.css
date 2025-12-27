@@ -46,7 +46,7 @@ cursor: pointer;
 a:active {outline: none;star:expression(this.onFocus=this.blur());}
 a,a:hover,a:focus{text-decoration:none;outline:none;-webkit-transition:all 0.3s;transition:all 0.3s;-moz-transition:all 0.3s;-o-transition:all 0.3s;}
 ::selection{background:#1E9FFF;color:#fff;}
-::-moz-selection{background:#1E9FFF;color:#fff;}
+::-moz-selection{background:#1E9FFF;color:#000000;}
 h1,h2,h3,h4,h5,h6,a,p,span{font-family: "微软雅黑","Microsoft YaHei","Microsoft YaHei UI","Hiragino Sans GB W3","Segoe UI", Arial, Verdana, Sans-Serif, sans-serif;}
 pre{padding: 10px 15px; margin: 10px 0; font-size: 12px; border-left: 6px solid #459df5;  background-color: #F2F2F2; font-family: Courier New; overflow: auto;}
 /* 清除浮动样式 */
