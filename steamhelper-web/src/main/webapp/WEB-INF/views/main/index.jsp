@@ -123,7 +123,7 @@ layui.config({
 		done: function(res) {
 			// 若上传失败
 			if(res.code === '0000') {
-				$('#avatarImg').attr('src', '${ctx}/image/' + res.data);
+				$('#avatarImg').attr('src', '${ctx}' + res.data);
 			} else {
 				return layer.msg('上传失败:'+res.msg);
 			}

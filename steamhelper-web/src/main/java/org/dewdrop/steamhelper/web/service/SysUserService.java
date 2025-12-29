@@ -144,7 +144,7 @@ public class SysUserService {
 	}
 	
 	public IReturnBean<String> updAvatar(SysUser user, MultipartFile file) throws IOException {
-		IReturnBean<String> saveFile = fileService.saveFile("avatar", file);
+		IReturnBean<String> saveFile = fileService.saveFile("avatar", true, file, null);
 		if (saveFile.isNotSuccess()) {
 			return saveFile;
 		}

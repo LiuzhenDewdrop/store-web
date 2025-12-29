@@ -2,6 +2,12 @@ package org.dewdrop.steamhelper.util.constant;
 
 public class CommonConstant {
 	
+	public static final String URL_STEAM_API = "https://api.steampowered.com/";
+	public static final String URL_STEAM_IMAGE = "https://shared.st.dl.eccdnx.com/store_item_assets/steam/apps/";
+	public static String getUrlSteamImage(Long appid, String suffix) {
+		return URL_STEAM_IMAGE + appid + "/" + suffix;
+	}
+	
 	
 	public static final String DICT_GROUP_ROLE = "ROLE";
 	public static final String DICT_GROUP_PLATFORM = "PLATFORM";
