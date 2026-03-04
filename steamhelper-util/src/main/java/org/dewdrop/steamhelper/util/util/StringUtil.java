@@ -286,7 +286,7 @@ public class StringUtil extends StringUtils {
     public static boolean isNotBlank(String str) {
         return str != null && !"".equals(str.trim());
     }
-
+	
     private static String PositiveIntegerToHanStr(String NumStr) { // 输入字符串必须正整数，只允许前导空格(必须右对齐)，不宜有前导零
         String RMBStr = "";
         boolean lastzero = false;
@@ -379,5 +379,4 @@ public class StringUtil extends StringUtils {
 		}
 		return sb.toString();
 	}
-
 }

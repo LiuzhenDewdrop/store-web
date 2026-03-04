@@ -5,7 +5,7 @@ import java.util.Date;
 import org.dewdrop.steamhelper.web.util.SpringContextUtil;
 import org.dewdrop.steamhelper.entity.ScheduledTaskLog;
 import org.dewdrop.steamhelper.mapper.ScheduledTaskLogMapper;
-import org.dewdrop.steamhelper.util.constant.CommonConstant;
+import org.dewdrop.steamhelper.constant.CommonConstant;
 import org.dewdrop.steamhelper.util.exception.SteamHelperException;
 import org.dewdrop.steamhelper.util.util.IpUtil;
 import org.dewdrop.steamhelper.util.util.LogUtil;

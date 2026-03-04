@@ -41,7 +41,9 @@
 									</c:forEach>
 								</select>
 							</div>
+							<shiro:hasPermission name="res:acc:list">
                             <a class="layui-btn layui-btn-normal accSearchList_btn" lay-submit lay-filter="searchFilter"><i class="layui-icon  layui-icon-search"></i>查询</a>
+							</shiro:hasPermission>
                         </div>
                     </form>
                 </div>
@@ -110,9 +112,9 @@ layui.config({
 			limit: 20
 		});
 	}
-
+	<shiro:hasPermission name="sys:menu:list">
 	searchList();
-
+	</shiro:hasPermission>
 	$(".accSearchList_btn").click(function(){
 		form.on('submit(searchFilter)', function (data) {
 			searchList(data);

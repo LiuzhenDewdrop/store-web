@@ -10,7 +10,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
 import org.dewdrop.steamhelper.bean.IReturnBean;
 import org.dewdrop.steamhelper.entity.SysUser;
-import org.dewdrop.steamhelper.util.constant.CommonConstant;
+import org.dewdrop.steamhelper.constant.CommonConstant;
 import org.dewdrop.steamhelper.web.bean.LayPage;
 import org.dewdrop.steamhelper.web.service.SysDictUtil;
 import org.dewdrop.steamhelper.web.service.SysUserService;
@@ -38,13 +38,13 @@ public class SysUserController extends BasicController {
 	private SysUserService sysUserService;
 	
 	/**
-	 * @title  toList
+	 * @title  toView
 	 * @description 用户管理-跳转
 	 * @return
 	 */
-	@RequestMapping(value = "/list")
+	@RequestMapping(value = "/view")
 	@RequiresPermissions("sys:user:view")
-	public String toList() {
+	public String toView() {
 		return "sys_user/list";
 	}
 	
@@ -57,7 +57,7 @@ public class SysUserController extends BasicController {
 	 */
 	@RequestMapping(value = "/list.do")
 	@ResponseBody
-	@RequiresPermissions("sys:user:view")
+	@RequiresPermissions("sys:user:list")
 	public IReturnBean<List<SysUser>> list(HttpServletRequest request, SysUser query, LayPage page) {
 		try {
 			PageInfo<SysUser> result = sysUserService.allOfPage(query, page);

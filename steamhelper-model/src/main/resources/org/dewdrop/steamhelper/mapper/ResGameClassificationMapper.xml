@@ -152,4 +152,9 @@
 		FROM res_game_classification
 		ORDER BY sort
 	</select>
+
+	<select id="getSeries" resultType="java.lang.String">
+		SELECT DISTINCT series
+		FROM res_game_classification
+	</select>
 </mapper>

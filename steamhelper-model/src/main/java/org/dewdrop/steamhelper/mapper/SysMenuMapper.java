@@ -60,7 +60,7 @@ public interface SysMenuMapper {
 	
 	List<SysMenu> getListByParent(@Param("pId") Integer pId);
 	
-	List<SysMenu> findAll(@Param("query") SysMenu query);
+	List<SysMenu> findAll(SysMenu query);
 	
 	List<SysMenu> getListByLevel(Integer level);
 }

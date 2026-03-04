@@ -13,10 +13,10 @@ public class HttpUtilTest {
 		System.out.println("result:");
 		System.out.println();
 		System.out.println(result);
-		result = HttpUtil.get("https://shared.st.dl.eccdnx.com/store_item_assets/steam/apps/292030/header_schinese.jpg", null, true);
+		boolean checkResult = HttpUtil.check("https://shared.st.dl.eccdnx.com/store_item_assets/steam/apps/292030/header_schinese.jpg", null);
 		System.out.println("result:");
 		System.out.println();
-		System.out.println(result);
+		System.out.println(checkResult);
 	}
 	
 }

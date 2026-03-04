@@ -29,7 +29,7 @@
             <div class="layui-tab-item  layui-show" style="padding: 10px 15px;margin-bottom: 80px;">
                 <div class="layui-inline" style="margin-bottom: 10px;">
                     <shiro:hasPermission name="res:clf:add">
-                        <a class="layui-btn layui-btn-normal  clfAdd_btn"> <i class="layui-icon  layui-icon-add-circle"></i>新增游戏分类</a>
+                        <a class="layui-btn layui-btn-normal  add_btn"> <i class="layui-icon  layui-icon-add-circle"></i>新增游戏分类</a>
                     </shiro:hasPermission>
                 </div>
                 <table id="clfTableList" lay-filter="resTableId"></table>
@@ -75,16 +75,18 @@ layui.config({
 		});
 	}
 
+	<shiro:hasPermission name="res:clf:list">
 	searchList();
+	</shiro:hasPermission>
 
-	$(".clfSearchList_btn").click(function(){
-		form.on('submit(searchFilter)', function (data) {
-			searchList(data);
-		});
-	});
+	// $(".clfSearchList_btn").click(function(){
+	// 	form.on('submit(searchFilter)', function (data) {
+	// 		searchList(data);
+	// 	});
+	// });
 
 	/**游戏分类新增*/
-	$(".clfAdd_btn").click(function(){
+	$(".add_btn").click(function(){
 		var url = "${ctx}/clf/add";
 		common.cmsLayOpen('新增游戏分类',url,'500px','600px');
 	});

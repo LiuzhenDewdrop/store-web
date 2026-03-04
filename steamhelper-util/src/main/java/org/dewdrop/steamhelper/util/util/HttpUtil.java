@@ -39,7 +39,16 @@ public class HttpUtil {
 	private static final String clientCertPassword = "dewdrop123456";					// 客户端证书密码
 	private  static SSLSocketFactory sslFactory;
 	
-	public static CodeMsgBean get(String url, Map<String, Object> param, boolean onlyCheck) throws Exception {
+	public static CodeMsgBean get(String url, Map<String, Object> param) throws Exception {
+		return get(url, param, false);
+	}
+	
+	public static boolean check(String url, Map<String, Object> param) throws Exception {
+		CodeMsgBean resp = get(url, param, true);
+		return resp != null && resp.getCode() == HttpURLConnection.HTTP_OK;
+	}
+	
+	private static CodeMsgBean get(String url, Map<String, Object> param, boolean onlyCheck) throws Exception {
 		if (StringUtil.isBlank(url) || !url.startsWith("http")) {
 			throw new SteamHelperException("错误的url请求:" + url);
 		}

@@ -198,18 +198,27 @@
 		SELECT <include refid="Base_Column_List" />
 		FROM res_account
 		WHERE 1=1
-		<if test="query.userName != null and query.userName != ''">
+		<if test="userName != null and userName != ''">
 			AND  user_name like CONCAT('%',#{userName},'%')
 		</if>
-		<if test="query.platformId != null">
-			AND  platform_id = #{query.platformId}
+		<if test="platformId != null">
+			AND  platform_id = #{platformId}
 		</if>
-		<if test="query.userId != null">
-			AND  user_id = #{query.userId}
+		<if test="userId != null">
+			AND  user_id = #{userId}
 		</if>
-		<if test="query.mainAccount != null">
-			AND  main_account = #{query.mainAccount}
+		<if test="mainAccount != null">
+			AND  main_account = #{mainAccount}
 		</if>
 		ORDER BY account_sort
+	</select>
+
+	<select id="getUserMainAccount" resultMap="BaseResultMap">
+		SELECT <include refid="Base_Column_List" />
+		FROM res_account
+		WHERE user_id = #{userId}
+		AND platform_id = #{platformId}
+		AND main_account = 1
+		LIMIT 1
 	</select>
 </mapper>

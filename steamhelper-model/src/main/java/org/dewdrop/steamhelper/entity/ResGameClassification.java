@@ -8,7 +8,17 @@ package org.dewdrop.steamhelper.entity;
  * @mbg.generated do_not_delete_during_merge
  */
 public class ResGameClassification {
-    /**
+	
+	public ResGameClassification() {
+	}
+	
+	public ResGameClassification(Integer id, String series, String subSeries) {
+		this.id = id;
+		this.series = series;
+		this.subSeries = subSeries;
+	}
+	
+	/**
      * Database Column Remarks:
      *   pk
      *

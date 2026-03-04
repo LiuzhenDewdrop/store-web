@@ -51,13 +51,13 @@ public class SysMenuController extends BasicController {
 	}
 	
 	/**
-	 * @title  toList
+	 * @title  toView
 	 * @description 菜单管理-跳转
 	 * @return
 	 */
-	@RequestMapping(value = "/list")
+	@RequestMapping(value = "/view")
 	@RequiresPermissions("sys:menu:view")
-	public String toList() {
+	public String toView() {
 		return "sys_menu/list";
 	}
 	
@@ -70,7 +70,7 @@ public class SysMenuController extends BasicController {
 	 */
 	@RequestMapping(value = "/list.do")
 	@ResponseBody
-	@RequiresPermissions("sys:menu:view")
+	@RequiresPermissions("sys:menu:list")
 	public IReturnBean<List<SysMenu>> list(HttpServletRequest request, SysMenu query, LayPage page) {
 		try {
 			PageInfo<SysMenu> result = sysMenuService.allOfPage(query, page);

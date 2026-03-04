@@ -54,4 +54,6 @@ public interface ResGameClassificationMapper {
     int updateByPrimaryKey(ResGameClassification record);
 	
 	List<ResGameClassification> findAll();
+	
+	List<String> getSeries();
 }

@@ -137,11 +137,11 @@
 		SELECT <include refid="Base_Column_List"/>
 		FROM sys_dict
 		WHERE 1=1
-		<if test="query.dictGroup != null and query.dictGroup != ''">
-			AND  dict_group like CONCAT('%',#{query.dictGroup},'%')
+		<if test="dictGroup != null and dictGroup != ''">
+			AND  dict_group like CONCAT('%',#{dictGroup},'%')
 		</if>
-		<if test="query.dictKey != null and query.dictKey != ''">
-			AND  dict_key like CONCAT('%',#{query.dictKey},'%')
+		<if test="dictKey != null and dictKey != ''">
+			AND  dict_key like CONCAT('%',#{dictKey},'%')
 		</if>
 	</select>
 </mapper>

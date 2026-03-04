@@ -36,13 +36,13 @@ public class SysDictController extends BasicController {
 	private SysMenuService sysMenuService;
 	
 	/**
-	 * @title  toList
+	 * @title  toView
 	 * @description 字典管理-跳转
 	 * @return
 	 */
 	@RequiresPermissions("sys:dict:view")
-	@RequestMapping(value = "/list")
-	public String toList() {
+	@RequestMapping(value = "/view")
+	public String toView() {
 		return "sys_dict/list";
 	}
 	
@@ -55,7 +55,7 @@ public class SysDictController extends BasicController {
 	 */
 	@RequestMapping(value = "/list.do")
 	@ResponseBody
-	@RequiresPermissions("sys:dict:view")
+	@RequiresPermissions("sys:dict:list")
 	public IReturnBean<List<SysDict>> list(HttpServletRequest request, SysDict query, LayPage page) {
 		try {
 			PageInfo<SysDict> result = sysDictService.allOfPage(query, page);

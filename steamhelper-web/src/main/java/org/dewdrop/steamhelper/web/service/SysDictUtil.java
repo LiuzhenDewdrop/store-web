@@ -31,7 +31,7 @@ public class SysDictUtil {
 	@PostConstruct
 	public void init() {
 		sysDictMap = new HashMap<>();
-		List<SysDict> list = sysDictMapper.findAll(new SysDict());
+		List<SysDict> list = sysDictMapper.findAll(null);
 		if (CollectionUtil.isEmpty(list)) {
 			return ;
 		}

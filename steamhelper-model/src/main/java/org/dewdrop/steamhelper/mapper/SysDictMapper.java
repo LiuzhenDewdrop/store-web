@@ -56,6 +56,6 @@ public interface SysDictMapper {
 	
 	SysDict selectOne(@Param("dictGroup") String dictGroup, @Param("dictKey") String dictKey);
 	
-	List<SysDict> findAll(@Param("query") SysDict query);
+	List<SysDict> findAll(SysDict query);
 
 }

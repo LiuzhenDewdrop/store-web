@@ -54,5 +54,7 @@ public interface ResAccountMapper {
      */
     int updateByPrimaryKey(ResAccount record);
 	
-	List<ResAccount> findAll(@Param("query") ResAccount query);
+	List<ResAccount> findAll(ResAccount query);
+	
+	ResAccount getUserMainAccount(@Param("userId") Integer userId, @Param("platformId") Integer platformId);
 }

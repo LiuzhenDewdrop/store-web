@@ -8,7 +8,7 @@ import org.dewdrop.steamhelper.bean.IReturnBean;
 import org.dewdrop.steamhelper.entity.ResAccount;
 import org.dewdrop.steamhelper.entity.SysRole;
 import org.dewdrop.steamhelper.entity.SysUser;
-import org.dewdrop.steamhelper.util.constant.CommonConstant;
+import org.dewdrop.steamhelper.constant.CommonConstant;
 import org.dewdrop.steamhelper.web.bean.LayPage;
 import org.dewdrop.steamhelper.web.mapper.MapperSupport;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class ResAccountService {
 	
 	public PageInfo<ResAccount> allOfPage(ResAccount query, LayPage layPage, SysUser operator) {
 		SysRole operatorRole = mapperSupport.sysRoleMapper.selectByPrimaryKey(operator.getRoleId());
-		if (operatorRole.getLevel() < CommonConstant.ROLE_NORMAL_LINE) {
+		if (operatorRole.getLevel() < CommonConstant.ROLE_ID_NORMAL_LINE) {
 			query.setUserId(operator.getId());
 		}
 		PageHelper.startPage(layPage.getPage(), layPage.getLimit());
@@ -52,5 +52,12 @@ public class ResAccountService {
 	public IReturnBean<?> del(Integer id) {
 		mapperSupport.resAccountMapper.deleteByPrimaryKey(id);
 		return IReturnBean.success();
+	}
+	
+	public ResAccount getUserMainAccount(Integer userId, Integer platformId) {
+		if (userId == null || platformId == null) {
+			return null;
+		}
+		return mapperSupport.resAccountMapper.getUserMainAccount(userId, platformId);
 	}
 }

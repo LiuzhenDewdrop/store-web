@@ -222,23 +222,23 @@
 		SELECT <include refid="Base_Column_List"/>
 		FROM sys_user
 		WHERE 1=1
-		<if test="query.loginName != null and query.loginName != ''">
-			AND  login_name like CONCAT('%',#{query.loginName},'%')
+		<if test="loginName != null and loginName != ''">
+			AND  login_name like CONCAT('%',#{loginName},'%')
 		</if>
-		<if test="query.userName != null and query.userName != ''">
-			AND  user_name like CONCAT('%',#{query.userName},'%')
+		<if test="userName != null and userName != ''">
+			AND  user_name like CONCAT('%',#{userName},'%')
 		</if>
-		<if test="query.phoneNo != null and query.phoneNo != ''">
-			AND  phone_no like CONCAT('%',#{query.phoneNo},'%')
+		<if test="phoneNo != null and phoneNo != ''">
+			AND  phone_no like CONCAT('%',#{phoneNo},'%')
 		</if>
-		<if test="query.email != null and query.email != ''">
-			AND  email like CONCAT('%',#{query.email},'%')
+		<if test="email != null and email != ''">
+			AND  email like CONCAT('%',#{email},'%')
 		</if>
-		<if test="query.status != null and query.status != ''">
-			AND  status = #{query.status}
+		<if test="status != null and status != ''">
+			AND  status = #{status}
 		</if>
-		<if test="query.roleId != null and query.roleId != ''">
-			AND  role_id = #{query.roleId}
+		<if test="roleId != null and roleId != ''">
+			AND  role_id = #{roleId}
 		</if>
 	</select>
 </mapper>

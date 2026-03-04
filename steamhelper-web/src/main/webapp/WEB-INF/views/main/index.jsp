@@ -236,7 +236,7 @@ function addTab(_this) {
 					<img id="avatarImg" src="${ctx}/static/img/stark.jpg">
 				</c:if>
 				<c:if test="${LOGIN_USER.avatarType == 1}">
-					<img id="avatarImg" src="${ctx}/image/${LOGIN_USER.avatar}">
+					<img id="avatarImg" src="${ctx}/${LOGIN_USER.avatar}">
 				</c:if>
 				<c:if test="${LOGIN_USER.avatarType == 2}">
 					<img id="avatarImg" src="${LOGIN_USER.avatar}">

@@ -54,5 +54,5 @@ public interface SysRoleMapper {
      */
     int updateByPrimaryKey(SysRole record);
 	
-	List<SysRole> findAll(@Param("query") SysRole query);
+	List<SysRole> findAll(SysRole query);
 }

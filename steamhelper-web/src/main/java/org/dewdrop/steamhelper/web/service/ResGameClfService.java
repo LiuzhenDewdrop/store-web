@@ -1,6 +1,7 @@
 package org.dewdrop.steamhelper.web.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -13,7 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class ResClassificationService {
+public class ResGameClfService {
 	
 	@Resource
 	private MapperSupport mapperSupport;
@@ -22,8 +23,8 @@ public class ResClassificationService {
 		return mapperSupport.resGameClassificationMapper.findAll();
 	}
 	
-	public List<String> getSeries() {
-		return mapperSupport.resGameClassificationMapper.findAll().stream().map(ResGameClassification::getSeries).collect(Collectors.toList());
+	public Map<String, List<ResGameClassification>> getSeries() {
+		return mapperSupport.resGameClassificationMapper.findAll().stream().map(clf -> new ResGameClassification(clf.getId(), clf.getSeries(), clf.getSubSeries())).collect(Collectors.groupingBy(ResGameClassification::getSeries));
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
@@ -43,7 +44,7 @@ public class ResClassificationService {
 	
 	public IReturnBean<?> del(Integer id) {
 		mapperSupport.resGameClassificationMapper.deleteByPrimaryKey(id);
-		// todo 清涉及游戏表中的类型
+		// 清理涉及游戏表中的类型： 交给mysql外键约束
 		return IReturnBean.success();
 	}
 }

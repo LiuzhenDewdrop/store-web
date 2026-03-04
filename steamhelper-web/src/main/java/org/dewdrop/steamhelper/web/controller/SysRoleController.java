@@ -39,13 +39,13 @@ public class SysRoleController extends BasicController {
 	private SysMenuService sysMenuService;
 	
 	/**
-	 * @title  toList
+	 * @title  toView
 	 * @description 角色管理-跳转
 	 * @return
 	 */
 	@RequiresPermissions("sys:role:view")
-	@RequestMapping(value = "/list")
-	public String toList() {
+	@RequestMapping(value = "/view")
+	public String toView() {
 		return "sys_role/list";
 	}
 	
@@ -58,7 +58,7 @@ public class SysRoleController extends BasicController {
 	 */
 	@RequestMapping(value = "/list.do")
 	@ResponseBody
-	@RequiresPermissions("sys:role:view")
+	@RequiresPermissions("sys:role:list")
 	public IReturnBean<List<SysRole>> list(HttpServletRequest request, SysRole query, LayPage page) {
 		try {
 			PageInfo<SysRole> result = sysRoleService.allOfPage(query, page);

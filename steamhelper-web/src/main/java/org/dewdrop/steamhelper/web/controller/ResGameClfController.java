@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.dewdrop.steamhelper.bean.IReturnBean;
 import org.dewdrop.steamhelper.entity.ResGameClassification;
-import org.dewdrop.steamhelper.web.service.ResClassificationService;
+import org.dewdrop.steamhelper.web.service.ResGameClfService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,20 +24,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
 @RequestMapping("clf")
-public class ResClassificationController extends BasicController {
+public class ResGameClfController extends BasicController {
 	
 	@Resource
-	private ResClassificationService resClassificationService;
+	private ResGameClfService resClassificationService;
 
 	
 	/**
-	 * @title  toList
+	 * @title  toView
 	 * @description 游戏分类管理-跳转
 	 * @return
 	 */
-	@RequestMapping(value = "/list")
+	@RequestMapping(value = "/view")
 	@RequiresPermissions("res:clf:view")
-	public String toList(HttpServletRequest request) {
+	public String toView(HttpServletRequest request) {
 		return "res_clf/list";
 	}
 	
@@ -49,7 +49,7 @@ public class ResClassificationController extends BasicController {
 	 */
 	@RequestMapping(value = "/list.do")
 	@ResponseBody
-	@RequiresPermissions("res:clf:view")
+	@RequiresPermissions("res:clf:list")
 	public IReturnBean<List<ResGameClassification>> list(HttpServletRequest request) {
 		try {
 			return IReturnBean.success(resClassificationService.getAll());
@@ -69,7 +69,6 @@ public class ResClassificationController extends BasicController {
 	@RequiresPermissions("res:clf:add")
 	public String toAdd(HttpServletRequest request) {
 		request.setAttribute("pageFlag", "add");
-		request.setAttribute("series", resClassificationService.getSeries());
 		return "res_clf/addEdit";
 	}
 	

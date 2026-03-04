@@ -10,7 +10,7 @@ import org.dewdrop.steamhelper.bean.IReturnBean;
 import org.dewdrop.steamhelper.entity.SysRole;
 import org.dewdrop.steamhelper.entity.SysUser;
 import org.dewdrop.steamhelper.enums.IReturnEnum;
-import org.dewdrop.steamhelper.util.constant.CommonConstant;
+import org.dewdrop.steamhelper.constant.CommonConstant;
 import org.dewdrop.steamhelper.util.util.MD5Util;
 import org.dewdrop.steamhelper.util.util.StringUtil;
 import org.dewdrop.steamhelper.web.bean.LayPage;

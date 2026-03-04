@@ -58,7 +58,9 @@
 										<option value="DISABLE">不可用</option>
 									</select>
 								</div>
+								<shiro:hasPermission name="sys:user:list">
 								<a class="layui-btn layui-btn-normal searchList_btn" lay-submit lay-filter="searchFilter"><i class="layui-icon  layui-icon-search"></i>查询</a>
+								</shiro:hasPermission>
 							</div>
 						</form>
 					</div>
@@ -147,7 +149,10 @@
 				limit: 20
 			});
 		}
+
+		<shiro:hasPermission name="sys:user:list">
 		searchList();
+		</shiro:hasPermission>
 
 
 		/**查询*/

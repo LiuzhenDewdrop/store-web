@@ -12,7 +12,7 @@ import java.util.concurrent.ScheduledFuture;
 import javax.sql.DataSource;
 
 import org.dewdrop.steamhelper.entity.ScheduledTask;
-import org.dewdrop.steamhelper.util.constant.CommonConstant;
+import org.dewdrop.steamhelper.constant.CommonConstant;
 import org.dewdrop.steamhelper.web.time.BaseScheduledTask;
 import org.dewdrop.steamhelper.web.util.SpringContextUtil;
 import org.springframework.beans.BeansException;

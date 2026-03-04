@@ -232,14 +232,14 @@
 		SELECT <include refid="Base_Column_List"/>
 		FROM sys_menu
 		WHERE 1=1
-		<if test="query.name != null and query.name != ''">
+		<if test="name != null and name != ''">
 			AND  name like CONCAT('%',#{name},'%')
 		</if>
-		<if test="query.menuType != null and query.menuType != ''">
-			AND  menu_type = #{query.menuType}
+		<if test="menuType != null and menuType != ''">
+			AND  menu_type = #{menuType}
 		</if>
-		<if test="query.level != null">
-			AND level = #{query.level}
+		<if test="level != null">
+			AND level = #{level}
 		</if>
 	</select>
 

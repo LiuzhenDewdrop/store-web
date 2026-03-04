@@ -63,5 +63,5 @@ public interface SysUserMapper {
 	 */
 	SysUser findLoginUser(@Param("name") String name, @Param("status") String status);
 	
-	List<SysUser> findAll(@Param("query") SysUser record);
+	List<SysUser> findAll(SysUser record);
 }

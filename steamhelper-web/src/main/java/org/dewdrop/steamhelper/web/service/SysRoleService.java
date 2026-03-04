@@ -11,7 +11,7 @@ import org.dewdrop.steamhelper.entity.SysRole;
 import org.dewdrop.steamhelper.entity.SysRoleMenu;
 import org.dewdrop.steamhelper.entity.SysUser;
 import org.dewdrop.steamhelper.enums.IReturnEnum;
-import org.dewdrop.steamhelper.util.constant.CommonConstant;
+import org.dewdrop.steamhelper.constant.CommonConstant;
 import org.dewdrop.steamhelper.web.bean.LayPage;
 import org.dewdrop.steamhelper.web.mapper.MapperSupport;
 import org.springframework.stereotype.Service;

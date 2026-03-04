@@ -36,7 +36,9 @@
                             <div class="layui-input-inline" style="width:140px;">
                                 <input type="text" name="roleCode" value="" placeholder="请输入角色编码" class="layui-input search_input">
                             </div>
-                            <a class="layui-btn layui-btn-normal roleSearchList_btn" lay-submit lay-filter="roleSearchFilter"><i class="layui-icon  layui-icon-search"></i>查询</a>
+							<shiro:hasPermission name="sys:role:list">
+                            <a class="layui-btn layui-btn-normal roleSearchList_btn" lay-submit lay-filter="searchFilter"><i class="layui-icon  layui-icon-search"></i>查询</a>
+							</shiro:hasPermission>
                         </div>
                     </form>
                 </div>
@@ -89,10 +91,12 @@ layui.config({
 		});
 	}
 
+	<shiro:hasPermission name="sys:role:list">
 	searchList();
+	</shiro:hasPermission>
 
 	$(".roleSearchList_btn").click(function(){
-		form.on('submit(roleSearchFilter)', function (data) {
+		form.on('submit(searchFilter)', function (data) {
 			searchList(data);
 		});
 	});

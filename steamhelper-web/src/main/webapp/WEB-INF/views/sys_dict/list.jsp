@@ -36,7 +36,9 @@
                             <div class="layui-input-inline" style="width:140px;">
                                 <input type="text" name="dictKey" value="" placeholder="请输入" class="layui-input search_input">
                             </div>
+							<shiro:hasPermission name="sys:dict:list">
                             <a class="layui-btn dictSearchList_btn" lay-submit lay-filter="searchFilter"><i class="layui-icon  layui-icon-search"></i>查询</a>
+							</shiro:hasPermission>
                         </div>
                     </form>
                 </div>
@@ -90,7 +92,9 @@ layui.config({
 		});
 	}
 
+	<shiro:hasPermission name="sys:dict:list">
 	searchList();
+	</shiro:hasPermission>
 
 	$(".dictSearchList_btn").click(function(){
 		form.on('submit(searchFilter)', function (data) {

@@ -188,6 +188,10 @@ header.larry-personal-tit span {
 }
 
 .larry-table-page .page .layui-laypage {
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
+}
+
+.layui-show {
+	margin-bottom: 80px;
 }
