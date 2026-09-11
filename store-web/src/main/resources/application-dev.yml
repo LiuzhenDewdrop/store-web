@@ -1,0 +1,94 @@
+server:
+  port: 8011
+  servlet:
+    context-path: /store-web
+
+logging:
+  config: classpath:logback.xml #日志配置
+  level:
+    com.wur7.store.mapper: debug #Mybatis输出sql日志
+
+
+spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+  application:
+    name: store-web
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss #默认返回日期格式
+    time-zone: GMT+8 #默认时区
+  redis:
+    database: 0 # Redis数据库索引（默认为0）
+    host: 127.0.0.1 # Redis服务器地址
+    port: 6379 # Redis服务器连接端口
+    password: 123456 # Redis服务器连接密码（默认为空）
+    timeout: 1000 # 连接超时时间（毫秒)
+    jedis:
+      pool:
+        max-active: 100 # 连接池最大连接数
+        max-idle: 20 # 连接池中的最大空闲连接
+        min-idle: 5 # 连接池中的最小空闲连接
+  datasource:
+    druid:
+      url: jdbc:mysql://127.0.0.1:3306/store?characterEncoding=utf8&useUnicode=true&useSSL=false
+      username: store
+      password: store
+      # 数据库连接驱动
+      driver-class-name: com.mysql.jdbc.Driver
+      # 初始化时建立物理连接的个数
+      initial-size: 5
+      # 最大连接池数量
+      max-active: 30
+      # 最小连接池数量
+      min-idle: 5
+      # 获取连接时最大等待时间
+      max-wait: 10000
+      # 是否缓存preparedStatement，也就是PSCache。
+      pool-prepared-statements: false
+      # 要启用PSCache，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true。
+      max-pool-prepared-statement-per-connection-size: -1
+      # 用来检测连接是否有效的sql，要求是一个查询语句，常用select 'x'。
+      validation-query: SELECT 1 FROM DUAL
+      # 单位：秒，检测连接是否有效的超时时间。
+      validation-query-timeout: 1
+      # 申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
+      test-on-borrow: false
+      # 归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
+      test-on-return: false
+      # 建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+      test-while-idle: true
+      # 有两个含义：1) Destroy线程会检测连接的间隔时间，如果连接空闲时间大于等于minEvictableIdleTimeMillis则关闭物理连接。2) testWhileIdle的判断依据，详细看testWhileIdle属性的说明
+      time-between-eviction-runs-millis: 6000
+      # 连接保持空闲而不被驱逐的最小时间
+      min-evictable-idle-time-millis: 1800000
+      # 监控页面相关配置
+      stat-view-servlet:
+        url-pattern: /druid/*
+        login-username: admin
+        login-password: admin
+
+# mybatis
+mybatis:
+  mapper-locations: classpath*:com/wur7/store/mapper/*Mapper.xml
+  type-aliases-package: com.wur7.store.entity
+  config-location: classpath:mybatis-config.xml
+
+store:
+  web:
+    timer: # 定时
+      open: yes
+    async:
+      corePoolSize: 4
+      maxPoolSize: 8
+      keepAliveTime: 30
+      threadNamePrefix: store-async
+      queueCapacity: 100000
+imagePath:
+  local: G:\Image\store
+  server: /image/

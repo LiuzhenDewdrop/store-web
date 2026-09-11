@@ -4,15 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.dewdrop.steamhelper</groupId>
-    <artifactId>steamhelper</artifactId>
+	<groupId>com.wur7.store</groupId>
+	<artifactId>store</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
     <modules>
-        <module>steamhelper-model</module>
-        <module>steamhelper-util</module>
-        <module>steamhelper-web</module>
-        <module>steamhelper-client</module>
+        <module>store-model</module>
+        <module>store-util</module>
+        <module>store-web</module>
     </modules>
 
     <properties>
