@@ -90,5 +90,5 @@ store:
       threadNamePrefix: store-async
       queueCapacity: 100000
 imagePath:
-  local: G:\Image\store
+  local: G:\Image\store\
   server: /image/

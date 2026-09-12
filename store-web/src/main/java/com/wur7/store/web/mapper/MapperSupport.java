@@ -2,15 +2,16 @@ package com.wur7.store.web.mapper;
 
 import javax.annotation.Resource;
 
-import com.wur7.store.mapper.ResAccountMapper;
-import com.wur7.store.mapper.ResGameClassificationMapper;
+import org.springframework.stereotype.Component;
+
+import com.wur7.store.mapper.ShopItemMapper;
+import com.wur7.store.mapper.ShopItemSpecMapper;
 import com.wur7.store.mapper.SysDictMapper;
+import com.wur7.store.mapper.SysItemCategoryMapper;
 import com.wur7.store.mapper.SysMenuMapper;
 import com.wur7.store.mapper.SysRoleMapper;
 import com.wur7.store.mapper.SysRoleMenuMapper;
 import com.wur7.store.mapper.SysUserMapper;
-
-import org.springframework.stereotype.Component;
 
 @Component
 public class MapperSupport {
@@ -26,7 +27,9 @@ public class MapperSupport {
 	@Resource
 	public SysDictMapper sysDictMapper;
 	@Resource
-	public ResAccountMapper resAccountMapper;
+	public SysItemCategoryMapper sysItemCategoryMapper;
 	@Resource
-	public ResGameClassificationMapper resGameClassificationMapper;
+	public ShopItemMapper shopItemMapper;
+	@Resource
+	public ShopItemSpecMapper shopItemSpecMapper;
 }
