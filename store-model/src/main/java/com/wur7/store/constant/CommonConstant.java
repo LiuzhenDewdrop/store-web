@@ -1,7 +1,5 @@
 package com.wur7.store.constant;
 
-import com.wur7.store.enums.DLC_TYPE;
-
 public class CommonConstant {
 	
 	public static final String URL_STEAM_ICON = "https://media.st.dl.eccdnx.com/steamcommunity/public/images/apps/";

@@ -1,5 +1,6 @@
 package com.wur7.store.web.service;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -8,24 +9,25 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wur7.store.bean.IReturnBean;
-import com.wur7.store.constant.CommonConstant;
 import com.wur7.store.entity.ShopItem;
-import com.wur7.store.entity.SysDict;
-import com.wur7.store.entity.SysRole;
-import com.wur7.store.entity.SysRoleMenu;
+import com.wur7.store.entity.ShopItemPic;
+import com.wur7.store.entity.ShopItemSpec;
 import com.wur7.store.entity.SysUser;
+import com.wur7.store.enums.ITEM_STATUS;
 import com.wur7.store.web.bean.LayPage;
+import com.wur7.store.web.bean.ShopItemDetail;
 import com.wur7.store.web.mapper.MapperSupport;
 
 @Service
 public class ShopItemService {
 	
 	@Resource
-	private SysDictService  sysDictService;
+	private FileService fileService;
 	@Resource
 	private MapperSupport mapperSupport;
 	
@@ -35,59 +37,47 @@ public class ShopItemService {
 		return new PageInfo<>(list);
 	}
 	
+	public IReturnBean<String> uploadImage(MultipartFile file, String path) throws IOException {
+		IReturnBean<String> saveFile = fileService.saveFile("item", true, file, null);
+		if (saveFile.isNotSuccess()) {
+			return saveFile;
+		}
+		String localUrl = saveFile.getData();
+		return IReturnBean.success(path + localUrl);
+	}
+	
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
-	public IReturnBean<?> saveOrUpd(SysRole role, boolean saveFlag, SysUser operator) {
-		SysRole opRole = mapperSupport.sysRoleMapper.selectByPrimaryKey(operator.getRoleId());
-		int i;
+	public IReturnBean<?> saveOrUpd(ShopItemDetail detail, boolean saveFlag, SysUser operator) {
+		ShopItem item = detail.getItem();
 		if (saveFlag) {
-			i = mapperSupport.sysRoleMapper.insert(role);
+			item.setShopId(operator.getId());
+			item.setShopName(operator.getUserName());
+			item.setCreator(operator.getId());
+			item.setCreateTime(new Date());
+			item.setItemStatus(ITEM_STATUS.DRAFT.STATUS);
+			mapperSupport.shopItemMapper.insert(item);
+			Integer itemId = item.getId();
+			List<ShopItemSpec>  specList = detail.getSpecs();
+			for (ShopItemSpec spec : specList) {
+				spec.setItemId(itemId);
+				mapperSupport.shopItemSpecMapper.insert(spec);
+			}
+			List<ShopItemPic> picList = detail.getPics();
+			for (ShopItemPic pic : picList) {
+				pic.setItemId(itemId);
+				mapperSupport.shopItemPicMapper.insert(pic);
+			}
 		} else {
-			i = mapperSupport.sysRoleMapper.updateByPrimaryKey(role);
-		}
-		return i == 1 ? IReturnBean.success() : IReturnBean.fail();
-	}
-	
-	public SysRole selectByPrimaryKey(Integer id) {
-		return mapperSupport.sysRoleMapper.selectByPrimaryKey(id);
-	}
-	
-	public IReturnBean<?> del(Integer id) {
-		if (id == CommonConstant.ROLE_ID_SUPER_ADMIN || id == CommonConstant.ROLE_ID_GUEST) {
-			return IReturnBean.fail("不能删除该角色");
-		}
-		SysRole role = mapperSupport.sysRoleMapper.selectByPrimaryKey(id);
-		mapperSupport.sysRoleMapper.deleteByPrimaryKey(id);
-		SysDict sysDict = new SysDict();
-//		sysDict.setId();
-		sysDict.setDictGroup(CommonConstant.DICT_GROUP_ROLE);
-		sysDict.setDictKey(role.getRoleName());
-//		sysDict.setDictValue();
-//		sysDict.setDictSort();
-		sysDictService.delDict(sysDict);
-		return IReturnBean.success();
-	}
-	
-	public IReturnBean<?> grant(Integer roleId, List<Integer> menuIds, SysUser operator) {
-		// 判断授权资格
-		if (roleId == CommonConstant.ROLE_ID_SUPER_ADMIN) {
-			return IReturnBean.fail("超级管理员无需授权");
-		}
-		SysRole creatorRole = mapperSupport.sysRoleMapper.selectByPrimaryKey(operator.getRoleId());
-		SysRole desRole = mapperSupport.sysRoleMapper.selectByPrimaryKey(roleId);
-		// 授权
-		mapperSupport.sysRoleMenuMapper.delByRoleId(roleId);
-		for (Integer menuId : menuIds) {
-			SysRoleMenu rm = new SysRoleMenu();
-			rm.setRoleId(roleId);
-			rm.setMenuId(menuId);
-			rm.setCreator(operator.getId());
-			rm.setCreateTime(new Date());
-			mapperSupport.sysRoleMenuMapper.insert(rm);
+			item.setItemStatus(ITEM_STATUS.DRAFT.STATUS);
+			item.setUpdateTime(new Date());
+			// todo item其它字段
+			mapperSupport.shopItemMapper.updateByPrimaryKeySelective(item);
+			// todo 规格
+			List<ShopItemSpec>  specList = detail.getSpecs();
+			// todo 图片
+			List<ShopItemPic> picList = detail.getPics();
+			
 		}
 		return IReturnBean.success();
-	}
-	
-	public List<SysRole> findAll() {
-		return mapperSupport.sysRoleMapper.findAll(null);
 	}
 }

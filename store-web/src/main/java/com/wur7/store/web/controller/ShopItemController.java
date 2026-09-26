@@ -5,18 +5,23 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.github.pagehelper.PageInfo;
 import com.wur7.store.bean.IReturnBean;
 import com.wur7.store.entity.ShopItem;
 import com.wur7.store.entity.SysRole;
 import com.wur7.store.util.util.JsonUtil;
+import com.wur7.store.util.util.StringUtil;
 import com.wur7.store.web.bean.LayPage;
+import com.wur7.store.web.bean.ShopItemDetail;
 import com.wur7.store.web.bean.response.SysMenuResp;
 import com.wur7.store.web.service.ShopItemService;
 import com.wur7.store.web.service.SysMenuService;
@@ -90,19 +95,49 @@ public class ShopItemController extends BasicController {
 	 * @title  add
 	 * @description 新增商品
 	 * @param request
-	 * @param role
+	 * @param detail
 	 * @return
 	 */
 	@RequestMapping(value = "/add.do")
 	@ResponseBody
 	@RequiresPermissions("shop:item:add")
-	public IReturnBean<?> add(HttpServletRequest request, SysRole role) {
+	public IReturnBean<?> add(HttpServletRequest request, @RequestBody ShopItemDetail detail) {
 		try {
-			return sysRoleService.saveOrUpd(role, true, getCurrentUser());
+			return shopItemService.saveOrUpd(detail, true, getCurrentUser());
 		} catch (Exception e) {
-			log.error("add role error:"+e.getMessage());
+			log.error("add ShopItemDetail error:"+e.getMessage());
 			return IReturnBean.error();
 		}
+	}
+	
+	/**
+	 *  上传图片
+	 */
+	@RequestMapping(value = "/upload.do")
+	@ResponseBody
+	@RequiresPermissions(value={"shop:item:add", "shop:item:upd"}, logical = Logical.OR)
+	public IReturnBean<String> upload(HttpServletRequest request, MultipartFile file, String path) {
+		try{
+			if (StringUtil.isBlank(path)) {
+				path = "";
+			}
+			return shopItemService.uploadImage(file, path);
+		} catch (Exception e) {
+			log.error("upload error:"+e);
+			return IReturnBean.error();
+		}
+	}
+	
+	/**
+	 * @title  toSpec
+	 * @description 跳转到新增商品页面
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/spec")
+	@RequiresPermissions(value={"shop:item:add", "shop:item:upd"}, logical = Logical.OR)
+	public String toSpec(HttpServletRequest request) {
+		return "shop_item/spec";
 	}
 	
 	/**

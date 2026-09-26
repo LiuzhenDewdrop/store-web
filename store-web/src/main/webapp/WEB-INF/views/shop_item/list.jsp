@@ -33,9 +33,12 @@
                         <form class="layui-form" id="cusSearchForm">
                             <div class="layui-form-item" style="margin-bottom:3px;">
 								<label class="layui-form-label">商品类型</label>
-								<div class="layui-input-inline">
-									<input type="radio" name="itemType" value="1" title="实体" checked>
-									<input type="radio" name="itemType" value="2" title="虚拟">
+								<div class="layui-input-inline" style="width:140px;">
+									<select name="itemType" >
+										<option selected="selected"></option>
+										<option value="1">实体</option>
+										<option value="2">虚拟</option>
+									</select>
 								</div>
 							</div>
 							<div class="layui-form-item" style="margin-bottom:3px;">
@@ -81,7 +84,10 @@
             <div class="layui-tab-item layui-show" style="padding: 10px 15px;">
                 <shiro:hasPermission name="shop:item:add">
                     <div class="layui-inline" style="margin-bottom: 10px;">
-                        <a class="layui-btn layui-btn-normal  resAdd_btn"> <i class="layui-icon  layui-icon-add-circle"></i>新增商品</a>
+                        <a class="layui-btn layui-btn-normal resAdd_btn" href="javascript:;" data-url="/store-web/item/add">
+							<i class="layui-icon layui-icon-add-circle " data-icon="layui-icon-add-circle"></i>
+							<cite>新增商品</cite>
+						</a>
                     </div>
                 </shiro:hasPermission>
                 <table id="resTableList" lay-filter="resTableId"></table>
@@ -92,12 +98,13 @@
 <script type="text/javascript">
     layui.config({
         base : "${ctx}/static/js/"
-    }).use(['form', 'table', 'layer','commCms'], function () {
+    }).use(['form', 'table', 'layer', 'commCms', 'bodyTab'], function () {
         var $ = layui.$,
                 form = layui.form,
                 table = layui.table,
                 layer = layui.layer,
                 common = layui.commCms;
+		var tab = layui.bodyTab();
 
 		function queryCategory(level, pid) {
 			$.ajax({
@@ -164,7 +171,8 @@
 				where: field,
 				cols: [[
 					// {field:'id', title: '序号', width: '6%', align:'center'},
-					{field:'itemImage', title: '商品图片', width: '20%', align:'center',templet: '#resImageTpl'},
+					{field:'itemType', title: '商品类型', width: '10%', align:'center',templet: '#resTypeTpl'},
+					{field:'itemImage', title: '商品图片', width: '10%', align:'center',templet: '#resImageTpl'},
 					{field:'itemName', title: '商品名称', width: '10%', align:'center'},
 					{field:'itemCode', title: '商品编码', width: '10%', align:'center'},
 					{field:'brandName', title: '商品品牌', width: '10%', align:'center'},
@@ -193,8 +201,9 @@
 
 		/**新增商品*/
 		$(".resAdd_btn").click(function(){
-			var url = "${ctx}/item/add";
-			common.cmsLayOpen('新增商品',url,'880px','600px');
+			top.addTab($(this));
+			//var url = "${ctx}/item/add";
+			//common.cmsLayOpen('新增商品',url,'880px','600px');
 		});
 
 		/**监听工具条*/
@@ -204,21 +213,30 @@
 			var url;
 			switch (layEvent) {
 				case 'res_edit':
-					url =  '${ctx}/menu/upd?id=' + data.id;
+					url =  '${ctx}/item/upd?id=' + data.id;
 					common.cmsLayOpen('编辑商品',url,'880px','600px');
 					break;
+				case 'res_detail':
+					url =  '${ctx}/item/detail?id=' + data.id;
+					common.cmsLayOpen('查看商品详情',url,'880px','600px');
+					break;
 				case 'res_del':
-					url = "${ctx}/menu/del.do";
+					url = "${ctx}/item/del.do";
 					var param = {id: data.id};
 					common.ajaxCmsConfirm('系统提示', '确定删除该商品?',url,param);
+					break;
+				case 'res_operate':
+					url = "${ctx}/item/operate.do";
+					var param = {id: data.id};
+					common.ajaxCmsConfirm('系统提示', '确定操作该商品?',url,param);
 					break;
 				default:
 					break;
 			}
 		});
 	});
-
 </script>
+
 <!-- 商品图片tpl-->
 <script type="text/html" id="resImageTpl">
 	<div class="item-img">
@@ -226,6 +244,15 @@
 			<img src="{{= d.itemImage}}">
 		</a>
 	</div>
+</script>
+
+<!-- 商品类型tpl-->
+<script type="text/html" id="resTypeTpl">
+    {{# if(d.itemStatus == 1){ }}
+    <span class="label label-info ">实体</span>
+    {{# } else if(d.itemStatus == 2){ }}
+    <span class="label label-danger ">虚拟</span>
+    {{# } }}
 </script>
 
 <!-- 商品状态tpl-->
@@ -253,7 +280,11 @@
 <script type="text/html" id="resBar">
 	<div class="layui-btn-group">
 		<shiro:hasPermission name="shop:item:upd">
+			{{# if(d.itemStatus == 1){ }}
+			<a class="layui-btn layui-btn-xs layui-btn-disabled" lay-event="res_edit"><i class="layui-icon  layui-icon-edit"></i>编辑</a>
+			{{# } else if(d.itemStatus == 2 || d.itemStatus == 3){ }}
 			<a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="res_edit"><i class="layui-icon  layui-icon-edit"></i>编辑</a>
+			{{# } }}
 		</shiro:hasPermission>
 		<shiro:hasPermission name="shop:item:detail">
 			<a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="res_detail"><i class="layui-icon  layui-icon-read"></i>详情</a>
@@ -261,13 +292,17 @@
 		<shiro:hasPermission name="shop:item:operate">
 			{{# if(d.itemStatus == 1){ }}
 			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="res_operate"><i class="layui-icon  layui-icon-down"></i>下架</a>
-			{{# } else if(d.itemStatus == 2){ }}
+			{{# } else if(d.itemStatus == 2 || d.itemStatus == 3){ }}
 			<a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="res_operate"><i class="layui-icon  layui-icon-up"></i>上架</a>
-			{{# } else if(d.itemStatus == 3){ }}
 			{{# } }}
 		</shiro:hasPermission>
 		<shiro:hasPermission name="shop:item:del">
 			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="res_del"><i class="layui-icon  layui-icon-delete"></i>删除</a>
+			{{# if(d.itemStatus == 1){ }}
+			<a class="layui-btn layui-btn-xs layui-btn-disabled" lay-event="res_del"><i class="layui-icon  layui-icon-delete"></i>删除</a>
+			{{# } else if(d.itemStatus == 2 || d.itemStatus == 3){ }}
+			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="res_del"><i class="layui-icon  layui-icon-delete"></i>删除</a>
+			{{# } }}
 		</shiro:hasPermission>
 	</div>
 </script>

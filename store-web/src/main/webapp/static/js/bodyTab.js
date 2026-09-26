@@ -178,7 +178,7 @@ layui.define(["element","jquery"],function(exports){
 			// window.sessionStorage.setItem("curmenu",JSON.stringify(curmenu));
 			curNav = JSON.stringify(curmenu);
 		}else{
-			if($(this).parent("li").length > liIndex){
+			if($(this).parent("li").length > liIndex) {
 				window.sessionStorage.setItem("curmenu",curmenu);
 				curNav = curmenu;
 			}else{

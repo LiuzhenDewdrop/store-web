@@ -95,7 +95,7 @@ layui.define(['layer'], function (exports) {
                 }
             });
         },
-
+		
         /**弹出层(可选择皮肤)*/
         cmsLaySkinOpen:function (title,url,width,height,skin) {
             var realSkin;

@@ -198,7 +198,7 @@ public class SysUserController extends BasicController {
 		try{
 			return sysUserService.updAvatar(getCurrentUser(), file);
 		} catch (Exception e) {
-			log.error("updatePassword error:"+e);
+			log.error("updAvatar error:"+e);
 			return IReturnBean.error();
 		}
 	}

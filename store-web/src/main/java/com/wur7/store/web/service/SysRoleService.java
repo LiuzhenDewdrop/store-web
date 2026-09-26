@@ -13,7 +13,6 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wur7.store.bean.IReturnBean;
 import com.wur7.store.constant.CommonConstant;
-import com.wur7.store.entity.SysDict;
 import com.wur7.store.entity.SysRole;
 import com.wur7.store.entity.SysRoleMenu;
 import com.wur7.store.entity.SysUser;
@@ -51,18 +50,10 @@ public class SysRoleService {
 	}
 	
 	public IReturnBean<?> del(Integer id) {
-		if (id == CommonConstant.ROLE_ID_SUPER_ADMIN || id == CommonConstant.ROLE_ID_GUEST) {
+		if (id == CommonConstant.ROLE_ID_SUPER_ADMIN) {
 			return IReturnBean.fail("不能删除该角色");
 		}
-		SysRole role = mapperSupport.sysRoleMapper.selectByPrimaryKey(id);
 		mapperSupport.sysRoleMapper.deleteByPrimaryKey(id);
-		SysDict sysDict = new SysDict();
-//		sysDict.setId();
-		sysDict.setDictGroup(CommonConstant.DICT_GROUP_ROLE);
-		sysDict.setDictKey(role.getRoleName());
-//		sysDict.setDictValue();
-//		sysDict.setDictSort();
-		sysDictService.delDict(sysDict);
 		return IReturnBean.success();
 	}
 	
@@ -71,8 +62,8 @@ public class SysRoleService {
 		if (roleId == CommonConstant.ROLE_ID_SUPER_ADMIN) {
 			return IReturnBean.fail("超级管理员无需授权");
 		}
-		SysRole creatorRole = mapperSupport.sysRoleMapper.selectByPrimaryKey(operator.getRoleId());
-		SysRole desRole = mapperSupport.sysRoleMapper.selectByPrimaryKey(roleId);
+//		SysRole creatorRole = mapperSupport.sysRoleMapper.selectByPrimaryKey(operator.getRoleId());
+//		SysRole desRole = mapperSupport.sysRoleMapper.selectByPrimaryKey(roleId);
 		// 授权
 		mapperSupport.sysRoleMenuMapper.delByRoleId(roleId);
 		for (Integer menuId : menuIds) {

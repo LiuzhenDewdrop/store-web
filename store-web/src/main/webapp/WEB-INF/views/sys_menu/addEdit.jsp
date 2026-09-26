@@ -132,9 +132,9 @@ layui.config({
 				changeMenuType('1');
 				break;
 			case "upd":
-				menuTypeVal = '${menu.menuType}';
-				levelVal = '${menu.level}';
-				pIdVal = '${menu.pId}';
+				var menuTypeVal = '${menu.menuType}',
+					levelVal = '${menu.level}',
+					pIdVal = '${menu.pId}';
 				changeMenuType(menuTypeVal, levelVal);
 				$("#resParentId option[value='" + pIdVal + "']").prop("selected","selected");
 				break;

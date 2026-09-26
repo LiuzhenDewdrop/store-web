@@ -31,7 +31,7 @@
 		<sqlMapGenerator targetPackage="com.wur7.store.mapper" targetProject="src/main/resources"/>
 		<javaClientGenerator targetPackage="com.wur7.store.mapper" targetProject="src/main/java" type="XMLMAPPER"/>
 
-		<table tableName="sys_item_category"
+		<table tableName="shop_item_spec"
 			   enableCountByExample="false"
 			   enableUpdateByExample="false"
 			   enableDeleteByExample="false"
