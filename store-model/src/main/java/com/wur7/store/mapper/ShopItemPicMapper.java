@@ -1,5 +1,9 @@
 package com.wur7.store.mapper;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.wur7.store.entity.ShopItemPic;
 
 public interface ShopItemPicMapper {
@@ -50,4 +54,6 @@ public interface ShopItemPicMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(ShopItemPic record);
+	
+	List<ShopItemPic> getByItem(@Param("itemId") Integer itemId);
 }

@@ -146,4 +146,12 @@
       spec_status = #{specStatus,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+	<select id="getByItem" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM shop_item_spec
+		WHERE item_id = #{itemId}
+		AND spec_status = 1
+	</select>
 </mapper>

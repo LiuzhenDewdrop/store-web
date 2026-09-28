@@ -25,6 +25,7 @@
     <result column="creator" jdbcType="INTEGER" property="creator" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="sold_unit_num" jdbcType="INTEGER" property="soldUnitNum" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -33,7 +34,7 @@
     -->
     id, shop_id, shop_name, item_name, item_code, item_image, item_type, item_category_1, 
     item_category_2, item_category_3, brand_name, model_type, item_detail, delivery_fee, 
-    delivery_threshold, item_status, creator, create_time, update_time
+    delivery_threshold, item_status, creator, create_time, update_time, sold_unit_num
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     <!--
@@ -66,15 +67,15 @@
       item_category_1, item_category_2, item_category_3, 
       brand_name, model_type, item_detail, 
       delivery_fee, delivery_threshold, item_status, 
-      creator, create_time, update_time
-      )
+      creator, create_time, update_time, 
+      sold_unit_num)
     values (#{shopId,jdbcType=INTEGER}, #{shopName,jdbcType=VARCHAR}, #{itemName,jdbcType=VARCHAR}, 
       #{itemCode,jdbcType=VARCHAR}, #{itemImage,jdbcType=VARCHAR}, #{itemType,jdbcType=INTEGER}, 
       #{itemCategory1,jdbcType=INTEGER}, #{itemCategory2,jdbcType=INTEGER}, #{itemCategory3,jdbcType=INTEGER}, 
       #{brandName,jdbcType=VARCHAR}, #{modelType,jdbcType=INTEGER}, #{itemDetail,jdbcType=VARCHAR}, 
       #{deliveryFee,jdbcType=DECIMAL}, #{deliveryThreshold,jdbcType=DECIMAL}, #{itemStatus,jdbcType=INTEGER}, 
-      #{creator,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
+      #{creator,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{soldUnitNum,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.wur7.store.entity.ShopItem">
     <!--
@@ -140,6 +141,9 @@
       <if test="updateTime != null">
         update_time,
       </if>
+      <if test="soldUnitNum != null">
+        sold_unit_num,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="shopId != null">
@@ -195,6 +199,9 @@
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="soldUnitNum != null">
+        #{soldUnitNum,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -259,6 +266,9 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="soldUnitNum != null">
+        sold_unit_num = #{soldUnitNum,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -285,7 +295,8 @@
       item_status = #{itemStatus,jdbcType=INTEGER},
       creator = #{creator,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      sold_unit_num = #{soldUnitNum,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
@@ -310,6 +321,27 @@
 		</if>
 		<if test="itemType != null">
 			AND  item_type = #{itemType}
+		</if>
+	</select>
+
+	<select id="queryForApp" resultMap="BaseResultMap">
+		SELECT <include refid="Base_Column_List" />
+		FROM shop_item
+		WHERE 1=1
+		<if test="keyword != null and keyword != ''">
+			AND item_name like CONCAT('%',#{keyword},'%')
+		</if>
+		AND item_status = 1
+		ORDER BY sold_unit_num DESC
+		LIMIT #{offset}, #{pageSize}
+	</select>
+
+	<select id="count" resultType="long">
+		SELECT COUNT(*)
+		FROM shop_item
+		WHERE 1=1
+		<if test="keyword != null and keyword != ''">
+			AND item_name like CONCAT('%',#{keyword},'%')
 		</if>
 	</select>
 </mapper>

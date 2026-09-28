@@ -111,4 +111,11 @@
       sort_no = #{sortNo,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+	<select id="getByItem" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM shop_item_pic
+		WHERE item_id = #{itemId}
+	</select>
 </mapper>

@@ -21,7 +21,7 @@
     <script src="${ctx}/static/layui/layui.js"></script>
 	<style type="text/css">
 		.item-img a.img{ display: block; width: 76px; height: 76px; margin: 0 auto; margin-bottom: 15px;}
-		.item-img a.img img{ display: block; border: none; width: 100%; height: 100%; border-radius: 50%; -webkit-border-radius: 50%; -moz-border-radius: 50%; border: 4px solid #44576b;}
+		.layui-table tr { height: 100px; }
 	</style>
 
 <body>
@@ -90,7 +90,7 @@
 						</a>
                     </div>
                 </shiro:hasPermission>
-                <table id="resTableList" lay-filter="resTableId"></table>
+                <table class="resTableList" id="resTableList" lay-filter="resTableId"></table>
             </div>
         </div>
     </div>
@@ -167,7 +167,7 @@
 				loading:true,
 				skin:'row',
 				even:'true',
-				size: 'sm',
+				size: 'lg',
 				where: field,
 				cols: [[
 					// {field:'id', title: '序号', width: '6%', align:'center'},
@@ -241,16 +241,16 @@
 <script type="text/html" id="resImageTpl">
 	<div class="item-img">
 		<a class="img" title="商品图片">
-			<img src="{{= d.itemImage}}">
+			<img src="${ctx}{{= d.itemImage}}">
 		</a>
 	</div>
 </script>
 
 <!-- 商品类型tpl-->
 <script type="text/html" id="resTypeTpl">
-    {{# if(d.itemStatus == 1){ }}
+    {{# if(d.itemType == 1){ }}
     <span class="label label-info ">实体</span>
-    {{# } else if(d.itemStatus == 2){ }}
+    {{# } else if(d.itemType == 2){ }}
     <span class="label label-danger ">虚拟</span>
     {{# } }}
 </script>

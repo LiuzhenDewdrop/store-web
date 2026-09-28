@@ -1,6 +1,7 @@
 package com.wur7.store.web.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import com.wur7.store.entity.SysUser;
 import com.wur7.store.enums.ITEM_STATUS;
 import com.wur7.store.web.bean.LayPage;
 import com.wur7.store.web.bean.ShopItemDetail;
+import com.wur7.store.web.bean.request.AppQuery;
 import com.wur7.store.web.mapper.MapperSupport;
 
 @Service
@@ -79,5 +81,19 @@ public class ShopItemService {
 			
 		}
 		return IReturnBean.success();
+	}
+	
+	public IReturnBean<List<ShopItemDetail>> queryForApp(AppQuery query) {
+		long total = mapperSupport.shopItemMapper.count(query.getKeyword());
+		List<ShopItem> itemList = mapperSupport.shopItemMapper.queryForApp(query.getKeyword(), (query.getPageNum()-1)* query.getPageSize(), query.getPageSize());
+		List<ShopItemDetail> list = new ArrayList<>(itemList.size());
+		for (ShopItem shopItem : itemList) {
+			ShopItemDetail detail = new ShopItemDetail();
+			detail.setItem(shopItem);
+			List<ShopItemSpec> specs = mapperSupport.shopItemSpecMapper.getByItem(shopItem.getId());
+			detail.setSpecs(specs);
+			list.add(detail);
+		}
+		return IReturnBean.success(total, list);
 	}
 }

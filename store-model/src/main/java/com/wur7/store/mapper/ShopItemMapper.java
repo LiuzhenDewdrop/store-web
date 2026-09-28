@@ -2,6 +2,8 @@ package com.wur7.store.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.wur7.store.entity.ShopItem;
 
 public interface ShopItemMapper {
@@ -54,4 +56,9 @@ public interface ShopItemMapper {
     int updateByPrimaryKey(ShopItem record);
 	
 	List<ShopItem> findAll(ShopItem query);
+	
+	List<ShopItem> queryForApp(@Param("keyword") String keyword
+			, @Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
+	
+	long count(@Param("keyword") String keyword);
 }

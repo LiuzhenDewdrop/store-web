@@ -152,7 +152,7 @@
 			<div class="layui-inline">
 				<label class="layui-form-label">供货价格（元）</label>
 				<div class="layui-input-inline">
-					<input id="supplyPrice" type="text" lay-filter="supplyPrice" lay-affix="number" min="0" lay-precision="2" class="layui-input" lay-verify="required|supplyPrice" value="${detail.specs[0].supplyPrice}" placeholder="请输入供货价格">
+					<input id="supplyPrice" type="text" lay-filter="supplyPrice" lay-affix="number" min="0" lay-precision="2" class="layui-input" lay-verify="supplyPrice" value="${detail.specs[0].supplyPrice}" placeholder="请输入供货价格">
 				</div>
 			</div>
 		</div>
@@ -160,7 +160,7 @@
 			<div class="layui-inline">
 				<label class="layui-form-label">销售价格（元）</label>
 				<div class="layui-input-inline">
-					<input id="salePrice" type="text" lay-filter="salePrice" lay-affix="number" min="0" lay-precision="2" class="layui-input" lay-verify="required|salePrice" value="${detail.specs[0].salePrice}" placeholder="请输入销售价格">
+					<input id="salePrice" type="text" lay-filter="salePrice" lay-affix="number" min="0" lay-precision="2" class="layui-input" lay-verify="salePrice" value="${detail.specs[0].salePrice}" placeholder="请输入销售价格">
 				</div>
 			</div>
 		</div>
@@ -618,11 +618,15 @@ layui.config({
 		},
 		salePrice: function(value, item) {
 			// 验证价格
-			return checkPrice(value, $('#supplyPrice').val());
+			if ($('input[name="modelType"]:checked').val() === '1') {
+				return checkPrice(value, $('#supplyPrice').val());
+			}
 		},
 		supplyPrice: function(value, item) {
 			// 验证价格
-			return checkPrice($('#salePrice').val(), value);
+			if ($('input[name="modelType"]:checked').val() === '1') {
+				return checkPrice($('#salePrice').val(), value);
+			}
 		},
 
 	});
@@ -638,7 +642,8 @@ layui.config({
 					specName: $('#specName').val(),
 					picUrl: itemImageUrl,
 					supplyPrice: $('#supplyPrice').val(),
-					salePrice: $('#salePrice').val()
+					salePrice: $('#salePrice').val(),
+					specStatus: 1,
 				});
 				break;
 			case '2':
