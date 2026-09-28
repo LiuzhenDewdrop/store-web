@@ -1,0 +1,17 @@
+<view class="search-page">
+  <t-search
+    t-class-input-container="t-class__input-container"
+    t-class-input="t-search__input"
+    value="{{searchValue}}"
+    leftIcon=""
+    placeholder="请输入商品名称"
+    bind:submit="handleSubmit"
+    focus
+  >
+    <t-icon slot="left-icon" prefix="wr" name="search" size="40rpx" color="#bbb" />
+  </t-search>
+  <view class="search-wrap">
+    
+    
+  </view>
+</view>

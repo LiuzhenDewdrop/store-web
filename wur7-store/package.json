@@ -1,0 +1,14 @@
+{
+  "name": "wur7-store",
+  "version": "1.0.0",
+  "description": "<p align=\"center\">   <a href=\"https://tdesign.tencent.com/\" target=\"_blank\">     <img alt=\"TDesign Logo\" width=\"200\" src=\"https://tdesign.gtimg.com/site/TDesign.png\">   </a> </p>",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "tdesign-miniprogram": "^1.16.1"
+  }
+}
