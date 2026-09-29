@@ -1,4 +1,4 @@
-import { fetchPerson, updateGender, uploadAvatar, bindPhone, updateNickname } from '../../../services/usercenter/fetchPerson';
+import { fetchPerson, updateGender, uploadAvatar, bindPhone } from '../../../services/usercenter/fetchPerson';
 import { phoneEncryption } from '../../../utils/util';
 import { getLocalUserInfo, clearLoginInfo, setLoginInfo, getToken } from '../../../utils/auth';
 import { wxLogout } from '../../../services/login/index';
@@ -13,9 +13,11 @@ Page({
       phoneNumber: '',
     },
     showUnbindConfirm: false,
-    showNameDialog: false,
-    tempNickname: '',
     pickerOptions: [
+      {
+        name: '保密',
+        code: '0',
+      },
       {
         name: '男',
         code: '1',
@@ -51,7 +53,7 @@ Page({
         }
       });
     }
-    // 关闭mock，调用真实接口
+    // 调用真实接口刷新用户信息
     this.fetchData();
   },
   fetchData() {
@@ -94,9 +96,9 @@ Page({
         });
         break;
       case 'name':
-        this.setData({
-          tempNickname: this.data.personInfo.nickName,
-          showNameDialog: true,
+        // 跳转到独立的昵称编辑页面，把当前昵称传过去
+        wx.navigateTo({
+          url: `/pages/user/name-edit/index?name=${encodeURIComponent(this.data.personInfo.nickName)}`,
         });
         break;
       default: {
@@ -143,68 +145,6 @@ Page({
         context: this,
         selector: '#t-toast',
         message: '设置失败，请重试',
-        theme: 'error',
-      });
-    });
-  },
-  // 昵称输入
-  onNicknameInput(e) {
-    this.setData({
-      tempNickname: e.detail.value,
-    });
-  },
-  onCloseNameDialog() {
-    this.setData({
-      showNameDialog: false,
-    });
-  },
-  // 保存昵称
-  onSaveNickname() {
-    const nickname = this.data.tempNickname.trim();
-    if (!nickname) {
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: '昵称不能为空',
-        theme: 'warning',
-      });
-      return;
-    }
-    if (nickname.length > 15) {
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: '昵称最多15个字',
-        theme: 'warning',
-      });
-      return;
-    }
-    Toast({
-      context: this,
-      selector: '#t-toast',
-      message: '保存中...',
-      theme: 'loading',
-      duration: 500,
-    });
-    updateNickname(nickname).then(() => {
-      this.setData({
-        showNameDialog: false,
-        'personInfo.nickName': nickname,
-      });
-      // 更新本地缓存
-      const localUser = getLocalUserInfo();
-      setLoginInfo(getToken(), { ...localUser, userName: nickname, nickname });
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: '昵称修改成功',
-        theme: 'success',
-      });
-    }).catch(() => {
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: '修改失败，请重试',
         theme: 'error',
       });
     });

@@ -17,7 +17,7 @@
       </button>
     </t-cell>
     
-    <!-- 昵称填写：点击弹出输入框，使用type="nickname"（微信最新昵称填写能力） -->
+    <!-- 昵称填写：点击跳转到独立编辑页面 -->
     <t-cell
       title="昵称"
       arrow
@@ -58,27 +58,6 @@
   </t-cell-group>
 </view>
 
-<!-- 昵称编辑弹窗（使用最新type="nickname"，自动带出微信昵称） -->
-<t-dialog
-  visible="{{showNameDialog}}"
-  title="修改昵称"
-  confirm-btn="保存"
-  cancel-btn="取消"
-  bind:confirm="onSaveNickname"
-  bind:cancel="onCloseNameDialog"
->
-  <view class="name-edit-wrap">
-    <input 
-      class="name-input"
-      type="nickname"
-      placeholder="请输入昵称"
-      value="{{tempNickname}}"
-      bindinput="onNicknameInput"
-      maxlength="15"
-    />
-  </view>
-</t-dialog>
-
 <view class="person-info__wrapper">
   <view class="person-info__btn" bind:tap="openUnbindConfirm"> 切换账号登录 </view>
 </view>
@@ -88,6 +67,8 @@
   content="确定要切换账号登录吗？"
   confirm-btn="确定"
   cancel-btn="取消"
+  confirm-btn-color="#fa4126"
+  cancel-btn-color="#666666"
   bind:confirm="onConfirmUnbind"
   bind:cancel="onCloseUnbind"
 />
