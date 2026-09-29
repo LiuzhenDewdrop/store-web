@@ -1,4 +1,6 @@
 import { fetchUserCenter } from '../../services/usercenter/fetchUsercenter';
+import { doWxLogin, isLogin, getLocalUserInfo, clearLoginInfo } from '../../utils/auth';
+import { wxLogout } from '../../services/login/index';
 import Toast from 'tdesign-miniprogram/toast/index';
 
 const menuData = [
@@ -81,13 +83,13 @@ const getDefaultData = () => ({
   showMakePhone: false,
   userInfo: {
     avatarUrl: '',
-    nickName: '正在登录...',
+    nickName: '未登录',
     phoneNumber: '',
   },
   menuData,
   orderTagInfos,
   customerServiceInfo: {},
-  currAuthStep: 1,
+  currAuthStep: 1, // 1=未登录 2=已登录
   showKefu: true,
   versionNo: '',
 });
@@ -108,7 +110,86 @@ Page({
   },
 
   init() {
-    this.fetUseriInfoHandle();
+    this.checkLoginStatus();
+  },
+
+  // 检查登录状态
+  checkLoginStatus() {
+    if (isLogin()) {
+      // 已登录，获取用户信息
+      const localUser = getLocalUserInfo();
+      this.setData({
+        currAuthStep: 2,
+        userInfo: {
+          avatarUrl: localUser.avatarUrl || '',
+          nickName: localUser.userName || '微信用户',
+          phoneNumber: localUser.phoneNumber || ''
+        }
+      });
+      this.fetUseriInfoHandle();
+    } else {
+      // 未登录
+      this.setData({
+        currAuthStep: 1,
+        userInfo: {
+          avatarUrl: '',
+          nickName: '未登录',
+          phoneNumber: ''
+        }
+      });
+      wx.stopPullDownRefresh();
+    }
+  },
+
+  // 微信一键登录
+  async handleLogin() {
+    if (isLogin()) return;
+    
+    wx.showLoading({ title: '登录中...' });
+    try {
+      // 先获取用户信息授权，再登录
+      const userInfoRes = await wx.getUserProfile({
+        desc: '用于完善会员资料'
+      });
+      const userInfo = {
+        nickName: userInfoRes.userInfo.nickName,
+        avatarUrl: userInfoRes.userInfo.avatarUrl,
+        gender: userInfoRes.userInfo.gender
+      };
+      const loginData = await doWxLogin(userInfo);
+      wx.hideLoading();
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '登录成功',
+        theme: 'success',
+        duration: 1000
+      });
+      this.checkLoginStatus();
+    } catch (e) {
+      wx.hideLoading();
+      console.error('登录失败', e);
+      // 如果用户拒绝授权，使用默认信息登录
+      try {
+        await doWxLogin();
+        wx.hideLoading();
+        Toast({
+          context: this,
+          selector: '#t-toast',
+          message: '登录成功',
+          theme: 'success',
+          duration: 1000
+        });
+        this.checkLoginStatus();
+      } catch (err) {
+        Toast({
+          context: this,
+          selector: '#t-toast',
+          message: '登录失败，请重试',
+          duration: 2000
+        });
+      }
+    }
   },
 
   fetUseriInfoHandle() {
@@ -127,11 +208,9 @@ Page({
         ...orderInfo[index],
       }));
       this.setData({
-        userInfo,
         menuData,
         orderTagInfos: info,
         customerServiceInfo,
-        currAuthStep: 2,
       });
       wx.stopPullDownRefresh();
     });
@@ -139,6 +218,12 @@ Page({
 
   onClickCell({ currentTarget }) {
     const { type } = currentTarget.dataset;
+    
+    // 未登录先登录
+    if (!isLogin() && type !== 'service' && type !== 'help-center') {
+      this.handleLogin();
+      return;
+    }
 
     switch (type) {
       case 'address': {
@@ -217,9 +302,11 @@ Page({
   gotoUserEditPage() {
     const { currAuthStep } = this.data;
     if (currAuthStep === 2) {
+      // 已登录，跳转个人资料页
       wx.navigateTo({ url: '/pages/user/person-info/index' });
     } else {
-      this.fetUseriInfoHandle();
+      // 未登录，触发登录
+      this.handleLogin();
     }
   },
 

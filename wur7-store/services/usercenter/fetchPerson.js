@@ -5,7 +5,7 @@ function mockFetchPerson() {
   const { delay } = require('../_utils/delay');
   const { genSimpleUserInfo } = require('../../model/usercenter');
   const { genAddress } = require('../../model/address');
-  const address = genAddress();
+  const address = genAddress(0);
   return delay().then(() => ({
     ...genSimpleUserInfo(),
     address: {

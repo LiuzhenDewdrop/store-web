@@ -1,5 +1,7 @@
 import { fetchPerson } from '../../../services/usercenter/fetchPerson';
 import { phoneEncryption } from '../../../utils/util';
+import { getLocalUserInfo, clearLoginInfo } from '../../../utils/auth';
+import { wxLogout } from '../../../services/login/index';
 import Toast from 'tdesign-miniprogram/toast/index';
 
 Page({
@@ -27,14 +29,37 @@ Page({
   onLoad() {
     this.init();
   },
+  onShow() {
+    this.init();
+  },
   init() {
+    // 优先从本地存储读取登录用户信息
+    const localUser = getLocalUserInfo();
+    if (localUser) {
+      this.setData({
+        personInfo: {
+          avatarUrl: localUser.avatarUrl || '',
+          nickName: localUser.userName || '微信用户',
+          gender: localUser.gender || 0,
+          phoneNumber: phoneEncryption(localUser.phoneNumber || ''),
+        }
+      });
+    }
     this.fetchData();
   },
   fetchData() {
     fetchPerson().then((personInfo) => {
+      // 合并本地登录信息和mock数据
+      const localUser = getLocalUserInfo();
+      const finalInfo = {
+        ...personInfo,
+        avatarUrl: localUser?.avatarUrl || personInfo.avatarUrl,
+        nickName: localUser?.userName || personInfo.nickName,
+        gender: localUser?.gender || personInfo.gender,
+        phoneNumber: phoneEncryption(localUser?.phoneNumber || personInfo.phoneNumber || ''),
+      };
       this.setData({
-        personInfo,
-        'personInfo.phoneNumber': phoneEncryption(personInfo.phoneNumber),
+        personInfo: finalInfo,
       });
     });
   },
@@ -82,6 +107,52 @@ Page({
         });
       },
     );
+  },
+  onGetPhoneNumber(e) {
+    if (e.detail.errMsg === 'getPhoneNumber:ok') {
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '手机号获取成功',
+        theme: 'success',
+      });
+      // 后续对接后端接口更新用户手机号
+    }
+  },
+  openUnbindConfirm() {
+    this.setData({
+      showUnbindConfirm: true,
+    });
+  },
+  onCloseUnbind() {
+    this.setData({
+      showUnbindConfirm: false,
+    });
+  },
+  onConfirmUnbind() {
+    // 退出登录
+    wxLogout().then(() => {
+      clearLoginInfo();
+      this.setData({
+        showUnbindConfirm: false,
+      });
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '已退出登录',
+        theme: 'success',
+        duration: 1000
+      });
+      setTimeout(() => {
+        wx.reLaunch({ url: '/pages/home/home' });
+      }, 1000);
+    }).catch(() => {
+      clearLoginInfo();
+      this.setData({
+        showUnbindConfirm: false,
+      });
+      wx.reLaunch({ url: '/pages/home/home' });
+    });
   },
   async toModifyAvatar() {
     try {

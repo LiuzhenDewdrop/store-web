@@ -50,6 +50,15 @@
 <view class="person-info__wrapper">
   <view class="person-info__btn" bind:tap="openUnbindConfirm"> 切换账号登录 </view>
 </view>
+<t-dialog
+  visible="{{showUnbindConfirm}}"
+  title="提示"
+  content="确定要切换账号登录吗？"
+  confirm-btn="确定"
+  cancel-btn="取消"
+  bind:confirm="onConfirmUnbind"
+  bind:cancel="onCloseUnbind"
+/>
 <t-select-picker
   show="{{typeVisible}}"
   picker-options="{{pickerOptions}}"

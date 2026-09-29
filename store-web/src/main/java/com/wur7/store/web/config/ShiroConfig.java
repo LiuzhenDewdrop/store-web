@@ -59,7 +59,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/comm/**", "anon");
         filterChainDefinitionMap.put("/static/**", "anon");
         filterChainDefinitionMap.put("/image/**", "anon");
-        filterChainDefinitionMap.put("/app/**", "anon");
+        filterChainDefinitionMap.put("/wx/**", "anon");
         //表示需要认证才可以访问
         filterChainDefinitionMap.put("/**", "authc");
 
