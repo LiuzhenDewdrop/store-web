@@ -1,14 +1,19 @@
 <view class="name-edit">
+  <!-- 使用微信最新type="nickname"，自动带昵称候选 -->
   <t-input
     borderless
+    type="nickname"
     model:value="{{nameValue}}"
-    placeholder="请输入文字"
+    placeholder="请输入昵称"
     label="昵称"
     clearable
+    maxlength="15"
     bind:clear="clearContent"
+    bind:change="onNameInput"
   />
   <view class="name-edit__input--desc"> 最多可输入15个字 </view>
   <view class="name-edit__wrapper">
     <t-button block shape="round" disabled="{{!nameValue}}" bind:tap="onSubmit">保存</t-button>
   </view>
 </view>
+<t-toast id="t-toast" />

@@ -322,7 +322,7 @@ layui.config({
 		done: function(res) {
 			// 上传结果
 			if(res.code === '0000') {
-				$('#itemImage').attr('src', '${ctx}' + res.data);
+				$('#itemImage').attr('src', res.data);
 				$('#itemImage').attr('data-url', res.data);
 				layer.msg('上传完毕', {icon: 1});
 			} else {
@@ -355,7 +355,6 @@ layui.config({
 					sortNo: maxSortNo + 1,
 					picUrl: result,
 					index: index,
-					uploadStep: 1,
 				});
 				table.renderData('picTable');
 				element.render('progress'); // 渲染新加的进度条组件
@@ -368,7 +367,6 @@ layui.config({
 				var picCache = table.cache['picTable'];
 				const pic = picCache.find(pic => pic.index === index);
 				pic.picUrl = result;
-				pic.uploadStep = 2;
 				layer.msg('上传完毕', {icon: 1});
 			} else {
 				return layer.msg('上传失败:'+res.msg);
@@ -423,7 +421,7 @@ layui.config({
 						"data": [
 							{
 								"alt": "图片详情",
-								"src": '${ctx}' + obj.data.picUrl,
+								"src": obj.data.picUrl,
 							}
 						]
 					},
@@ -697,11 +695,7 @@ layui.config({
 <script type="text/html" id="resImageTpl">
 	<div class="item-img">
 		<a class="img" title="商品图片">
-			{{# if(d.uploadStep == 1){ }}
 			<img src="{{= d.picUrl}}"  style="width: 120px; height: 120px;">
-			{{# } else { }}
-			<img src="${ctx}{{= d.picUrl}}"  style="width: 120px; height: 120px;">
-			{{# } }}
 		</a>
 	</div>
 </script>

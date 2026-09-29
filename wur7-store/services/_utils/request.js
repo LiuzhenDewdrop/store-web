@@ -28,8 +28,19 @@ export function request(url, method = 'GET', data = {}) {
             Toast({
               context: getCurrentPages()[getCurrentPages().length - 1],
               selector: '#t-toast',
-              message: '请先登录',
+              message: result.msg || '请先登录',
               duration: 1000
+            });
+            reject(result);
+            return;
+          }
+          // 业务失败
+          if (result.code !== '0000' && result.code !== 0) {
+            Toast({
+              context: getCurrentPages()[getCurrentPages().length - 1],
+              selector: '#t-toast',
+              message: result.msg || '操作失败',
+              duration: 1500
             });
             reject(result);
             return;

@@ -1,6 +1,6 @@
-import { fetchPerson } from '../../../services/usercenter/fetchPerson';
+import { fetchPerson, updateGender, uploadAvatar, bindPhone, updateNickname } from '../../../services/usercenter/fetchPerson';
 import { phoneEncryption } from '../../../utils/util';
-import { getLocalUserInfo, clearLoginInfo } from '../../../utils/auth';
+import { getLocalUserInfo, clearLoginInfo, setLoginInfo, getToken } from '../../../utils/auth';
 import { wxLogout } from '../../../services/login/index';
 import Toast from 'tdesign-miniprogram/toast/index';
 
@@ -13,6 +13,8 @@ Page({
       phoneNumber: '',
     },
     showUnbindConfirm: false,
+    showNameDialog: false,
+    tempNickname: '',
     pickerOptions: [
       {
         name: '男',
@@ -24,7 +26,9 @@ Page({
       },
     ],
     typeVisible: false,
-    genderMap: ['', '男', '女'],
+    genderMap: ['保密', '男', '女'],
+    // 原始未脱敏手机号
+    rawPhone: '',
   },
   onLoad() {
     this.init();
@@ -36,37 +40,53 @@ Page({
     // 优先从本地存储读取登录用户信息
     const localUser = getLocalUserInfo();
     if (localUser) {
+      const phone = localUser.phoneNumber || localUser.phone || '';
       this.setData({
+        rawPhone: phone,
         personInfo: {
-          avatarUrl: localUser.avatarUrl || '',
-          nickName: localUser.userName || '微信用户',
+          avatarUrl: localUser.avatarUrl || localUser.avatar || '',
+          nickName: localUser.nickName || localUser.userName || localUser.nickname || '微信用户',
           gender: localUser.gender || 0,
-          phoneNumber: phoneEncryption(localUser.phoneNumber || ''),
+          phoneNumber: phoneEncryption(phone),
         }
       });
     }
+    // 关闭mock，调用真实接口
     this.fetchData();
   },
   fetchData() {
     fetchPerson().then((personInfo) => {
-      // 合并本地登录信息和mock数据
+      // 合并本地登录信息和后端返回
       const localUser = getLocalUserInfo();
       const finalInfo = {
         ...personInfo,
-        avatarUrl: localUser?.avatarUrl || personInfo.avatarUrl,
-        nickName: localUser?.userName || personInfo.nickName,
-        gender: localUser?.gender || personInfo.gender,
-        phoneNumber: phoneEncryption(localUser?.phoneNumber || personInfo.phoneNumber || ''),
+        avatarUrl: personInfo.avatarUrl || localUser?.avatarUrl || localUser?.avatar || '',
+        nickName: personInfo.nickName || localUser?.userName || localUser?.nickname || '微信用户',
+        gender: personInfo.gender !== undefined ? personInfo.gender : (localUser?.gender || 0),
       };
+      const rawPhone = personInfo.phoneNumber || localUser?.phoneNumber || localUser?.phone || '';
+      finalInfo.phoneNumber = phoneEncryption(rawPhone);
       this.setData({
         personInfo: finalInfo,
+        rawPhone: rawPhone,
       });
+      // 更新本地缓存
+      setLoginInfo(getToken(), {
+        ...localUser,
+        avatarUrl: finalInfo.avatarUrl,
+        avatar: finalInfo.avatarUrl,
+        userName: finalInfo.nickName,
+        nickname: finalInfo.nickName,
+        gender: finalInfo.gender,
+        phoneNumber: rawPhone,
+        phone: rawPhone,
+      });
+    }).catch((err) => {
+      console.log('获取用户信息失败', err);
     });
   },
   onClickCell({ currentTarget }) {
     const { dataset } = currentTarget;
-    const { nickName } = this.data.personInfo;
-
     switch (dataset.type) {
       case 'gender':
         this.setData({
@@ -74,12 +94,10 @@ Page({
         });
         break;
       case 'name':
-        wx.navigateTo({
-          url: `/pages/user/name-edit/index?name=${nickName}`,
+        this.setData({
+          tempNickname: this.data.personInfo.nickName,
+          showNameDialog: true,
         });
-        break;
-      case 'avatarUrl':
-        this.toModifyAvatar();
         break;
       default: {
         break;
@@ -91,33 +109,194 @@ Page({
       typeVisible: false,
     });
   },
+  // 性别选择确认
   onConfirm(e) {
     const { value } = e.detail;
-    this.setData(
-      {
-        typeVisible: false,
-        'personInfo.gender': value,
-      },
-      () => {
-        Toast({
-          context: this,
-          selector: '#t-toast',
-          message: '设置成功',
-          theme: 'success',
-        });
-      },
-    );
-  },
-  onGetPhoneNumber(e) {
-    if (e.detail.errMsg === 'getPhoneNumber:ok') {
+    const gender = parseInt(value);
+    Toast({
+      context: this,
+      selector: '#t-toast',
+      message: '保存中...',
+      theme: 'loading',
+      duration: 500,
+    });
+    updateGender(gender).then(() => {
+      this.setData(
+        {
+          typeVisible: false,
+          'personInfo.gender': gender,
+        },
+        () => {
+          // 更新本地缓存
+          const localUser = getLocalUserInfo();
+          setLoginInfo(getToken(), { ...localUser, gender });
+          Toast({
+            context: this,
+            selector: '#t-toast',
+            message: '设置成功',
+            theme: 'success',
+          });
+        },
+      );
+    }).catch(() => {
       Toast({
         context: this,
         selector: '#t-toast',
-        message: '手机号获取成功',
+        message: '设置失败，请重试',
+        theme: 'error',
+      });
+    });
+  },
+  // 昵称输入
+  onNicknameInput(e) {
+    this.setData({
+      tempNickname: e.detail.value,
+    });
+  },
+  onCloseNameDialog() {
+    this.setData({
+      showNameDialog: false,
+    });
+  },
+  // 保存昵称
+  onSaveNickname() {
+    const nickname = this.data.tempNickname.trim();
+    if (!nickname) {
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '昵称不能为空',
+        theme: 'warning',
+      });
+      return;
+    }
+    if (nickname.length > 15) {
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '昵称最多15个字',
+        theme: 'warning',
+      });
+      return;
+    }
+    Toast({
+      context: this,
+      selector: '#t-toast',
+      message: '保存中...',
+      theme: 'loading',
+      duration: 500,
+    });
+    updateNickname(nickname).then(() => {
+      this.setData({
+        showNameDialog: false,
+        'personInfo.nickName': nickname,
+      });
+      // 更新本地缓存
+      const localUser = getLocalUserInfo();
+      setLoginInfo(getToken(), { ...localUser, userName: nickname, nickname });
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '昵称修改成功',
         theme: 'success',
       });
-      // 后续对接后端接口更新用户手机号
+    }).catch(() => {
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '修改失败，请重试',
+        theme: 'error',
+      });
+    });
+  },
+  // 最新头像选择回调：微信基础库2.21.2+支持chooseAvatar
+  onChooseAvatar(e) {
+    const { avatarUrl } = e.detail;
+    if (!avatarUrl) {
+      return;
     }
+    Toast({
+      context: this,
+      selector: '#t-toast',
+      message: '上传中...',
+      theme: 'loading',
+      duration: 10000,
+    });
+    // 上传头像到服务器
+    uploadAvatar(avatarUrl).then((serverUrl) => {
+      this.setData({
+        'personInfo.avatarUrl': serverUrl,
+      });
+      // 更新本地缓存
+      const localUser = getLocalUserInfo();
+      setLoginInfo(getToken(), { ...localUser, avatarUrl: serverUrl, avatar: serverUrl });
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '头像修改成功',
+        theme: 'success',
+      });
+    }).catch((err) => {
+      console.error('头像上传失败', err);
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: err.message || '头像上传失败',
+        theme: 'error',
+      });
+    });
+  },
+  // 最新手机号获取回调：e.detail.code，后端调用微信接口换取手机号
+  onGetPhoneNumber(e) {
+    if (e.detail.errMsg !== 'getPhoneNumber:ok') {
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '您取消了授权',
+        theme: 'warning',
+      });
+      return;
+    }
+    const { code } = e.detail;
+    if (!code) {
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '获取手机号失败，请重试',
+        theme: 'error',
+      });
+      return;
+    }
+    Toast({
+      context: this,
+      selector: '#t-toast',
+      message: '绑定中...',
+      theme: 'loading',
+      duration: 10000,
+    });
+    bindPhone(code).then((phone) => {
+      this.setData({
+        rawPhone: phone,
+        'personInfo.phoneNumber': phoneEncryption(phone),
+      });
+      // 更新本地缓存
+      const localUser = getLocalUserInfo();
+      setLoginInfo(getToken(), { ...localUser, phoneNumber: phone, phone });
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '手机号绑定成功',
+        theme: 'success',
+      });
+    }).catch((err) => {
+      console.error('绑定手机号失败', err);
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: err.message || '绑定失败，请重试',
+        theme: 'error',
+      });
+    });
   },
   openUnbindConfirm() {
     this.setData({
@@ -153,41 +332,5 @@ Page({
       });
       wx.reLaunch({ url: '/pages/home/home' });
     });
-  },
-  async toModifyAvatar() {
-    try {
-      const tempFilePath = await new Promise((resolve, reject) => {
-        wx.chooseImage({
-          count: 1,
-          sizeType: ['compressed'],
-          sourceType: ['album', 'camera'],
-          success: (res) => {
-            const { path, size } = res.tempFiles[0];
-            if (size <= 10485760) {
-              resolve(path);
-            } else {
-              reject({ errMsg: '图片大小超出限制，请重新上传' });
-            }
-          },
-          fail: (err) => reject(err),
-        });
-      });
-      const tempUrlArr = tempFilePath.split('/');
-      const tempFileName = tempUrlArr[tempUrlArr.length - 1];
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: `已选择图片-${tempFileName}`,
-        theme: 'success',
-      });
-    } catch (error) {
-      if (error.errMsg === 'chooseImage:fail cancel') return;
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: error.errMsg || error.msg || '修改头像出错了',
-        theme: 'error',
-      });
-    }
   },
 });

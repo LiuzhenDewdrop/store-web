@@ -93,7 +93,7 @@ layui.config({
 		done: function(res) {
 			// 上传结果
 			if(res.code === '0000') {
-				$('#itemImage').attr('src', '${ctx}' + res.data);
+				$('#itemImage').attr('src', res.data);
 				$('#itemImage').attr('data-url', res.data);
 				layer.msg('上传完毕', {icon: 1});
 			} else {

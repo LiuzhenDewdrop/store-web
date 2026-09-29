@@ -123,7 +123,7 @@ layui.config({
 		done: function(res) {
 			// 若上传失败
 			if(res.code === '0000') {
-				$('#avatarImg').attr('src', '${ctx}' + res.data);
+				$('#avatarImg').attr('src', res.data);
 			} else {
 				return layer.msg('上传失败:'+res.msg);
 			}
@@ -236,7 +236,7 @@ function addTab(_this) {
 					<img id="avatarImg" src="${ctx}/static/img/stark.jpg">
 				</c:if>
 				<c:if test="${not empty LOGIN_USER.avatar}">
-					<img id="avatarImg" src="${ctx}/${LOGIN_USER.avatar}">
+					<img id="avatarImg" src="${LOGIN_USER.avatar}">
 				</c:if>
 			</a>
             <p><i class="layui-icon layui-icon-username"></i> ${LOGIN_USER.userName}</p>

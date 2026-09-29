@@ -1,15 +1,23 @@
 <view class="person-info">
   <t-cell-group>
+    <!-- 头像选择：使用最新open-type="chooseAvatar" -->
     <t-cell
       title="头像"
       center="{{true}}"
-      data-type="avatarUrl"
-      bind:click="onClickCell"
       arrow
       t-class-left="order-group__left"
     >
-      <t-image slot="note" src="{{personInfo.avatarUrl}}" t-class="avatarUrl" mode="aspectFill" />
+      <button 
+        slot="note"
+        class="avatar-btn"
+        open-type="chooseAvatar"
+        bindchooseavatar="onChooseAvatar"
+      >
+        <t-image src="{{personInfo.avatarUrl}}" t-class="avatarUrl" mode="aspectFill" />
+      </button>
     </t-cell>
+    
+    <!-- 昵称填写：点击弹出输入框，使用type="nickname"（微信最新昵称填写能力） -->
     <t-cell
       title="昵称"
       arrow
@@ -19,6 +27,8 @@
       t-class="t-cell-class"
       t-class-left="order-group__left"
     />
+    
+    <!-- 性别选择 -->
     <t-cell
       title="性别"
       arrow
@@ -28,25 +38,47 @@
       t-class="t-cell-class"
       t-class-left="order-group__left"
     />
+    
+    <!-- 手机号绑定：使用最新open-type="getPhoneNumber"，获取code换取 -->
     <t-cell
       bordered="{{false}}"
       title="手机号"
       arrow
       note="{{personInfo.phoneNumber ? personInfo.phoneNumber : '去绑定手机号'}}"
-      data-type="phoneNumber"
-      bind:click="onClickCell"
       t-class="t-cell-class"
       t-class-left="order-group__left"
     >
-  <button 
-    slot="note" 
-    open-type="getPhoneNumber" 
-    bindgetphonenumber="onGetPhoneNumber"
-    style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;background:transparent;"
-  ></button>
-</t-cell>
+      <button 
+        slot="note" 
+        class="phone-btn"
+        open-type="getPhoneNumber" 
+        bindgetphonenumber="onGetPhoneNumber"
+      >{{personInfo.phoneNumber ? personInfo.phoneNumber : '去绑定'}}</button>
+    </t-cell>
   </t-cell-group>
 </view>
+
+<!-- 昵称编辑弹窗（使用最新type="nickname"，自动带出微信昵称） -->
+<t-dialog
+  visible="{{showNameDialog}}"
+  title="修改昵称"
+  confirm-btn="保存"
+  cancel-btn="取消"
+  bind:confirm="onSaveNickname"
+  bind:cancel="onCloseNameDialog"
+>
+  <view class="name-edit-wrap">
+    <input 
+      class="name-input"
+      type="nickname"
+      placeholder="请输入昵称"
+      value="{{tempNickname}}"
+      bindinput="onNicknameInput"
+      maxlength="15"
+    />
+  </view>
+</t-dialog>
+
 <view class="person-info__wrapper">
   <view class="person-info__btn" bind:tap="openUnbindConfirm"> 切换账号登录 </view>
 </view>
@@ -68,3 +100,4 @@
   bind:close="onClose"
 />
 <t-toast id="t-toast" />
+<t-loading id="t-loading" />

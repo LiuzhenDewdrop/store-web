@@ -21,6 +21,9 @@ public class FileService {
 	@Value("${imagePath.server:}")
 	private String serverPath;
 	
+	@Value("${imagePath.base:}")
+	private String basePath;
+	
 	public IReturnBean<String> saveFile(String sub, boolean dirDate, MultipartFile file, String name) throws IOException {
 		String originalFilename = file.getOriginalFilename();
 		if (StringUtil.isBlank(originalFilename)) {
@@ -42,6 +45,6 @@ public class FileService {
 			}
 		}
 		file.transferTo(Paths.get(dirPath + "/" + filename));
-		return IReturnBean.success(serverPath + local + "/" + filename);
+		return IReturnBean.success(basePath + serverPath + local + "/" + filename);
 	}
 }
