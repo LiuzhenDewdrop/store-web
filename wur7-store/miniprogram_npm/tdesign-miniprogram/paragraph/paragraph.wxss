@@ -22,4 +22,4 @@
 .t-typography__ellipsis-wrapper{display:flex;align-items:flex-end;}
 .t-typography__ellipsis-content{overflow:hidden;text-overflow:ellipsis;white-space:normal;display:-webkit-box;-webkit-box-orient:vertical;}
 .t-typography-ellipsis-symbol{text-decoration:none;white-space:nowrap;flex:1;}
-.t-typography__copy{display:inline-flex;align-items:center;margin-left:16rpx;flex-shrink:0;}
+.t-typography__copy{display:inline-flex;align-items:center;margin-left:var(--td-spacer,16rpx);flex-shrink:0;}

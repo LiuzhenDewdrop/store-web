@@ -37,7 +37,7 @@ export const transformGoodsDataToConfirmData = (goodsDataList) => {
 
 /** 生成结算数据 */
 export function genSettleDetail(params) {
-  const { userAddressReq, couponList, goodsRequestList } = params;
+  const { userAddressReq, goodsRequestList } = params;
 
   const resp = {
     data: {
@@ -49,7 +49,6 @@ export function genSettleDetail(params) {
       totalPayAmount: '',
       totalDiscountAmount: '110000',
       totalPromotionAmount: '1100',
-      totalCouponAmount: '0',
       totalSalePrice: '289997',
       totalGoodsAmount: '289997',
       totalDeliveryFee: '0',
@@ -67,14 +66,7 @@ export function genSettleDetail(params) {
           storeTotalAmount: '0',
           storeTotalPayAmount: '179997',
           storeTotalDiscountAmount: '110000',
-          storeTotalCouponAmount: '0',
           skuDetailVos: [],
-          couponList: [
-            {
-              couponId: 11,
-              storeId: '1000',
-            },
-          ],
         },
       ],
       inValidGoodsList: null,
@@ -96,19 +88,9 @@ export function genSettleDetail(params) {
   // 获取购物车传递的商品数据
   resp.data.storeGoodsList[0].skuDetailVos = list;
 
-  // 判断是否携带优惠券数据
-  const discountPrice = [];
+  // 判断是否携带优惠券数据 
+  // 已删除
 
-  if (couponList && couponList.length > 0) {
-    couponList.forEach((coupon) => {
-      if (coupon.status === 'default') {
-        discountPrice.push({
-          type: coupon.type,
-          value: coupon.value,
-        });
-      }
-    });
-  }
 
   // 模拟计算场景
 
@@ -133,8 +115,6 @@ export function genSettleDetail(params) {
       : 0;
 
   resp.data.totalSalePrice = totalPrice;
-
-  resp.data.totalCouponAmount = totalDiscountPrice;
 
   resp.data.totalPayAmount =
     totalPrice - totalDiscountPrice - Number(resp.data.totalPromotionAmount);

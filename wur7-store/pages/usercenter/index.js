@@ -1,6 +1,6 @@
 import { fetchUserCenter } from '../../services/usercenter/fetchUsercenter';
 import { doWxLogin, isLogin, getLocalUserInfo, clearLoginInfo } from '../../utils/auth';
-import { wxLogout } from '../../services/login/index';
+import { wxLogout } from '../../services/_utils/api';
 import Toast from 'tdesign-miniprogram/toast/index';
 
 const menuData = [
@@ -12,12 +12,6 @@ const menuData = [
       type: 'address',
     },
     {
-      title: '优惠券',
-      tit: '',
-      url: '',
-      type: 'coupon',
-    },
-    {
       title: '积分',
       tit: '',
       url: '',
@@ -25,12 +19,12 @@ const menuData = [
     },
   ],
   [
-    {
-      title: '帮助中心',
-      tit: '',
-      url: '',
-      type: 'help-center',
-    },
+    // {
+    //   title: '帮助中心',
+    //   tit: '',
+    //   url: '',
+    //   type: 'help-center',
+    // },
     {
       title: '客服热线',
       tit: '',
@@ -168,7 +162,7 @@ Page({
       this.checkLoginStatus();
     } catch (e) {
       wx.hideLoading();
-      console.error('登录失败', e);
+      console.error('登录失败1', e);
       // 如果用户拒绝授权，使用默认信息登录
       try {
         await doWxLogin();
@@ -182,6 +176,7 @@ Page({
         });
         this.checkLoginStatus();
       } catch (err) {
+        console.error('登录失败2', e);
         Toast({
           context: this,
           selector: '#t-toast',
@@ -234,16 +229,16 @@ Page({
         this.openMakePhone();
         break;
       }
-      case 'help-center': {
-        Toast({
-          context: this,
-          selector: '#t-toast',
-          message: '你点击了帮助中心',
-          icon: '',
-          duration: 1000,
-        });
-        break;
-      }
+      // case 'help-center': {
+      //   Toast({
+      //     context: this,
+      //     selector: '#t-toast',
+      //     message: '你点击了帮助中心',
+      //     icon: '',
+      //     duration: 1000,
+      //   });
+      //   break;
+      // }
       case 'point': {
         Toast({
           context: this,
@@ -252,10 +247,6 @@ Page({
           icon: '',
           duration: 1000,
         });
-        break;
-      }
-      case 'coupon': {
-        wx.navigateTo({ url: '/pages/coupon/coupon-list/index' });
         break;
       }
       default: {

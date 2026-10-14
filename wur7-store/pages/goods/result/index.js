@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
-import { getSearchResult } from '../../../services/good/fetchSearchResult';
+import { wxItemQuery } from '../../../services/_utils/api';
+import { imgPrefix } from '../../../config/index';
 import Toast from 'tdesign-miniprogram/toast/index';
 
 const initFilters = {
@@ -15,7 +16,7 @@ Page({
     show: false,
     minVal: '',
     maxVal: '',
-    minSalePriceFocus: false,
+    salePriceFocus: false,
     maxSalePriceFocus: false,
     filter: initFilters,
     hasLoaded: false,
@@ -79,69 +80,63 @@ Page({
       loading: true,
     });
     try {
-      const result = await getSearchResult(params);
-      if (result.code === '0000') {
-        const data = result.data;
-        if (data.length) {
-          data.forEach((item) => {
-            item.spuId = item.id;
-            item.thumb = item.itemImage;
-            item.title = item.itemName;
-            item.price = item.specs[0].salePrice;
-            item.originPrice = item.specs[0].salePrice;
-            if (item.spuTagList) {
-              item.tags = item.spuTagList.map((tag) => ({ title: tag.title }));
-            } else {
-              item.tags = [];
-            }
-          });
-        }
-      
-        const spuList = result.data;
-        const totalCount = result.count;
-        if (totalCount === 0 && reset) {
-          this.total = totalCount;
-          this.setData({
-            emptyInfo: {
-              tip: '抱歉，未找到相关商品',
-            },
-            hasLoaded: true,
-            loadMoreStatus: 0,
-            loading: false,
-            goodsList: [],
-          });
-          return;
-        }
-
-        const _goodsList = reset ? spuList : goodsList.concat(spuList);
-        _goodsList.forEach((v) => {
-          v.tags = v.spuTagList.map((u) => u.title);
-          v.hideKey = { desc: true };
-        });
-        const _loadMoreStatus = _goodsList.length === totalCount ? 2 : 0;
-        this.pageNum = params.pageNum || 1;
-        this.total = totalCount;
+      const result = await wxItemQuery(params);
+      if (result.code !== '0000') {
         this.setData({
-          goodsList: _goodsList,
-          loadMoreStatus: _loadMoreStatus,
-        });
-      } else {
-        this.setData({
+          hasLoaded: true,
           loading: false,
         });
         wx.showToast({
           title: '查询失败，请稍候重试',
         });
+        return
       }
+      
+      const totalCount = result.count;
+      if (reset && totalCount === 0) {
+        this.total = totalCount;
+        this.setData({
+          emptyInfo: {
+            tip: '抱歉，未找到相关商品',
+          },
+          hasLoaded: true,
+          loadMoreStatus: 0,
+          loading: false,
+          goodsList: [],
+        });
+        return;
+      }
+
+      const data = result.data;
+      if (data.length) {
+        data.forEach((item) => {
+          item.spuId = item.item.id;
+          item.thumb = item.item.itemImage;
+          item.title = item.item.itemName;
+          item.price = item.specs[0].salePrice;
+          //item.originPrice = item.specs[0].salePrice;
+        });
+      }
+
+      const _goodsList = reset ? data : goodsList.concat(data);
+      _goodsList.forEach((v) => {
+        v.hideKey = { desc: true };
+      });
+      
+      this.pageNum = params.pageNum || 1;
+      this.total = totalCount;
+      this.setData({
+        goodsList: _goodsList,
+        loadMoreStatus: _goodsList.length === totalCount ? 2 : 0,
+        hasLoaded: true,
+        loading: false,
+      });
     } catch (error) {
+      console.log(error);
       this.setData({
         loading: false,
       });
     }
-    this.setData({
-      hasLoaded: true,
-      loading: false,
-    });
   },
 
   handleCartTap() {
@@ -150,9 +145,10 @@ Page({
     });
   },
 
-  handleSubmit() {
+  handleSubmit(e) {
     this.setData(
       {
+        keywords: e.detail.value,
         goodsList: [],
         loadMoreStatus: 0,
       },

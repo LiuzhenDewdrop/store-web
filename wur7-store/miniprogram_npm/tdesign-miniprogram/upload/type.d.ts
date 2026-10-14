@@ -64,8 +64,8 @@ export interface TdUploadProps {
         value?: boolean;
     };
     removeBtn?: {
-        type: BooleanConstructor;
-        value?: boolean;
+        type: null;
+        value?: string | boolean | object;
     };
     requestMethod?: {
         type: undefined;

@@ -19,7 +19,6 @@ import com.wur7.store.bean.IReturnBean;
 import com.wur7.store.entity.ShopItem;
 import com.wur7.store.entity.SysRole;
 import com.wur7.store.util.util.JsonUtil;
-import com.wur7.store.util.util.StringUtil;
 import com.wur7.store.web.bean.LayPage;
 import com.wur7.store.web.bean.ShopItemDetail;
 import com.wur7.store.web.bean.response.SysMenuResp;
@@ -116,12 +115,9 @@ public class ShopItemController extends BasicController {
 	@RequestMapping(value = "/upload.do")
 	@ResponseBody
 	@RequiresPermissions(value={"shop:item:add", "shop:item:upd"}, logical = Logical.OR)
-	public IReturnBean<String> upload(HttpServletRequest request, MultipartFile file, String path) {
+	public IReturnBean<String> upload(HttpServletRequest request, MultipartFile file) {
 		try{
-			if (StringUtil.isBlank(path)) {
-				path = "";
-			}
-			return shopItemService.uploadImage(file, path);
+			return shopItemService.uploadImage(file);
 		} catch (Exception e) {
 			log.error("upload error:"+e);
 			return IReturnBean.error();

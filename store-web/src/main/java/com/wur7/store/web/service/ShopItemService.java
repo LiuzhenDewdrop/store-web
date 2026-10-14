@@ -39,13 +39,13 @@ public class ShopItemService {
 		return new PageInfo<>(list);
 	}
 	
-	public IReturnBean<String> uploadImage(MultipartFile file, String path) throws IOException {
+	public IReturnBean<String> uploadImage(MultipartFile file) throws IOException {
 		IReturnBean<String> saveFile = fileService.saveFile("item", true, file, null);
 		if (saveFile.isNotSuccess()) {
 			return saveFile;
 		}
 		String localUrl = saveFile.getData();
-		return IReturnBean.success(path + localUrl);
+		return IReturnBean.success(localUrl);
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)

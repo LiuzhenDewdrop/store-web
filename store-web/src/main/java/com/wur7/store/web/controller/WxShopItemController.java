@@ -7,17 +7,16 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.wur7.store.bean.IReturnBean;
 import com.wur7.store.entity.SysRole;
 import com.wur7.store.util.util.JsonUtil;
-import com.wur7.store.util.util.StringUtil;
 import com.wur7.store.web.bean.ShopItemDetail;
 import com.wur7.store.web.bean.request.AppQuery;
 import com.wur7.store.web.bean.response.SysMenuResp;
@@ -28,9 +27,9 @@ import com.wur7.store.web.service.SysRoleService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Controller
-@RequestMapping("/app/item")
-public class AppShopItemController extends BasicController {
+@RestController
+@RequestMapping("/wx/item")
+public class WxShopItemController extends BasicController {
 	
 	@Resource
 	private SysRoleService sysRoleService;
@@ -40,15 +39,14 @@ public class AppShopItemController extends BasicController {
 	private ShopItemService shopItemService;
 	
 	/**
-	 * @title  list
+	 * @title  query
 	 * @description 查询商品列表
 	 * @param request
 	 * @param query
 	 * @return
 	 */
 	@RequestMapping(value = "/query")
-	@ResponseBody
-	public IReturnBean<List<ShopItemDetail>> list(HttpServletRequest request,@RequestBody AppQuery query) {
+	public IReturnBean<List<ShopItemDetail>> query(HttpServletRequest request,@RequestBody AppQuery query) {
 		try {
 			return shopItemService.queryForApp(query);
 		} catch (Exception e) {
@@ -94,12 +92,9 @@ public class AppShopItemController extends BasicController {
 	@RequestMapping(value = "/upload.do")
 	@ResponseBody
 	@RequiresPermissions(value={"shop:item:add", "shop:item:upd"}, logical = Logical.OR)
-	public IReturnBean<String> upload(HttpServletRequest request, MultipartFile file, String path) {
+	public IReturnBean<String> upload(HttpServletRequest request, MultipartFile file) {
 		try{
-			if (StringUtil.isBlank(path)) {
-				path = "";
-			}
-			return shopItemService.uploadImage(file, path);
+			return shopItemService.uploadImage(file);
 		} catch (Exception e) {
 			log.error("upload error:"+e);
 			return IReturnBean.error();

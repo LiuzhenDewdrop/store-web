@@ -3,8 +3,11 @@ export const config = {
   useMock: true,
   /** 项目域名 */
   //apiRoot: 'https://www.5renqi.com/store-web',
-  apiRoot: 'http://127.0.0.1:8011/store-web',
+  //apiRoot: 'http://127.0.0.1:8011/store-web',
+  apiRoot: 'https://127.0.0.1:8443/store-web',
 };
+
+export const imgPrefix = config.apiRoot;
 
 export const cdnBase =
   'https://we-retail-static-1300977798.cos.ap-guangzhou.myqcloud.com/retail-mp';

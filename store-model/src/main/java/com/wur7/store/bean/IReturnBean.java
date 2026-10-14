@@ -25,6 +25,8 @@ public class IReturnBean<T> implements Serializable {
 	
 	public static final String FAIL_CODE = "0002";
 	public static final String FAIL_DESC = "操作失败";
+	public static final String UNLOGIN_CODE = "0003";
+	public static final String UNLOGIN_DESC = "未登录";
 	
 	private String code;
 	private String msg;
@@ -98,6 +100,10 @@ public class IReturnBean<T> implements Serializable {
 	}
 	public static <T> IReturnBean<T> error() {
 		return error(null);
+	}
+	
+	public static <T> IReturnBean<T> unlogin() {
+		return new IReturnBean<T>(UNLOGIN_CODE, UNLOGIN_DESC);
 	}
 	
 	public static <T> IReturnBean<T> get(IReturnEnum e) {

@@ -241,7 +241,7 @@
 <script type="text/html" id="resImageTpl">
 	<div class="item-img">
 		<a class="img" title="商品图片">
-			<img src="${ctx}{{= d.itemImage}}">
+			<img src="{{= d.itemImage}}">
 		</a>
 	</div>
 </script>

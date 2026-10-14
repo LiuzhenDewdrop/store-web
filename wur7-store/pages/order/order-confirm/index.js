@@ -16,10 +16,8 @@ Page({
       abnormalDeliveryGoodsList: [], // 不能正常配送商品
       inValidGoodsList: [], // 失效或者库存不足
       limitGoodsList: [], //限购商品
-      couponList: [], //门店优惠券信息
     }, // 获取结算页详情 data
     orderCardList: [], // 仅用于商品卡片展示
-    couponsShow: false, // 显示优惠券的弹框
     invoiceData: {
       email: '', // 发票发送邮箱
       buyerTaxNo: '', // 税号
@@ -36,9 +34,6 @@ Page({
     storeInfoList: [],
     storeNoteIndex: 0, //当前填写备注门店index
     promotionGoodsList: [], //当前门店商品列表(优惠券)
-    couponList: [], //当前门店所选优惠券
-    submitCouponList: [], //所有门店所选优惠券
-    currentStoreId: null, //当前优惠券storeId
     userAddress: null,
   },
 
@@ -71,7 +66,7 @@ Page({
     this.handleOptionsParams({ goodsRequestList });
   },
   // 处理不同情况下跳转到结算页时需要的参数
-  handleOptionsParams(options, couponList) {
+  handleOptionsParams(options) {
     let { goodsRequestList } = this; // 商品列表
     let { userAddressReq } = this; // 收货地址
 
@@ -104,7 +99,6 @@ Page({
       goodsRequestList,
       storeInfoList,
       userAddressReq,
-      couponList,
     };
     fetchSettleDetail(params).then(
       (res) => {
@@ -185,7 +179,6 @@ Page({
       quantity: resQuantity,
       storeId,
       uid,
-      saasId,
       spuId,
       goodsName,
       skuId,
@@ -197,7 +190,6 @@ Page({
     // 转换数据 符合 goods-card展示
     const orderCardList = []; // 订单卡片列表
     const storeInfoList = [];
-    const submitCouponList = []; //使用优惠券列表;
 
     data.storeGoodsList &&
       data.storeGoodsList.forEach((ele) => {
@@ -230,16 +222,13 @@ Page({
           storeName: ele.storeName,
           remark: '',
         });
-        submitCouponList.push({
-          storeId: ele.storeId,
-          couponList: ele.couponList || [],
-        });
+
         this.noteInfo.push('');
         this.tempNoteInfo.push('');
         orderCardList.push(orderCard);
       });
 
-    this.setData({ orderCardList, storeInfoList, submitCouponList });
+    this.setData({ orderCardList, storeInfoList });
     return data;
   },
   onGotoAddress() {
@@ -336,7 +325,7 @@ Page({
   },
   // 提交订单
   submitOrder() {
-    const { settleDetailData, userAddressReq, invoiceData, storeInfoList, submitCouponList } = this.data;
+    const { settleDetailData, userAddressReq, invoiceData, storeInfoList } = this.data;
     const { goodsRequestList } = this;
 
     if (!userAddressReq && !settleDetailData.userAddress) {
@@ -354,7 +343,6 @@ Page({
       return;
     }
     this.payLock = true;
-    const resSubmitCouponList = this.handleCouponList(submitCouponList);
     const params = {
       userAddressReq: settleDetailData.userAddress || userAddressReq,
       goodsRequestList: goodsRequestList,
@@ -362,7 +350,6 @@ Page({
       totalAmount: settleDetailData.totalPayAmount, //取优惠后的结算金额
       invoiceRequest: null,
       storeInfoList,
-      couponList: resSubmitCouponList,
     };
     if (invoiceData && invoiceData.email) {
       params.invoiceRequest = invoiceData;
@@ -472,38 +459,6 @@ Page({
     wx.navigateTo({
       url: `/pages/order/receipt/index?invoiceData=${JSON.stringify(invoiceData)}`,
     });
-  },
-
-  onCoupons(e) {
-    const { submitCouponList, currentStoreId } = this.data;
-    const { goodsRequestList } = this;
-    const { selectedList } = e.detail;
-    const tempSubmitCouponList = submitCouponList.map((storeCoupon) => {
-      return {
-        couponList: storeCoupon.storeId === currentStoreId ? selectedList : storeCoupon.couponList,
-      };
-    });
-    const resSubmitCouponList = this.handleCouponList(tempSubmitCouponList);
-    //确定选择优惠券
-    this.handleOptionsParams({ goodsRequestList }, resSubmitCouponList);
-    this.setData({ couponsShow: false });
-  },
-  onOpenCoupons(e) {
-    const { storeid } = e.currentTarget.dataset;
-    this.setData({
-      couponsShow: true,
-      currentStoreId: storeid,
-    });
-  },
-
-  handleCouponList(storeCouponList) {
-    //处理门店优惠券   转换成接口需要
-    if (!storeCouponList) return [];
-    const resSubmitCouponList = [];
-    storeCouponList.forEach((ele) => {
-      resSubmitCouponList.push(...ele.couponList);
-    });
-    return resSubmitCouponList;
   },
 
   onGoodsNumChange(e) {

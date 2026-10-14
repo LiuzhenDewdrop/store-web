@@ -28,30 +28,30 @@ Page({
         if (!store.shortageGoodsList) {
           store.shortageGoodsList = []; // 该门店已加购商品如果库存为0需单独分组
         }
-        for (const activity of store.promotionGoodsList) {
-          activity.goodsPromotionList = activity.goodsPromotionList.filter((goods) => {
-            goods.originPrice = undefined;
+        // for (const activity of store.promotionGoodsList) {
+        //   activity.goodsPromotionList = activity.goodsPromotionList.filter((goods) => {
+        //     goods.originPrice = undefined;
 
-            // 统计是否有加购数大于库存数的商品
-            if (goods.quantity > goods.stockQuantity) {
-              store.storeStockShortage = true;
-            }
-            // 统计是否全选
-            if (!goods.isSelected) {
-              store.isSelected = false;
-            }
-            // 库存为0（无货）的商品单独分组
-            if (goods.stockQuantity > 0) {
-              return true;
-            }
-            store.shortageGoodsList.push(goods);
-            return false;
-          });
+        //     // 统计是否有加购数大于库存数的商品
+        //     if (goods.quantity > goods.stockQuantity) {
+        //       store.storeStockShortage = true;
+        //     }
+        //     // 统计是否全选
+        //     if (!goods.isSelected) {
+        //       store.isSelected = false;
+        //     }
+        //     // 库存为0（无货）的商品单独分组
+        //     if (goods.stockQuantity > 0) {
+        //       return true;
+        //     }
+        //     store.shortageGoodsList.push(goods);
+        //     return false;
+        //   });
 
-          if (activity.goodsPromotionList.length > 0) {
-            isEmpty = false;
-          }
-        }
+        //   if (activity.goodsPromotionList.length > 0) {
+        //     isEmpty = false;
+        //   }
+        // }
         if (store.shortageGoodsList.length > 0) {
           isEmpty = false;
         }

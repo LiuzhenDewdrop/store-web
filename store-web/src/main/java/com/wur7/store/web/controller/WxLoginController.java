@@ -42,20 +42,30 @@ public class WxLoginController {
     // 获取当前登录用户信息
     @GetMapping("/info")
     public IReturnBean<ShopCustomer> getUserInfo(HttpServletRequest request) {
-        String token = request.getHeader("token");
-        ShopCustomer customer = customerService.getCustomerByToken(token);
-        if (customer == null) {
-            return IReturnBean.fail("未登录");
-        }
-        return IReturnBean.success(customer);
+        try {
+			String token = request.getHeader("token");
+			ShopCustomer customer = customerService.getCustomerByToken(token);
+			if (customer == null) {
+				return IReturnBean.unlogin();
+			}
+			return IReturnBean.success(customer);
+		} catch (Exception e) {
+			log.error("wx info error", e);
+			return IReturnBean.fail("获取用户信息失败：" + e.getMessage());
+		}
     }
 
     // 退出登录
     @GetMapping("/logout")
     public IReturnBean logout(HttpServletRequest request) {
-        String token = request.getHeader("token");
-        customerService.logout(token);
-        return IReturnBean.success();
+		try {
+			String token = request.getHeader("token");
+			customerService.logout(token);
+			return IReturnBean.success();
+		} catch (Exception e) {
+			log.error("wx logout error", e);
+			return IReturnBean.fail("登出失败：" + e.getMessage());
+		}
     }
     
     @PostMapping("/logout")
@@ -66,14 +76,19 @@ public class WxLoginController {
     // 更新用户信息（修改昵称、性别）
     @PostMapping("/update")
     public IReturnBean<ShopCustomer> updateInfo(@RequestBody ShopCustomer customer, HttpServletRequest request) {
-        String token = request.getHeader("token");
-        ShopCustomer currentUser = customerService.getCustomerByToken(token);
-        if (currentUser == null) {
-            return IReturnBean.fail("未登录");
-        }
-        ShopCustomer updated = customerService.updateCustomerInfo(currentUser.getId(),
-                customer.getNickname(), null, null, customer.getGender());
-        return IReturnBean.success(updated);
+		try {
+			String token = request.getHeader("token");
+			ShopCustomer currentUser = customerService.getCustomerByToken(token);
+			if (currentUser == null) {
+				return IReturnBean.unlogin();
+			}
+			ShopCustomer updated = customerService.updateCustomerInfo(currentUser.getId(),
+					customer.getNickname(), null, null, customer.getGender());
+			return IReturnBean.success(updated);
+		} catch (Exception e) {
+			log.error("wx update error", e);
+			return IReturnBean.fail("更新用户信息失败：" + e.getMessage());
+		}
     }
     
     // 上传用户头像
@@ -83,7 +98,7 @@ public class WxLoginController {
     		String token = request.getHeader("token");
     		ShopCustomer currentUser = customerService.getCustomerByToken(token);
     		if (currentUser == null) {
-    			return IReturnBean.fail("未登录");
+    			return IReturnBean.unlogin();
     		}
     		return customerService.updateAvatar(currentUser.getId(), file);
     	} catch (Exception e) {
@@ -99,7 +114,7 @@ public class WxLoginController {
     		String token = request.getHeader("token");
     		ShopCustomer currentUser = customerService.getCustomerByToken(token);
     		if (currentUser == null) {
-    			return IReturnBean.fail("未登录");
+    			return IReturnBean.unlogin();
     		}
     		return customerService.bindPhoneByCode(currentUser.getId(), req.getCode());
     	} catch (Exception e) {

@@ -6,7 +6,7 @@
     <t-search
       t-class-input="t-search__input"
       t-class-input-container="t-search__input-container"
-      placeholder="iphone 13 火热发售中"
+      placeholder="请输入商品"
       leftIcon=""
       disabled
     >
@@ -23,7 +23,6 @@
       navigation="{{navigation}}"
       imageProps="{{swiperImageProps}}"
       list="{{imgSrcs}}"
-      bind:click="navToActivityDetail"
     />
   </view>
 </view>

@@ -1,4 +1,4 @@
-import { wxLogin, getWxUserInfo } from '../services/login/index';
+import { wxLogin, getWxUserInfo } from '../services/_utils/api';
 
 const TOKEN_KEY = 'WX_LOGIN_TOKEN';
 const USER_INFO_KEY = 'WX_USER_INFO';
@@ -56,25 +56,4 @@ export function doWxLogin() {
       }
     });
   });
-}
-
-// 检查登录状态，未登录则自动登录
-export async function checkLogin() {
-  if (isLogin()) {
-    // 已登录，尝试从后端拉取最新用户信息
-    try {
-      const result = await getWxUserInfo();
-      if (result.code === 0) {
-        setLoginInfo(getToken(), result.data);
-        return result.data;
-      } else {
-        // token失效，清除登录信息
-        clearLoginInfo();
-      }
-    } catch (e) {
-      console.log('检查登录状态失败', e);
-    }
-  }
-  // 未登录或token失效，自动登录
-  return await doWxLogin();
 }

@@ -289,9 +289,30 @@ layui.config({
 			]],
 		});
 
+		// tinymce.init({
+		// 	selector: '#itemDetail',
+		// 	convert_urls: false,
+		// 	relative_urls: false,
+		// });
 		tinymce.render({
-			height: 500,
-			elem: '#itemDetail', // 绑定指定的textarea
+			width: 800,
+			height: 800,
+			elem: '#itemDetail',		// 绑定指定的textarea
+			convert_urls: false,		// 关闭 URL 自动转换
+			relative_urls: false,		// 强制绝对路径
+			remove_script_host: false,	// 保留域名
+			plugins: 'lists link image paste advlist',
+			paste_data_images: true,
+			menubar: 'edit insert format',
+			toolbar: ['image | formatselect | bold italic backcolor | bullist numlist', 'undo redo | alignleft aligncenter alignright alignjustify | outdent indent | removeformat'],
+			// 只保留 p, div, span, img, a, h1-h6, ul/ol/li, br, hr, b/strong, i/em
+			valid_elements: 'p[style|class],div[style|class],span[style|class],' +
+				'img[src|alt|width|height|style|class],' +
+				'a[href|style|class],' +
+				'h1[style|class],h2[style|class],h3[style|class],h4[style|class],h5[style|class],h6[style|class],' +
+				'ul[style|class],ol[style|class],li[style|class],' +
+				'br[style|class],hr[style|class],' +
+				'b[style|class],strong[style|class],i[style|class],em[style|class]',
 			setup: function(editor) {
 				editor.on('init', function() {
 					this.setContent('${detail.item.itemDetail}');
@@ -301,7 +322,6 @@ layui.config({
 			images_upload_url: '${ctx}/item/upload.do',
 			form:{
 				name: 'file',
-				data: {'path': '${ctx}'}
 			}
 		});
 	}
@@ -367,6 +387,7 @@ layui.config({
 				var picCache = table.cache['picTable'];
 				const pic = picCache.find(pic => pic.index === index);
 				pic.picUrl = result;
+				table.renderData('picTable');
 				layer.msg('上传完毕', {icon: 1});
 			} else {
 				return layer.msg('上传失败:'+res.msg);

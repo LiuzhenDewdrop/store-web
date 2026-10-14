@@ -13,39 +13,31 @@
         <!-- 已选规格 -->
         <view class="popup-sku__selected-spec">
           <view>选择：</view>
-          <view wx:for="{{specList}}" wx:key="specId">
-            <view
-              class="popup-sku__selected-item"
-              wx:for="{{item.specValueList}}"
-              wx:for-item="selectedItem"
-              wx:if="{{selectedItem.isSelected}}"
-              wx:key="specValueId"
-            >
-              {{selectedItem.specValue}}
-            </view>
+          <view wx:for="{{specList}}" 
+                wx:for-item="item"
+                wx:if="{{ item.isSelected }}"
+                wx:key="id">
+              {{item.specName}}
           </view>
         </view>
       </view>
     </view>
     <view class="popup-sku-body">
       <view class="popup-sku-group-container">
-        <view class="popup-sku-row" wx:for="{{specList}}" wx:key="specId">
-          <view class="popup-sku-row__title">{{item.title}}</view>
+        <view class="popup-sku-row">
           <block
-            wx:for="{{item.specValueList}}"
-            wx:for-item="valuesItem"
-            wx:for-index="valuesIndex"
-            wx:key="specValueId"
+            wx:for="{{specList}}"
+            wx:for-item="item"
+            wx:key="id"
           >
             <view
-              class="popup-sku-row__item {{valuesItem.isSelected ? 'popup-sku-row__item--active' : ''}} {{!valuesItem.hasStockObj.hasStock || !isStock ? 'disabled-sku-selected' : ''}}"
-              data-specid="{{item.specId}}"
-              data-id="{{valuesItem.specValueId}}"
-              data-val="{{valuesItem.specValue}}"
-              data-hasStock="{{valuesItem.hasStockObj.hasStock}}"
+              class="popup-sku-row__item {{item.isSelected ? 'popup-sku-row__item--active' : ''}} {{item.specStatus==2 ? 'disabled-sku-selected' : ''}}"
+              data-id="{{item.id}}"
+              data-val="{{item.specName}}"
+              data-hasStock="{{ item.specStatus !== 2 }}"
               bindtap="toChooseItem"
             >
-              {{valuesItem.specValue}}
+              {{item.specName}}
             </view>
           </block>
         </view>
@@ -56,24 +48,24 @@
             购买数量
             <view class="limit-text" wx:if="{{limitBuyInfo}}"> ({{limitBuyInfo}}) </view>
           </view>
-          <t-stepper value="{{buyNum}}" min="{{1}}" max="{{2}}" theme="filled" bind:change="handleBuyNumChange" />
+          <t-stepper value="{{buyNum}}" min="{{1}}" max="{{ limitMaxCount?limitMaxCount:10 }}" theme="filled" bind:change="handleBuyNumChange" />
         </view>
       </view>
     </view>
-    <view wx:if="{{outOperateStatus}}" class="single-confirm-btn {{!isStock ? 'disabled' : ''}}" bindtap="specsConfirm">
+    <view wx:if="{{outOperateStatus}}" class="single-confirm-btn" bindtap="specsConfirm">
       确定
     </view>
     <view
-      class="popup-sku-actions flex flex-between {{!isStock ? 'popup-sku-disabled' : ''}}"
+      class="popup-sku-actions flex flex-between"
       wx:if="{{!outOperateStatus}}"
     >
       <view class="sku-operate">
-        <view class="selected-sku-btn sku-operate-addCart {{!isStock ? 'disabled' : ''}}" bindtap="addCart">
+        <view class="selected-sku-btn sku-operate-addCart" bindtap="addCart">
           加入购物车
         </view>
       </view>
       <view class="sku-operate">
-        <view class="selected-sku-btn sku-operate-buyNow  {{!isStock ? 'disabled' : ''}}" bindtap="buyNow">
+        <view class="selected-sku-btn sku-operate-buyNow" bindtap="buyNow">
           立即购买
         </view>
       </view>

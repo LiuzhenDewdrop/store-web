@@ -84,7 +84,7 @@ export interface BaseTableCol<T extends TableRowData = TableRowData> {
     minWidth?: string | number;
     width?: string | number;
 }
-export declare type TableRowspanAndColspanFunc<T> = (params: BaseTableCellParams<T>) => RowspanColspan;
+export declare type TableRowspanAndColspanFunc<T extends TableRowData = TableRowData> = (params: BaseTableCellParams<T>) => RowspanColspan;
 export interface RowspanColspan {
     colspan?: number;
     rowspan?: number;
@@ -93,14 +93,14 @@ export interface TableRowData {
     [key: string]: any;
     children?: TableRowData[];
 }
-export interface BaseTableCellParams<T> {
+export interface BaseTableCellParams<T extends TableRowData = TableRowData> {
     row: T;
     rowIndex: number;
     col: BaseTableCol<T>;
     colIndex: number;
 }
-export declare type TableColumnClassName<T> = ClassName | ((context: CellData<T>) => ClassName);
-export interface CellData<T> extends BaseTableCellParams<T> {
+export declare type TableColumnClassName<T extends TableRowData = TableRowData> = ClassName | ((context: CellData<T>) => ClassName);
+export interface CellData<T extends TableRowData = TableRowData> extends BaseTableCellParams<T> {
     type: 'th' | 'td';
 }
 export declare type DataType = TableRowData;

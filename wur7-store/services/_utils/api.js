@@ -1,4 +1,4 @@
-import { RequestConfig, request } from '../_utils/request';
+import { RequestConfig, request } from './request';
 
 // 微信一键登录
 export function wxLogin(code) {
@@ -15,4 +15,9 @@ export function getWxUserInfo() {
 // 退出登录
 export function wxLogout() {
   return request('/wx/logout', 'GET');
+}
+
+// 查询商品
+export function wxItemQuery(params) {
+  return request('/wx/item/query', 'POST', params);
 }

@@ -20,7 +20,6 @@ export const commitPay = (params) => {
     payWay: 1,
     authorizationCode: '', //loginCode, // 登录凭证
     storeInfoList: params.storeInfoList, //备注信息列表
-    couponList: params.couponList,
     groupInfo: params.groupInfo,
   });
 };

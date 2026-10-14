@@ -23,7 +23,7 @@ export function request(url, method = 'GET', data = {}) {
         if (res.statusCode === 200) {
           const result = res.data;
           // 未登录或token失效
-          if (result.code === '0002' || result.code === '0001') {
+          if (result.code === '0003') {
             clearLoginInfo();
             Toast({
               context: getCurrentPages()[getCurrentPages().length - 1],

@@ -21,6 +21,8 @@ export default class Table extends SuperComponent {
         thClassNames: string[];
         tdClassNames: string[][];
         hasFixedColumn: boolean;
+        hasSpan: boolean;
+        tbodyStyles: string;
         scrollableToLeft: boolean;
         scrollableToRight: boolean;
         contentClasses: string;

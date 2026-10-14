@@ -65,7 +65,7 @@ Page({
   },
 
   tabChangeHandle(e) {
-    this.privateData.tabIndex = e.detail;
+    this.privateData.tabIndex = e.detail.value;
     this.loadGoodsList(true);
   },
 
@@ -83,13 +83,13 @@ Page({
     this.setData({ goodsListLoadStatus: 1 });
 
     const pageSize = this.goodListPagination.num;
-    let pageIndex = this.privateData.tabIndex * pageSize + this.goodListPagination.index + 1;
-    if (fresh) {
-      pageIndex = 0;
+    let pageIndex = 0;
+    if (!fresh) {
+      pageIndex = this.goodListPagination.index + 1;
     }
 
     try {
-      const nextList = await fetchGoodsList(pageIndex, pageSize);
+      const nextList = await fetchGoodsList(this.privateData.tabIndex, pageIndex, pageSize);
       this.setData({
         goodsList: fresh ? nextList : this.data.goodsList.concat(nextList),
         goodsListLoadStatus: 0,
@@ -106,7 +106,7 @@ Page({
     const { index } = e.detail;
     const { spuId } = this.data.goodsList[index];
     wx.navigateTo({
-      url: `/pages/goods/details/index?spuId=${spuId}`,
+      url: `/pages/goods/details/index?spuId=${spuId}&tab=${this.privateData.tabIndex}`,
     });
   },
 
@@ -122,10 +122,4 @@ Page({
     wx.navigateTo({ url: '/pages/goods/search/index' });
   },
 
-  navToActivityDetail({ detail }) {
-    const { index: promotionID = 0 } = detail || {};
-    wx.navigateTo({
-      url: `/pages/promotion/promotion-detail/index?promotion_id=${promotionID}`,
-    });
-  },
 });

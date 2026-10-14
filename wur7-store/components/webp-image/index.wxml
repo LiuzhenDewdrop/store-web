@@ -11,4 +11,5 @@
   loading="{{loading}}"
   binderror="onError"
   bindload="onLoad"
+  webp="{{ true }}"
 />

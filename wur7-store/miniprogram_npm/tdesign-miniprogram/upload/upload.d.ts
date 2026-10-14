@@ -10,6 +10,9 @@ export default class Upload extends SuperComponent {
     data: {
         classPrefix: string;
         prefix: string;
+        _removeBtn: {
+            name: string;
+        };
         current: boolean;
         proofs: any[];
         customFiles: UploadFile[];
@@ -30,10 +33,12 @@ export default class Upload extends SuperComponent {
     observers: {
         'files, max, draggable'(files: UploadFile, max: number): void;
         gridConfig(): void;
+        'removeBtn, theme'(value: string | boolean | object, theme: string): void;
     };
     lifetimes: {
         ready(): void;
     };
+    setRemoveBtn(value: string | boolean | object, theme: string): void;
     handleLimit(customFiles: UploadFile[], max: number): void;
     triggerSuccessEvent(files: any): void;
     triggerFailEvent(err: any): void;

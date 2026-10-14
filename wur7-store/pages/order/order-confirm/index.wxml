@@ -61,23 +61,6 @@
         <price fill price="{{settleDetailData.totalPromotionAmount || 0}}" />
       </view>
     </view>
-    <view class="pay-item">
-      <text>优惠券</text>
-      <view
-        class="pay-item__right"
-        data-storeid="{{settleDetailData.storeGoodsList[0].storeId}}"
-        catchtap="onOpenCoupons"
-      >
-        <block wx:if="{{submitCouponList.length}}">
-          <block wx:if="{{settleDetailData.totalCouponAmount && settleDetailData.totalCouponAmount !== '0'}}">
-            -<price fill decimalSmaller price="{{settleDetailData.totalCouponAmount}}" />
-          </block>
-          <block wx:else>选择优惠券</block>
-        </block>
-        <text wx:else>无可用</text>
-        <t-icon name="chevron-right" size="32rpx" color="#BBBBBB" />
-      </view>
-    </view>
     <view class="pay-item" wx:if="{{settleDetailData.invoiceSupport}}">
       <text>发票</text>
       <view class="pay-item__right" catchtap="onReceipt">
@@ -139,13 +122,6 @@
   <t-popup visible="{{popupShow}}" placement="bottom" bind:visible-change="onPopupChange">
     <no-goods slot="content" bind:change="onSureCommit" settleDetailData="{{settleDetailData}}" />
   </t-popup>
-  <select-coupons
-    bind:sure="onCoupons"
-    storeId="{{currentStoreId}}"
-    orderSureCouponList="{{couponList}}"
-    promotionGoodsList="{{promotionGoodsList}}"
-    couponsShow="{{couponsShow}}"
-  />
 </view>
 <t-toast id="t-toast" />
 <t-dialog id="t-dialog" />

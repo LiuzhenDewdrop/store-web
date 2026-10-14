@@ -13,7 +13,7 @@ function mockSearchResult(params) {
       item.spuId = item.spuId;
       item.thumb = item.primaryImage;
       item.title = item.title;
-      item.price = item.minSalePrice;
+      item.price = item.salePrice;
       item.originPrice = item.maxLinePrice;
       if (item.spuTagList) {
         item.tags = item.spuTagList.map((tag) => ({ title: tag.title }));
@@ -29,10 +29,9 @@ function mockSearchResult(params) {
 
 /** 获取搜索历史 */
 export function getSearchResult(params) {
-  const { delay } = require('../_utils/delay');
   return new Promise((resolve, reject) => {
     wx.request({
-      url: config.apiRoot + '/app/item/query',
+      url: config.apiRoot + '/wx/item/query',
       method: 'POST',
       data: params,
       header: {
