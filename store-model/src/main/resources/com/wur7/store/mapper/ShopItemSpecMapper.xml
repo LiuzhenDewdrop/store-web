@@ -10,8 +10,8 @@
     <result column="item_id" jdbcType="INTEGER" property="itemId" />
     <result column="spec_name" jdbcType="VARCHAR" property="specName" />
     <result column="pic_url" jdbcType="VARCHAR" property="picUrl" />
-    <result column="supply_price" jdbcType="DECIMAL" property="supplyPrice" />
-    <result column="sale_price" jdbcType="DECIMAL" property="salePrice" />
+    <result column="supply_price" jdbcType="INTEGER" property="supplyPrice" />
+    <result column="sale_price" jdbcType="INTEGER" property="salePrice" />
     <result column="spec_status" jdbcType="INTEGER" property="specStatus" />
   </resultMap>
   <sql id="Base_Column_List">
@@ -51,7 +51,7 @@
       supply_price, sale_price, spec_status
       )
     values (#{itemId,jdbcType=INTEGER}, #{specName,jdbcType=VARCHAR}, #{picUrl,jdbcType=VARCHAR}, 
-      #{supplyPrice,jdbcType=DECIMAL}, #{salePrice,jdbcType=DECIMAL}, #{specStatus,jdbcType=INTEGER}
+      #{supplyPrice,jdbcType=INTEGER}, #{salePrice,jdbcType=INTEGER}, #{specStatus,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.wur7.store.entity.ShopItemSpec">
@@ -94,10 +94,10 @@
         #{picUrl,jdbcType=VARCHAR},
       </if>
       <if test="supplyPrice != null">
-        #{supplyPrice,jdbcType=DECIMAL},
+        #{supplyPrice,jdbcType=INTEGER},
       </if>
       <if test="salePrice != null">
-        #{salePrice,jdbcType=DECIMAL},
+        #{salePrice,jdbcType=INTEGER},
       </if>
       <if test="specStatus != null">
         #{specStatus,jdbcType=INTEGER},
@@ -121,10 +121,10 @@
         pic_url = #{picUrl,jdbcType=VARCHAR},
       </if>
       <if test="supplyPrice != null">
-        supply_price = #{supplyPrice,jdbcType=DECIMAL},
+        supply_price = #{supplyPrice,jdbcType=INTEGER},
       </if>
       <if test="salePrice != null">
-        sale_price = #{salePrice,jdbcType=DECIMAL},
+        sale_price = #{salePrice,jdbcType=INTEGER},
       </if>
       <if test="specStatus != null">
         spec_status = #{specStatus,jdbcType=INTEGER},
@@ -141,8 +141,8 @@
     set item_id = #{itemId,jdbcType=INTEGER},
       spec_name = #{specName,jdbcType=VARCHAR},
       pic_url = #{picUrl,jdbcType=VARCHAR},
-      supply_price = #{supplyPrice,jdbcType=DECIMAL},
-      sale_price = #{salePrice,jdbcType=DECIMAL},
+      supply_price = #{supplyPrice,jdbcType=INTEGER},
+      sale_price = #{salePrice,jdbcType=INTEGER},
       spec_status = #{specStatus,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>

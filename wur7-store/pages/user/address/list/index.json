@@ -5,7 +5,6 @@
     "t-image": "/components/webp-image/index",
     "t-toast": "tdesign-miniprogram/toast/toast",
     "t-address-item": "/pages/user/components/ui-address-item/index",
-    "t-location": "/pages/user/components/t-location/index",
     "t-empty": "tdesign-miniprogram/empty/empty"
   }
 }

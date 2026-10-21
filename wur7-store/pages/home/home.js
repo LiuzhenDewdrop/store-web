@@ -79,9 +79,7 @@ Page({
         scrollTop: 0,
       });
     }
-
     this.setData({ goodsListLoadStatus: 1 });
-
     const pageSize = this.goodListPagination.num;
     let pageIndex = 0;
     if (!fresh) {

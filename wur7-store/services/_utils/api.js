@@ -3,7 +3,7 @@ import { RequestConfig, request } from './request';
 // 微信一键登录
 export function wxLogin(code) {
   return request('/wx/login', 'POST', {
-    code:code
+    code: code
   });
 }
 
@@ -20,4 +20,11 @@ export function wxLogout() {
 // 查询商品
 export function wxItemQuery(params) {
   return request('/wx/item/query', 'POST', params);
+}
+
+// 查询商品详情
+export function wxItemDetail(id) {
+  return request('/wx/item/detail', 'POST', {
+    id: id
+  });
 }

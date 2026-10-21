@@ -6,12 +6,14 @@ function mockFetchGoodsList(tab, pageIndex = 1, pageSize = 20) {
   const { getGoodsList } = require('../../model/goods');
   return delay().then(() =>
     getGoodsList(tab, pageIndex, pageSize).map((item) => {
+      const minPrice = item.specList.reduce((min, obj) => {
+        return (!min || obj.salePrice < min.salePrice) ? obj : min;
+      }, null).salePrice;
       return {
-        spuId: item.spuId,
-        thumb: item.primaryImage,
-        title: item.title,
-        price: item.salePrice,
-        originPrice: item.maxLinePrice,
+        spuId: item.spuId,    // todo 似乎没用
+        thumb: item.item.itemImage,
+        title: item.item.itemName,
+        price: minPrice,
       };
     }),
   );

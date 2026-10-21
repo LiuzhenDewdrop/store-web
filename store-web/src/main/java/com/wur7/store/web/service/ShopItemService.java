@@ -59,12 +59,12 @@ public class ShopItemService {
 			item.setItemStatus(ITEM_STATUS.DRAFT.STATUS);
 			mapperSupport.shopItemMapper.insert(item);
 			Integer itemId = item.getId();
-			List<ShopItemSpec>  specList = detail.getSpecs();
+			List<ShopItemSpec>  specList = detail.getSpecList();
 			for (ShopItemSpec spec : specList) {
 				spec.setItemId(itemId);
 				mapperSupport.shopItemSpecMapper.insert(spec);
 			}
-			List<ShopItemPic> picList = detail.getPics();
+			List<ShopItemPic> picList = detail.getPicList();
 			for (ShopItemPic pic : picList) {
 				pic.setItemId(itemId);
 				mapperSupport.shopItemPicMapper.insert(pic);
@@ -75,9 +75,9 @@ public class ShopItemService {
 			// todo item其它字段
 			mapperSupport.shopItemMapper.updateByPrimaryKeySelective(item);
 			// todo 规格
-			List<ShopItemSpec>  specList = detail.getSpecs();
+			List<ShopItemSpec>  specList = detail.getSpecList();
 			// todo 图片
-			List<ShopItemPic> picList = detail.getPics();
+			List<ShopItemPic> picList = detail.getPicList();
 			
 		}
 		return IReturnBean.success();
@@ -88,12 +88,26 @@ public class ShopItemService {
 		List<ShopItem> itemList = mapperSupport.shopItemMapper.queryForApp(query.getKeyword(), (query.getPageNum()-1)* query.getPageSize(), query.getPageSize());
 		List<ShopItemDetail> list = new ArrayList<>(itemList.size());
 		for (ShopItem shopItem : itemList) {
-			ShopItemDetail detail = new ShopItemDetail();
-			detail.setItem(shopItem);
-			List<ShopItemSpec> specs = mapperSupport.shopItemSpecMapper.getByItem(shopItem.getId());
-			detail.setSpecs(specs);
-			list.add(detail);
+			list.add(genDetail(shopItem));
 		}
 		return IReturnBean.success(total, list);
+	}
+	
+	private ShopItemDetail genDetail(ShopItem shopItem) {
+		ShopItemDetail detail = new ShopItemDetail();
+		detail.setItem(shopItem);
+		List<ShopItemSpec> specs = mapperSupport.shopItemSpecMapper.getByItem(shopItem.getId());
+		detail.setSpecList(specs);
+		List<ShopItemPic> pics = mapperSupport.shopItemPicMapper.getByItem(shopItem.getId());
+		detail.setPicList(pics);
+		return detail;
+	}
+	
+	public IReturnBean<ShopItemDetail> detailForApp(Integer id) {
+		ShopItem shopItem = mapperSupport.shopItemMapper.selectByPrimaryKey(id);
+		if (shopItem == null) {
+			return IReturnBean.fail("查不到此商品");
+		}
+		return IReturnBean.success(genDetail(shopItem));
 	}
 }

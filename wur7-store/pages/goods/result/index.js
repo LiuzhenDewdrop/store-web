@@ -87,7 +87,9 @@ Page({
           loading: false,
         });
         wx.showToast({
-          title: '查询失败，请稍候重试',
+          title: '查询失败',
+          icon: 'error',
+          message: result.msg,
         });
         return
       }
@@ -113,8 +115,9 @@ Page({
           item.spuId = item.item.id;
           item.thumb = item.item.itemImage;
           item.title = item.item.itemName;
-          item.price = item.specs[0].salePrice;
-          //item.originPrice = item.specs[0].salePrice;
+          item.price = item.specList.reduce((min, obj) => {
+            return (!min || obj.salePrice < min.salePrice) ? obj : min;
+          }, null).salePrice
         });
       }
 
@@ -179,10 +182,9 @@ Page({
   },
 
   gotoGoodsDetail(e) {
-    const { index } = e.detail;
-    const { spuId } = this.data.goodsList[index];
+    const clickId = e.detail.goods.item.id;
     wx.navigateTo({
-      url: `/pages/goods/details/index?spuId=${spuId}`,
+      url: `/pages/goods/details/index?spuId=${clickId}`,
     });
   },
 

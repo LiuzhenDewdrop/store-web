@@ -1,7 +1,10 @@
-import Toast from 'tdesign-miniprogram/toast/index';
-import { fetchGood } from '../../../services/good/fetchGood';
-
+// import Toast from 'tdesign-miniprogram/toast/index';
+import { Toast } from 'tdesign-miniprogram';
 import { cdnBase } from '../../../config/index';
+
+import { wxItemDetail } from '../../../services/_utils/api';
+
+import { fetchGood } from '../../../services/good/fetchGood';
 
 const imgPrefix = `${cdnBase}/`;
 
@@ -65,7 +68,7 @@ Page({
     autoplay: true,
     duration: 500,
     interval: 5000,
-    soldNum: 0, // 已售数量
+    soldUnitNum: 0, // 已售数量
   },
 
   handlePopupHide() {
@@ -196,20 +199,48 @@ Page({
     // this.handlePopupHide();
   },
 
- 
-
-
-  getDetail(spuId, tab) {
-    Promise.all([fetchGood(tab, spuId)]).then((res) => {
-      const [details] = res;
-      const { primaryImage, salePrice, soldNum } = details;
-      this.setData({
-        details,
-        salePrice: salePrice ? parseInt(salePrice) : 0,
-        primaryImage,
-        soldNum,
+  async getDetail(spuId, tab) {
+    if (!isNaN(tab)) {
+      Promise.all([fetchGood(tab, spuId)]).then((res) => {
+        const [details] = res;
+        details.images = details.picList.map(a=>a.picUrl);
+        const primaryImage = details.item.itemImage;
+        const soldUnitNum = details.item.soldUnitNum;
+        const salePrice = details.specList.reduce((min, obj) => {
+          return (!min || obj.salePrice < min.salePrice) ? obj : min;
+        }, null).salePrice;
+        this.setData({
+          details,
+          salePrice: salePrice ? parseInt(salePrice) : 0,
+          primaryImage,
+          soldUnitNum,
+        });
       });
+      return;
+    }  // if end: !isNaN 
+    const res = await wxItemDetail(spuId);
+    if (res.code !== '0000') {
+      wx.showToast({
+        title: '查询失败',
+        icon: 'error',
+        message: res.msg,
+      });
+      return
+    }
+    const details = res.data;
+    details.images = details.picList.map(a=>a.picUrl);
+    const primaryImage = details.item.itemImage;
+    const soldUnitNum = details.item.soldUnitNum;
+    const salePrice = details.specList.reduce((min, obj) => {
+      return (!min || obj.salePrice < min.salePrice) ? obj : min;
+    }, null).salePrice;
+    this.setData({
+      details,
+      salePrice: salePrice ? parseInt(salePrice) : 0,
+      primaryImage,
+      soldUnitNum,
     });
+    
   },
 
 

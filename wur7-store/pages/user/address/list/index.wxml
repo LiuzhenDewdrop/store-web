@@ -19,6 +19,7 @@
   <view class="bottom-fixed">
     <view class="btn-wrap">
       <t-location
+      <!-- todo del tag t-location  -->
         title="微信地址导入"
         isOrderSure="{{isOrderSure}}"
         isDisabledBtn="{{addressList.length >= 20}}"

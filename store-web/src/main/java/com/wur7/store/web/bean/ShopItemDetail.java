@@ -11,6 +11,6 @@ import lombok.Data;
 @Data
 public class ShopItemDetail {
 	private ShopItem item;
-	private List<ShopItemPic> pics;
-	private List<ShopItemSpec> specs;
+	private List<ShopItemPic> picList;
+	private List<ShopItemSpec> specList;
 }
