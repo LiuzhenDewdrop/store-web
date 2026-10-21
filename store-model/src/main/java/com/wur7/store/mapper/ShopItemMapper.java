@@ -61,4 +61,10 @@ public interface ShopItemMapper {
 			, @Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
 	
 	long count(@Param("keyword") String keyword);
+	
+	List<Integer> findCategoryBase();
+	
+	List<ShopItem> findByType(@Param("itemType") Integer itemType);
+	
+	List<ShopItem> findByCategory1(@Param("cat") Integer cat);
 }

@@ -36,8 +36,9 @@
 								<div class="layui-input-inline" style="width:140px;">
 									<select name="itemType" >
 										<option selected="selected"></option>
-										<option value="1">实体</option>
-										<option value="2">虚拟</option>
+										<option value="1">活动</option>
+										<option value="2">课程</option>
+										<option value="3">商品</option>
 									</select>
 								</div>
 							</div>
@@ -249,9 +250,11 @@
 <!-- 商品类型tpl-->
 <script type="text/html" id="resTypeTpl">
     {{# if(d.itemType == 1){ }}
-    <span class="label label-info ">实体</span>
+    <span class="label label-warning ">活动</span>
     {{# } else if(d.itemType == 2){ }}
-    <span class="label label-danger ">虚拟</span>
+    <span class="label label-danger ">课程</span>
+    {{# } else if(d.itemType == 3){ }}
+    <span class="label label-info ">商品</span>
     {{# } }}
 </script>
 

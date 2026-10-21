@@ -148,19 +148,10 @@ Page({
     });
   },
 
-  tagClickHandle() {
-    Toast({
-      context: this,
-      selector: '#t-toast',
-      message: '点击标签',
-    });
-  },
-
   gotoGoodsDetail(e) {
-    const { index } = e.detail;
-    const { spuId } = this.data.goodsList[index];
+    const clickId = e.detail.goods.item.id;
     wx.navigateTo({
-      url: `/pages/goods/details/index?spuId=${spuId}`,
+      url: `/pages/goods/details/index?spuId=${clickId}`,
     });
   },
 

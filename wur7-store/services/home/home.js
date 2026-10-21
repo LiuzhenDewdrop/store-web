@@ -9,12 +9,16 @@ function mockFetchHome() {
       swiper: genSwiperImageList(),
       tabList: [
         {
-          text: '课程',
+          text: '活动',
           key: 0,
         },
         {
-          text: '商品',
+          text: '课程',
           key: 1,
+        },
+        {
+          text: '商品',
+          key: 2,
         },
       ],
       activityImg: `${cdnBase}/activity/banner.png`,

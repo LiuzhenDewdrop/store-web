@@ -20,7 +20,7 @@ import com.wur7.store.entity.ShopItem;
 import com.wur7.store.entity.SysRole;
 import com.wur7.store.util.util.JsonUtil;
 import com.wur7.store.web.bean.LayPage;
-import com.wur7.store.web.bean.ShopItemDetail;
+import com.wur7.store.web.bean.response.ShopItemDetail;
 import com.wur7.store.web.bean.response.SysMenuResp;
 import com.wur7.store.web.service.ShopItemService;
 import com.wur7.store.web.service.SysMenuService;

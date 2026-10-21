@@ -104,4 +104,5 @@
 		FROM sys_item_category
 		WHERE p_id = #{pId}
 	</select>
+
 </mapper>

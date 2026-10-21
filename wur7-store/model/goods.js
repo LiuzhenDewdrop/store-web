@@ -7,6 +7,8 @@ export function getGoodsList(tab, baseID = 0, length = 10) {
     case 0:
       return new Array(length).fill(0).map((_, idx) => genCourse(idx + baseID));
     case 1:
+      return new Array(length).fill(0).map((_, idx) => genCourse(idx + baseID));
+    case 2:
       return new Array(length).fill(0).map((_, idx) => genGood(idx + baseID));
 
     default:

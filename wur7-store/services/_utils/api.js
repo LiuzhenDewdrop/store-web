@@ -28,3 +28,15 @@ export function wxItemDetail(id) {
     id: id
   });
 }
+
+// 查询一级分类
+export function wxCategoryBase() {
+  return request('/wx/category/base', 'POST');
+}
+
+// 查询一级分类下辖内容
+export function wxCategoryDetail(id) {
+  return request('/wx/category/detail', 'POST', {
+    id: id
+  });
+}

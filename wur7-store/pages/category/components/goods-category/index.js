@@ -1,8 +1,12 @@
 Component({
+  
   externalClasses: ['custom-class'],
 
   properties: {
     category: {
+      type: Array,
+    },
+    itemList: {
       type: Array,
     },
     initActive: {
@@ -10,54 +14,48 @@ Component({
       value: [],
       observer(newVal, oldVal) {
         if (newVal[0] !== oldVal[0]) {
-          this.setActiveKey(newVal[0], 0);
+          this.setActiveKey(newVal[0]);
         }
       },
-    },
-    isSlotRight: {
-      type: Boolean,
-      value: false,
-    },
-    level: {
-      type: Number,
-      value: 3,
     },
   },
   data: {
     activeKey: 0,
-    subActiveKey: 0,
   },
   attached() {
     if (this.properties.initActive && this.properties.initActive.length > 0) {
       this.setData({
         activeKey: this.properties.initActive[0],
-        subActiveKey: this.properties.initActive[1] || 0,
       });
     }
   },
   methods: {
-    onParentChange(event) {
-      this.setActiveKey(event.detail.index, 0).then(() => {
-        this.triggerEvent('change', [this.data.activeKey, this.data.subActiveKey]);
+    changeCatetory(event) {
+      this.setActiveKey(event.detail.index).then(() => {
+        this.triggerEvent('changeCatetory', this.data.activeKey);
+      });
+      
+    },
+    handleAddCart(event) {
+        this.triggerEvent('handleAddCart', event.currentTarget.dataset.id);
+    },
+    gotoGoodsDetail(e) {
+      const clickId = e.detail.goods.item.id;
+      wx.navigateTo({
+        url: `/pages/goods/details/index?spuId=${clickId}`,
       });
     },
-    onChildChange(event) {
-      this.setActiveKey(this.data.activeKey, event.detail.index).then(() => {
-        this.triggerEvent('change', [this.data.activeKey, this.data.subActiveKey]);
-      });
-    },
-    changCategory(event) {
+    chooseItem(event) {
       const { item } = event.currentTarget.dataset;
-      this.triggerEvent('changeCategory', {
+      this.triggerEvent('chooseItem', {
         item,
       });
     },
-    setActiveKey(key, subKey) {
+    setActiveKey(key) {
       return new Promise((resolve) => {
         this.setData(
           {
             activeKey: key,
-            subActiveKey: subKey,
           },
           () => {
             resolve();

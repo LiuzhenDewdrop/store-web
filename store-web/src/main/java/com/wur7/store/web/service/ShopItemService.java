@@ -21,7 +21,7 @@ import com.wur7.store.entity.ShopItemSpec;
 import com.wur7.store.entity.SysUser;
 import com.wur7.store.enums.ITEM_STATUS;
 import com.wur7.store.web.bean.LayPage;
-import com.wur7.store.web.bean.ShopItemDetail;
+import com.wur7.store.web.bean.response.ShopItemDetail;
 import com.wur7.store.web.bean.request.AppQuery;
 import com.wur7.store.web.mapper.MapperSupport;
 
@@ -94,13 +94,9 @@ public class ShopItemService {
 	}
 	
 	private ShopItemDetail genDetail(ShopItem shopItem) {
-		ShopItemDetail detail = new ShopItemDetail();
-		detail.setItem(shopItem);
 		List<ShopItemSpec> specs = mapperSupport.shopItemSpecMapper.getByItem(shopItem.getId());
-		detail.setSpecList(specs);
 		List<ShopItemPic> pics = mapperSupport.shopItemPicMapper.getByItem(shopItem.getId());
-		detail.setPicList(pics);
-		return detail;
+		return new ShopItemDetail(shopItem, specs, pics);
 	}
 	
 	public IReturnBean<ShopItemDetail> detailForApp(Integer id) {

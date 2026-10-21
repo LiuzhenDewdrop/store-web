@@ -2,7 +2,10 @@
   <goods-category
     level="{{3}}"
     custom-class="goods-category-class"
-    category="{{list}}"
-    bind:changeCategory="onChange"
+    category="{{categoryList}}"
+    itemList="{{list}}"
+    bind:changeCatetory="changeCatetory"
+    bind:chooseItem="chooseItem"
+    bind:handleAddCart="handleAddCart"
   />
 </view>

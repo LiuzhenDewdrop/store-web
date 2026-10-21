@@ -46,12 +46,14 @@
 			<label class="layui-form-label">商品类别</label>
 			<div class="layui-input-inline">
 				<c:if test="${pageFlag == 'add' }">
-					<input type="radio" name="itemType" value="1" title="实体" checked="checked">
-					<input type="radio" name="itemType" value="2" title="虚拟">
+					<input type="radio" name="itemType" value="1" title="活动" checked="checked">
+					<input type="radio" name="itemType" value="2" title="课程">
+					<input type="radio" name="itemType" value="3" title="商品">
 				</c:if>
 				<c:if test="${pageFlag == 'upd' }">
-					<input type="radio" name="itemType" value="1" title="实体" <c:if test="${detail.item.itemType == 1 }">checked</c:if>/>
-					<input type="radio" name="itemType" value="2" title="虚拟" <c:if test="${detail.item.itemType == 2 }">checked</c:if>/>
+					<input type="radio" name="itemType" value="1" title="活动" <c:if test="${detail.item.itemType == 1 }">checked</c:if>/>
+					<input type="radio" name="itemType" value="2" title="课程" <c:if test="${detail.item.itemType == 2 }">checked</c:if>/>
+					<input type="radio" name="itemType" value="2" title="商品" <c:if test="${detail.item.itemType == 3 }">checked</c:if>/>
 				</c:if>
 			</div>
 		</div>
