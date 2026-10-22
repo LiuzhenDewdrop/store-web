@@ -13,26 +13,6 @@ Component({
       type: String,
       value: '',
     },
-    title: {
-      type: String,
-      observer(newVal) {
-        this.setData({ 'goods.title': newVal });
-      },
-    },
-    price: {
-      type: String,
-      value: '',
-      observer(newVal) {
-        this.setData({ 'goods.price': newVal });
-      },
-    },
-    thumb: {
-      type: String,
-      value: '',
-      observer(newVal) {
-        this.setData({ 'goods.thumb': newVal });
-      },
-    },
     thumbMode: {
       type: String,
       value: 'aspectFit',
@@ -41,23 +21,47 @@ Component({
       type: Number,
       value: 99,
     },
-    specs: {
-      type: Array,
-      value: [],
+    itemName: {
+      type: String,
+      observer(newVal) {
+        this.setData({ 'goods.item.itemName': newVal });
+      },
+    },
+    salePrice: {
+      type: Number,
+      value: '',
+      observer(newVal) {
+        this.setData({ 'goods.spec.salePrice': newVal });
+      },
+    },
+    picUrl: {
+      type: String,
+      value: '',
+      observer(newVal) {
+        this.setData({ 'goods.spec.picUrl': newVal });
+      },
+    },
+    specName: {
+      type: String,
+      value: '',
+      observer(newVal) {
+        this.setData({ 'goods.spec.specName': newVal });
+      },
+    },
+    itemStatus: {
+      type: Number,
+      value: '',
+      observer(newVal) {
+        this.setData({ 'goods.cart.itemStatus': newVal });
+      },
     },
   },
 
   data: {
     goods: {
-      title: '',
-      thumb: '',
-      price: '',
-      hideKey: {
-        originPrice: true,
-        tags: true,
-        specs: true,
-        num: true,
-      },
+      item: {},
+      spec: {},
+      cart: {},
     },
   },
   methods: {

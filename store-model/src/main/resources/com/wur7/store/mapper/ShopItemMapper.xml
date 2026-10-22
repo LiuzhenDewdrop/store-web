@@ -24,6 +24,7 @@
     <result column="delivery_threshold" jdbcType="INTEGER" property="deliveryThreshold" />
     <result column="item_status" jdbcType="INTEGER" property="itemStatus" />
     <result column="sold_unit_num" jdbcType="INTEGER" property="soldUnitNum" />
+    <result column="del_status" jdbcType="INTEGER" property="delStatus" />
     <result column="creator" jdbcType="INTEGER" property="creator" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -35,8 +36,8 @@
     -->
     id, shop_id, shop_name, item_name, item_code, sale_price, item_image, item_type, 
     item_category_1, item_category_2, item_category_3, brand_name, model_type, item_detail, 
-    delivery_fee, delivery_threshold, item_status, sold_unit_num, creator, create_time, 
-    update_time
+    delivery_fee, delivery_threshold, item_status, sold_unit_num, del_status, creator, 
+    create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     <!--
@@ -69,15 +70,17 @@
       item_type, item_category_1, item_category_2, 
       item_category_3, brand_name, model_type, 
       item_detail, delivery_fee, delivery_threshold, 
-      item_status, sold_unit_num, creator, 
-      create_time, update_time)
+      item_status, sold_unit_num, del_status, 
+      creator, create_time, update_time
+      )
     values (#{shopId,jdbcType=INTEGER}, #{shopName,jdbcType=VARCHAR}, #{itemName,jdbcType=VARCHAR}, 
       #{itemCode,jdbcType=VARCHAR}, #{salePrice,jdbcType=INTEGER}, #{itemImage,jdbcType=VARCHAR}, 
       #{itemType,jdbcType=INTEGER}, #{itemCategory1,jdbcType=INTEGER}, #{itemCategory2,jdbcType=INTEGER}, 
       #{itemCategory3,jdbcType=INTEGER}, #{brandName,jdbcType=VARCHAR}, #{modelType,jdbcType=INTEGER}, 
       #{itemDetail,jdbcType=VARCHAR}, #{deliveryFee,jdbcType=INTEGER}, #{deliveryThreshold,jdbcType=INTEGER}, 
-      #{itemStatus,jdbcType=INTEGER}, #{soldUnitNum,jdbcType=INTEGER}, #{creator,jdbcType=INTEGER}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+      #{itemStatus,jdbcType=INTEGER}, #{soldUnitNum,jdbcType=INTEGER}, #{delStatus,jdbcType=INTEGER}, 
+      #{creator,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.wur7.store.entity.ShopItem">
     <!--
@@ -140,6 +143,9 @@
       <if test="soldUnitNum != null">
         sold_unit_num,
       </if>
+      <if test="delStatus != null">
+        del_status,
+      </if>
       <if test="creator != null">
         creator,
       </if>
@@ -201,6 +207,9 @@
       </if>
       <if test="soldUnitNum != null">
         #{soldUnitNum,jdbcType=INTEGER},
+      </if>
+      <if test="delStatus != null">
+        #{delStatus,jdbcType=INTEGER},
       </if>
       <if test="creator != null">
         #{creator,jdbcType=INTEGER},
@@ -271,6 +280,9 @@
       <if test="soldUnitNum != null">
         sold_unit_num = #{soldUnitNum,jdbcType=INTEGER},
       </if>
+      <if test="delStatus != null">
+        del_status = #{delStatus,jdbcType=INTEGER},
+      </if>
       <if test="creator != null">
         creator = #{creator,jdbcType=INTEGER},
       </if>
@@ -306,6 +318,7 @@
       delivery_threshold = #{deliveryThreshold,jdbcType=INTEGER},
       item_status = #{itemStatus,jdbcType=INTEGER},
       sold_unit_num = #{soldUnitNum,jdbcType=INTEGER},
+      del_status = #{delStatus,jdbcType=INTEGER},
       creator = #{creator,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}

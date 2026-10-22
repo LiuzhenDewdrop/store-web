@@ -90,17 +90,6 @@
   flex: none;
   color: #333333;
 }
-.cart-group .promotion-line-wrap {
-  background-color: #fff;
-  height: 2rpx;
-  display: flex;
-  justify-content: flex-end;
-}
-.cart-group .promotion-line-wrap .promotion-line {
-  width: 684rpx;
-  height: 2rpx;
-  background-color: #e6e6e6;
-}
 .cart-group .goods-item-info {
   display: flex;
   background-color: #fff;

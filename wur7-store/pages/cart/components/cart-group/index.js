@@ -9,27 +9,7 @@ Component({
     storeGoods: {
       type: Array,
       observer(storeGoods) {
-        for (const store of storeGoods) {
-          for (const activity of store.promotionGoodsList) {
-            for (const goods of activity.goodsPromotionList) {
-              goods.specs = goods.specInfo.map((item) => item.specValue); // 目前仅展示商品已选规格的值
-            }
-          }
-          for (const goods of store.shortageGoodsList) {
-            goods.specs = goods.specInfo.map((item) => item.specValue); // 目前仅展示商品已选规格的值
-          }
-        }
-
         this.setData({ _storeGoods: storeGoods });
-      },
-    },
-    invalidGoodItems: {
-      type: Array,
-      observer(invalidGoodItems) {
-        invalidGoodItems.forEach((goods) => {
-          goods.specs = goods.specInfo.map((item) => item.specValue); // 目前仅展示商品已选规格的值
-        });
-        this.setData({ _invalidGoodItems: invalidGoodItems });
       },
     },
     thumbWidth: { type: null },
@@ -42,7 +22,6 @@ Component({
     currentGoods: {},
     isShowToggle: false,
     _storeGoods: [],
-    _invalidGoodItems: [],
   },
 
   methods: {
@@ -52,17 +31,12 @@ Component({
       this.triggerEvent('delete', { goods });
     },
 
-    // 清空失效商品
-    clearInvalidGoods() {
-      this.triggerEvent('clearinvalidgoods');
-    },
-
     // 选中商品
     selectGoods(e) {
       const { goods } = e.currentTarget.dataset;
       this.triggerEvent('selectgoods', {
         goods,
-        isSelected: !goods.isSelected,
+        isSelected: !goods.cart.selectStatus,
       });
     },
 
@@ -96,12 +70,6 @@ Component({
         selector: '#t-toast',
         message: text,
       });
-    },
-
-    // 去凑单/再逛逛
-    gotoBuyMore(e) {
-      const { promotion, storeId = '' } = e.currentTarget.dataset;
-      this.triggerEvent('gocollect', { promotion, storeId });
     },
 
     // 选中门店

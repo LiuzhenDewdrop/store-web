@@ -40,3 +40,20 @@ export function wxCategoryDetail(id) {
     id: id
   });
 }
+
+// 查询购物车列表
+export function wxCartList() {
+  return request('/wx/cart/list', 'POST');
+}
+// 添加进购物车
+export function wxCartAdd(cart) {
+  return request('/wx/cart/add', 'POST', cart);
+}
+// 删除购物车中商品
+export function wxCartDel(cart) {
+  return request('/wx/cart/del', 'POST', cart);
+}
+// 修改购物车商品
+export function wxCartUpd(cart) {
+  return request('/wx/cart/upd', 'POST', cart);
+}

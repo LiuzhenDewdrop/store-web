@@ -20,26 +20,10 @@
         </view>
       </view>
     </view>
-    <block wx:for="{{store.promotionGoodsList}}" wx:for-item="promotion" wx:for-index="promoindex" wx:key="promoindex">
-      <view
-        class="promotion-wrap"
-        wx:if="{{handlePromotion.hasPromotion(promotion.promotionCode)}}"
-        bindtap="gotoBuyMore"
-        data-promotion="{{promotion}}"
-        data-store-id="{{store.storeId}}"
-      >
-        <view class="promotion-title">
-          <view class="promotion-icon">{{promotion.tag}}</view>
-          <view class="promotion-text">{{promotion.description}}</view>
-        </view>
-        <view class="promotion-action action-btn" hover-class="action-btn--active">
-          <view class="promotion-action-label"> {{promotion.isNeedAddOnShop == 1 ? '去凑单' : '再逛逛'}} </view>
-          <t-icon name="chevron-right" size="32rpx" color="#BBBBBB" />
-        </view>
-      </view>
+    <block wx:if="{{store.list.length>0}}">
       <view
         class="goods-item"
-        wx:for="{{promotion.goodsPromotionList}}"
+        wx:for="{{store.list}}"
         wx:for-item="goods"
         wx:for-index="gi"
         wx:key="extKey"
@@ -49,8 +33,8 @@
             <view class="check-wrap" catchtap="selectGoods" data-goods="{{goods}}">
               <t-icon
                 size="40rpx"
-                color="{{goods.isSelected ? '#FA4126' : '#BBBBBB'}}"
-                name="{{goods.isSelected ? 'check-circle-filled' : 'circle'}}"
+                color="{{goods.cart.selectStatus ? '#FA4126' : '#BBBBBB'}}"
+                name="{{goods.cart.selectStatus ? 'check-circle-filled' : 'circle'}}"
                 class="check"
               />
             </view>
@@ -65,14 +49,10 @@
                 catchspecs="specsTap"
                 catchclick="goGoodsDetail"
               >
-                <view slot="thumb-cover" class="stock-mask" wx:if="{{goods.shortageStock || goods.stockQuantity <= 3}}">
-                  仅剩{{goods.stockQuantity}}件
-                </view>
                 <view slot="append-body" class="goods-stepper">
-                  <view class="stepper-tip" wx:if="{{goods.shortageStock}}">库存不足</view>
                   <t-stepper
                     classname="stepper-info"
-                    value="{{goods.quantity}}"
+                    value="{{goods.cart.quantity}}"
                     min="{{1}}"
                     max="{{999}}"
                     data-goods="{{goods}}"
@@ -89,12 +69,6 @@
           </view>
           <view slot="right" class="swiper-right-del" bindtap="deleteGoods" data-goods="{{goods}}"> 删除 </view>
         </swipeout>
-      </view>
-      <view
-        class="promotion-line-wrap"
-        wx:if="{{handlePromotion.hasPromotion(promotion.promotionCode) && promoindex != (store.promotionGoodsList.length - 2)}}"
-      >
-        <view class="promotion-line" />
       </view>
     </block>
     <block wx:if="{{store.shortageGoodsList.length>0}}">
@@ -121,8 +95,8 @@
                 catchspecs="specsTap"
                 catchclick="goGoodsDetail"
               >
-                <view slot="thumb-cover" class="no-storage-mask" wx:if="{{goods.stockQuantity <=0}}">
-                  <view class="no-storage-content">无货</view>
+                <view slot="thumb-cover" class="no-storage-mask">
+                  <view class="no-storage-content">已下架</view>
                 </view>
               </goods-card>
             </view>
@@ -130,21 +104,16 @@
           <view slot="right" class="swiper-right-del" bindtap="deleteGoods" data-goods="{{goods}}"> 删除 </view>
         </swipeout>
       </view>
-      <view
-        class="promotion-line-wrap"
-        wx:if="{{handlePromotion.hasPromotion(promotion.promotionCode) && promoindex != (store.promotionGoodsList.length - 2)}}"
-      >
-        <view class="promotion-line" />
-      </view>
     </block>
   </view>
 </view>
 <specs-popup
   show="{{isShowSpecs}}"
-  title="{{currentGoods.title || ''}}"
-  price="{{currentGoods.price || ''}}"
-  thumb="{{utils.imgCut(currentGoods.thumb, 180, 180)}}"
-  specs="{{currentGoods.specs || []}}"
+  itemName="{{currentGoods.item.itemName || ''}}"
+  salePrice="{{currentGoods.spec.salePrice || 0}}"
+  picUrl="{{utils.imgCut(currentGoods.spec.picUrl, 180, 180)}}"
+  specName="{{currentGoods.spec.specName || ''}}"
+  itemStatus="{{currentGoods.cart.itemStatus || 1}}"
   zIndex="{{11001}}"
   bindclose="hideSpecsPopup"
 />

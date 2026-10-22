@@ -199,22 +199,37 @@ Page({
     // this.handlePopupHide();
   },
 
-  async getDetail(spuId, tab) {
+  async getDetail(spuId, tab, specId, quantity) {
+    // 如果是点进来带数据的，需要刷一下数据
+    let refresh = !isNaN(specId) && !isNaN(quantity);
     if (!isNaN(tab)) {
       Promise.all([fetchGood(tab, spuId)]).then((res) => {
         const [details] = res;
         details.images = details.picList.map(a=>a.picUrl);
-        const primaryImage = details.item.itemImage;
-        const soldUnitNum = details.item.soldUnitNum;
-        const salePrice = details.specList.reduce((min, obj) => {
-          return (!min || obj.salePrice < min.salePrice) ? obj : min;
-        }, null).salePrice;
         this.setData({
           details,
-          salePrice: salePrice ? parseInt(salePrice) : 0,
-          primaryImage,
-          soldUnitNum,
+          primaryImage: details.item.itemImage,
+          soldUnitNum: details.item.soldUnitNum,
         });
+        if (!refresh) {
+          const salePrice = details.specList.reduce((min, obj) => {
+            return (!min || obj.salePrice < min.salePrice) ? obj : min;
+          }, null).salePrice;
+          this.setData({
+            salePrice: salePrice ? parseInt(salePrice) : 0,
+          });
+        } else {
+          let selectedSku = details.specList.find(item => item.id === specId);
+          let selectedAttrStr = ` 件, ${selectedSku.specName}`;
+          this.setData({
+            buyNum: quantity,
+            selectedAttrStr: selectedAttrStr,
+            selectItem: selectedSku,
+            selectSkuSellsPrice: selectedSku.salePrice*quantity,
+            salePrice: selectedSku.salePrice*quantity,
+            specImg: selectedSku.picUrl ? selectedSku.picUrl : primaryImage,
+          });
+        }
       });
       return;
     }  // if end: !isNaN 
@@ -229,18 +244,30 @@ Page({
     }
     const details = res.data;
     details.images = details.picList.map(a=>a.picUrl);
-    const primaryImage = details.item.itemImage;
-    const soldUnitNum = details.item.soldUnitNum;
-    const salePrice = details.specList.reduce((min, obj) => {
-      return (!min || obj.salePrice < min.salePrice) ? obj : min;
-    }, null).salePrice;
     this.setData({
       details,
-      salePrice: salePrice ? parseInt(salePrice) : 0,
-      primaryImage,
-      soldUnitNum,
+      primaryImage: details.item.itemImage,
+      soldUnitNum: details.item.soldUnitNum,
     });
-    
+    if (!refresh) {
+      const salePrice = details.specList.reduce((min, obj) => {
+        return (!min || obj.salePrice < min.salePrice) ? obj : min;
+      }, null).salePrice;
+      this.setData({
+        salePrice: salePrice ? parseInt(salePrice) : 0,
+      });
+    } else {
+      let selectedSku = details.specList.find(item => item.id === specId);
+      let selectedAttrStr = ` 件, ${selectedSku.specName}`;
+      this.setData({
+        buyNum: quantity,
+        selectedAttrStr: selectedAttrStr,
+        selectItem: selectedSku,
+        selectSkuSellsPrice: selectedSku.salePrice*quantity,
+        salePrice: selectedSku.salePrice*quantity,
+        specImg: selectedSku.picUrl ? selectedSku.picUrl : primaryImage,
+      });
+    }
   },
 
 
@@ -262,12 +289,14 @@ Page({
 
 
   onLoad(query) {
-    const { spuId, tab } = query;
+    const { spuId, tab, specId, quantity } = query;
     const tabIndex = parseInt(tab);
+    let specIdNum = parseInt(specId);
+    let quantityNum = parseInt(quantity);
     this.setData({
       spuId: spuId,
       tab: tabIndex,
     });
-    this.getDetail(spuId, tabIndex);
+    this.getDetail(spuId, tabIndex, specIdNum, quantityNum);
   },
 });

@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.wur7.store.mapper.ShopCartMapper;
 import com.wur7.store.mapper.ShopCustomerMapper;
 import com.wur7.store.mapper.ShopItemMapper;
 import com.wur7.store.mapper.ShopItemPicMapper;
@@ -38,4 +39,6 @@ public class MapperSupport {
 	public ShopItemPicMapper shopItemPicMapper;
 	@Resource
 	public ShopCustomerMapper shopCustomerMapper;
+	@Resource
+	public ShopCartMapper shopCartMapper;
 }

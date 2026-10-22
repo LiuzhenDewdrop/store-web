@@ -37,7 +37,7 @@ public class WxCategoryController extends BasicController {
 	@RequestMapping(value = "/base")
 	public IReturnBean<List<SysItemCategory>> base(HttpServletRequest request) {
 		try {
-			return IReturnBean.success(sysItemCategoryService.findActivityBase());
+			return sysItemCategoryService.findActivityBase();
 		} catch (Exception e) {
 			log.error("查询一级分类列表 error:", e);
 			return IReturnBean.error();
@@ -57,7 +57,7 @@ public class WxCategoryController extends BasicController {
 			if (category == null || category.getId() == null) {
 				return IReturnBean.fail("查不到此分类");
 			}
-			return IReturnBean.success(sysItemCategoryService.findActivityDetail(category.getId()));
+			return sysItemCategoryService.findActivityDetail(category.getId());
 		} catch (Exception e) {
 			log.error("查询分类详情 error:", e);
 			return IReturnBean.error();

@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.wur7.store.bean.IReturnBean;
 import com.wur7.store.entity.ShopItem;
 import com.wur7.store.entity.SysItemCategory;
 import com.wur7.store.web.bean.response.CategoryDetailResp;
@@ -22,11 +23,11 @@ public class SysItemCategoryService {
 	@Resource
 	private MapperSupport mapperSupport;
 	
-	public List<SysItemCategory> findByPid(Integer pId) {
-		return mapperSupport.sysItemCategoryMapper.findByPid(pId);
+	public IReturnBean<List<SysItemCategory>> findByPid(Integer pId) {
+		return IReturnBean.success(mapperSupport.sysItemCategoryMapper.findByPid(pId));
 	}
 	
-	public List<SysItemCategory> findActivityBase() {
+	public IReturnBean<List<SysItemCategory>> findActivityBase() {
 		List<SysItemCategory> resultList = new ArrayList<>();
 		SysItemCategory cat1 = Category.toEntity(Category.ACTIVITY);
 		resultList.add(cat1);
@@ -37,10 +38,10 @@ public class SysItemCategoryService {
 			SysItemCategory cat = mapperSupport.sysItemCategoryMapper.selectByPrimaryKey(id);
 			resultList.add(cat);
 		}
-		return resultList;
+		return IReturnBean.success(resultList);
 	}
 
-	public List<CategoryDetailResp> findActivityDetail(Integer pid) {
+	public IReturnBean<List<CategoryDetailResp>> findActivityDetail(Integer pid) {
 		List<CategoryDetailResp> resultList = new ArrayList<>();
 		Category c = Category.fromId(pid);
 		if (c != null) {
@@ -49,7 +50,7 @@ public class SysItemCategoryService {
 			
 			CategoryDetailResp detailResp = new CategoryDetailResp(cat, itemList);
 			resultList.add(detailResp);
-			return resultList;
+			return IReturnBean.success(resultList);
 		}
 		List<ShopItem> itemList = mapperSupport.shopItemMapper.findByCategory1(pid);
 		Map<Integer, List<ShopItem>> map = itemList.stream()
@@ -62,6 +63,6 @@ public class SysItemCategoryService {
 			SysItemCategory cat = mapperSupport.sysItemCategoryMapper.selectByPrimaryKey(entry.getKey());
 			resultList.add(new CategoryDetailResp(cat, entry.getValue()));
 		}
-		return resultList;
+		return IReturnBean.success(resultList);
 	}
 }

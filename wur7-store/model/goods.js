@@ -24,8 +24,9 @@ export function getGoodItem(tab, ID = 0) {
     case 0:
       return genCourse(ID);
     case 1:
+      return genCourse(ID);
+    case 2:
       return genGood(ID);
-
     default:
       return genCourse(ID);
   }

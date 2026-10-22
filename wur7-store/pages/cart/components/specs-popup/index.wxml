@@ -5,7 +5,7 @@
       <view class="section">
         <view class="title">已选规格</view>
         <view class="options">
-          <view wx:for="{{specs}}" wx:for-item="spec" wx:key="spec" class="option">{{spec}} </view>
+          <view>{{specName}} </view>
         </view>
       </view>
     </view>

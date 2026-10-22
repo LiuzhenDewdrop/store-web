@@ -22,16 +22,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("wx")
-public class WxLoginController {
+public class WxLoginController extends WxBasicController {
 
     @Autowired
-    private WxLoginService customerService;
+    private WxLoginService wxLoginService;
 
     // 微信一键登录接口
     @PostMapping("/login")
     public IReturnBean<WxLoginResponse> login(@RequestBody WxLoginRequest request) {
         try {
-            WxLoginResponse response = customerService.login(request);
+            WxLoginResponse response = wxLoginService.login(request);
             return IReturnBean.success(response);
         } catch (Exception e) {
         	log.error("wx login error", e);
@@ -43,8 +43,7 @@ public class WxLoginController {
     @GetMapping("/info")
     public IReturnBean<ShopCustomer> getUserInfo(HttpServletRequest request) {
         try {
-			String token = request.getHeader("token");
-			ShopCustomer customer = customerService.getCustomerByToken(token);
+			ShopCustomer customer = getWxLoginUser(request);
 			if (customer == null) {
 				return IReturnBean.unlogin();
 			}
@@ -60,7 +59,7 @@ public class WxLoginController {
     public IReturnBean logout(HttpServletRequest request) {
 		try {
 			String token = request.getHeader("token");
-			customerService.logout(token);
+			wxLoginService.logout(token);
 			return IReturnBean.success();
 		} catch (Exception e) {
 			log.error("wx logout error", e);
@@ -77,12 +76,11 @@ public class WxLoginController {
     @PostMapping("/update")
     public IReturnBean<ShopCustomer> updateInfo(@RequestBody ShopCustomer customer, HttpServletRequest request) {
 		try {
-			String token = request.getHeader("token");
-			ShopCustomer currentUser = customerService.getCustomerByToken(token);
+			ShopCustomer currentUser = getWxLoginUser(request);
 			if (currentUser == null) {
 				return IReturnBean.unlogin();
 			}
-			ShopCustomer updated = customerService.updateCustomerInfo(currentUser.getId(),
+			ShopCustomer updated = wxLoginService.updateCustomerInfo(currentUser.getId(),
 					customer.getNickname(), null, null, customer.getGender());
 			return IReturnBean.success(updated);
 		} catch (Exception e) {
@@ -95,28 +93,27 @@ public class WxLoginController {
     @PostMapping("/uploadAvatar")
     public IReturnBean<String> uploadAvatar(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
     	try {
-    		String token = request.getHeader("token");
-    		ShopCustomer currentUser = customerService.getCustomerByToken(token);
+    		ShopCustomer currentUser = getWxLoginUser(request);
     		if (currentUser == null) {
     			return IReturnBean.unlogin();
     		}
-    		return customerService.updateAvatar(currentUser.getId(), file);
+    		return wxLoginService.updateAvatar(currentUser.getId(), file);
     	} catch (Exception e) {
     		log.error("upload avatar error", e);
     		return IReturnBean.fail("头像上传失败：" + e.getMessage());
     	}
     }
     
-    // 通过微信code绑定手机号
+    // 通过微信code绑定手机号 todo 暂时没用
     @PostMapping("/bindPhone")
     public IReturnBean<String> bindPhone(@RequestBody BindPhoneRequest req, HttpServletRequest request) {
     	try {
     		String token = request.getHeader("token");
-    		ShopCustomer currentUser = customerService.getCustomerByToken(token);
+    		ShopCustomer currentUser = wxLoginService.getCustomerByToken(token);
     		if (currentUser == null) {
     			return IReturnBean.unlogin();
     		}
-    		return customerService.bindPhoneByCode(currentUser.getId(), req.getCode());
+    		return wxLoginService.bindPhoneByCode(currentUser.getId(), req.getCode());
     	} catch (Exception e) {
     		log.error("bind phone error", e);
     		return IReturnBean.fail("绑定手机号失败：" + e.getMessage());

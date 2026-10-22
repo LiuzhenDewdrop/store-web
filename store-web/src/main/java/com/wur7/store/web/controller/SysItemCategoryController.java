@@ -39,8 +39,7 @@ public class SysItemCategoryController extends BasicController {
 	@RequiresPermissions("shop:item:view")
 	public IReturnBean<List<SysItemCategory>> category(Integer pId) {
 		try {
-			List<SysItemCategory> result = sysItemCategoryService.findByPid(pId);
-			return IReturnBean.success(result);
+			return sysItemCategoryService.findByPid(pId);
 		} catch (Exception e) {
 			log.error("查询商品列表 error:", e);
 			return IReturnBean.error();

@@ -4,7 +4,11 @@ import { fetchCartGroupData } from '../../services/cart/cart';
 
 Page({
   data: {
-    cartGroupData: null,
+    storeGoods: [],
+    isNotEmpty: false,
+    isAllSelected: false,
+    selectedGoodsCount: 0,
+    totalAmount: 0,
   },
 
   // 调用自定义tabbar的init函数，使页面与tabbar激活状态保持一致
@@ -13,63 +17,54 @@ Page({
   },
 
   onLoad() {
-    this.refreshData();
+    this.getCartGroupData().then((res) => {
+      const { storeGoods } = this.data; 
+      let selectedGoodsCount = 0;
+      let totalAmount = 0;
+      let isEmpty = true;
+      const carts = res.data;
+      for (const cart of carts) {
+        const store = {};
+        store.isSelected = true; // 该门店已加购商品是否全选
+        store.storeName = cart[0].item.shopName;
+        store.storeId = cart[0].item.shopId;
+        store.shortageGoodsList = []; 
+        store.list = cart.filter((goods) => {
+          // 统计是否全选
+          if (goods.cart.selectStatus === 0) {
+            store.isSelected = false;
+          }
+          if (goods.cart.itemStatus === 1) {
+            selectedGoodsCount += goods.cart.quantity;
+            totalAmount += goods.cart.quantity * goods.spec.salePrice;
+          } else {
+            store.shortageGoodsList.push(goods);
+          }
+          return goods.cart.itemStatus === 1;
+        });
+        if (store.list.length > 0) {
+          isEmpty = false;
+        }
+        storeGoods.push(store);
+      }
+      this.setData({ 
+        storeGoods,
+        isNotEmpty: !isEmpty,
+        totalAmount: totalAmount, 
+        selectedGoodsCount: selectedGoodsCount,
+       });
+    });
   },
 
   refreshData() {
-    this.getCartGroupData().then((res) => {
-      let isEmpty = true;
-      const cartGroupData = res.data;
-      // 一些组件中需要的字段可能接口并没有返回，或者返回的数据结构与预期不一致，需要在此先对数据做一些处理
-      // 统计门店下加购的商品是否全选、是否存在缺货/无货
-      for (const store of cartGroupData.storeGoods) {
-        store.isSelected = true; // 该门店已加购商品是否全选
-        store.storeStockShortage = false; // 该门店已加购商品是否存在库存不足
-        if (!store.shortageGoodsList) {
-          store.shortageGoodsList = []; // 该门店已加购商品如果库存为0需单独分组
-        }
-        // for (const activity of store.promotionGoodsList) {
-        //   activity.goodsPromotionList = activity.goodsPromotionList.filter((goods) => {
-        //     goods.originPrice = undefined;
-
-        //     // 统计是否有加购数大于库存数的商品
-        //     if (goods.quantity > goods.stockQuantity) {
-        //       store.storeStockShortage = true;
-        //     }
-        //     // 统计是否全选
-        //     if (!goods.isSelected) {
-        //       store.isSelected = false;
-        //     }
-        //     // 库存为0（无货）的商品单独分组
-        //     if (goods.stockQuantity > 0) {
-        //       return true;
-        //     }
-        //     store.shortageGoodsList.push(goods);
-        //     return false;
-        //   });
-
-        //   if (activity.goodsPromotionList.length > 0) {
-        //     isEmpty = false;
-        //   }
-        // }
-        if (store.shortageGoodsList.length > 0) {
-          isEmpty = false;
-        }
-      }
-      cartGroupData.invalidGoodItems = cartGroupData.invalidGoodItems.map((goods) => {
-        goods.originPrice = undefined;
-        return goods;
-      });
-      cartGroupData.isNotEmpty = !isEmpty;
-      this.setData({ cartGroupData });
-    });
+    
   },
 
   findGoods(spuId, skuId) {
     let currentStore;
     let currentActivity;
     let currentGoods;
-    const { storeGoods } = this.data.cartGroupData;
+    const { storeGoods } = this.data;
     for (const store of storeGoods) {
       for (const activity of store.promotionGoodsList) {
         for (const goods of activity.goodsPromotionList) {
@@ -95,42 +90,30 @@ Page({
 
   // 注：实际场景时应该调用接口获取购物车数据
   getCartGroupData() {
-    const { cartGroupData } = this.data;
-    if (!cartGroupData) {
+    const { storeGoods } = this.data;
+    if (storeGoods.length == 0) {
       return fetchCartGroupData();
     }
-    return Promise.resolve({ data: cartGroupData });
-  },
-
-  // 选择单个商品
-  // 注：实际场景时应该调用接口更改选中状态
-  selectGoodsService({ spuId, skuId, isSelected }) {
-    this.findGoods(spuId, skuId).currentGoods.isSelected = isSelected;
-    return Promise.resolve();
+    return Promise.resolve({ data: storeGoods });
   },
 
   // 全选门店
-  // 注：实际场景时应该调用接口更改选中状态
   selectStoreService({ storeId, isSelected }) {
-    const currentStore = this.data.cartGroupData.storeGoods.find((s) => s.storeId === storeId);
+    const currentStore = this.data.storeGoods.find((s) => s.storeId === storeId);
     currentStore.isSelected = isSelected;
-    currentStore.promotionGoodsList.forEach((activity) => {
-      activity.goodsPromotionList.forEach((goods) => {
-        goods.isSelected = isSelected;
+    currentStore.list.forEach((goods) => {
+        goods.cart.selectStatus = isSelected;
       });
-    });
     return Promise.resolve();
   },
 
   // 加购数量变更
-  // 注：实际场景时应该调用接口
   changeQuantityService({ spuId, skuId, quantity }) {
     this.findGoods(spuId, skuId).currentGoods.quantity = quantity;
     return Promise.resolve();
   },
 
   // 删除加购商品
-  // 注：实际场景时应该调用接口
   deleteGoodsService({ spuId, skuId }) {
     function deleteGoods(group) {
       for (const gindex in group) {
@@ -142,110 +125,78 @@ Page({
       }
       return -1;
     }
-    const { storeGoods, invalidGoodItems } = this.data.cartGroupData;
+    const { storeGoods } = this.data;
     for (const store of storeGoods) {
-      for (const activity of store.promotionGoodsList) {
-        if (deleteGoods(activity.goodsPromotionList) > -1) {
+        if (deleteGoods(store.list) > -1) {
           return Promise.resolve();
-        }
       }
       if (deleteGoods(store.shortageGoodsList) > -1) {
         return Promise.resolve();
       }
     }
-    if (deleteGoods(invalidGoodItems) > -1) {
-      return Promise.resolve();
-    }
     return Promise.reject();
   },
 
-  // 清空失效商品
-  // 注：实际场景时应该调用接口
-  clearInvalidGoodsService() {
-    this.data.cartGroupData.invalidGoodItems = [];
-    return Promise.resolve();
-  },
-
+  // 选一个
   onGoodsSelect(e) {
     const {
-      goods: { spuId, skuId },
+      goods,
       isSelected,
     } = e.detail;
-    const { currentGoods } = this.findGoods(spuId, skuId);
-    Toast({
-      context: this,
-      selector: '#t-toast',
-      message: `${isSelected ? '选择' : '取消'}"${
-        currentGoods.title.length > 5 ? `${currentGoods.title.slice(0, 5)}...` : currentGoods.title
-      }"`,
-      icon: '',
-    });
-    this.selectGoodsService({ spuId, skuId, isSelected }).then(() => this.refreshData());
+    const { storeGoods } = this.data;
+    const store = storeGoods.find(item => item.storeId === goods.item.shopId);
+    const selectedGoods = store.list.find(item => item.item.id === goods.item.id);
+    selectedGoods.cart.selectStatus = isSelected ? 1 : 0;
+    // todo api
+    // success
+    let selectedGoodsCount = this.data.selectedGoodsCount;
+    let totalAmount = this.data.totalAmount;
+    if (isSelected) {
+      selectedGoodsCount += selectedGoods.cart.quantity;
+      totalAmount += selectedGoods.cart.quantity * selectedGoods.spec.salePrice;
+    } else {
+      selectedGoodsCount -= selectedGoods.cart.quantity;
+      totalAmount -= selectedGoods.cart.quantity * selectedGoods.spec.salePrice;
+    }
+   
+    this.setData({
+      storeGoods,
+      selectedGoodsCount: selectedGoodsCount,
+      totalAmount: totalAmount,
+    })
   },
 
+  // 选店铺所有
   onStoreSelect(e) {
     const {
       store: { storeId },
       isSelected,
     } = e.detail;
-    this.selectStoreService({ storeId, isSelected }).then(() => this.refreshData());
+    const currentStore = this.data.storeGoods.find((s) => s.storeId === storeId);
+    currentStore.isSelected = isSelected;
+    currentStore.list.forEach((goods) => {
+        goods.cart.selectStatus = isSelected;
+      });
+    return Promise.resolve();
   },
 
+  // 改变数量，直接触发选中
   onQuantityChange(e) {
     const {
       goods: { spuId, skuId },
       quantity,
     } = e.detail;
     const { currentGoods } = this.findGoods(spuId, skuId);
-    const stockQuantity = currentGoods.stockQuantity > 0 ? currentGoods.stockQuantity : 0; // 避免后端返回的是-1
     // 加购数量超过库存数量
-    if (quantity > stockQuantity) {
-      // 加购数量等于库存数量的情况下继续加购
-      if (currentGoods.quantity === stockQuantity && quantity - stockQuantity === 1) {
-        Toast({
-          context: this,
-          selector: '#t-toast',
-          message: '当前商品库存不足',
-        });
-        return;
-      }
-      Dialog.confirm({
-        title: '商品库存不足',
-        content: `当前商品库存不足，最大可购买数量为${stockQuantity}件`,
-        confirmBtn: '修改为最大可购买数量',
-        cancelBtn: '取消',
-      })
-        .then(() => {
-          this.changeQuantityService({
-            spuId,
-            skuId,
-            quantity: stockQuantity,
-          }).then(() => this.refreshData());
-        })
-        .catch(() => {});
-      return;
-    }
     this.changeQuantityService({ spuId, skuId, quantity }).then(() => this.refreshData());
   },
 
-  goCollect() {
-    /** 活动肯定有一个活动ID，用来获取活动banner，活动商品列表等 */
-    const promotionID = '123';
-    wx.navigateTo({
-      url: `/pages/promotion/promotion-detail/index?promotion_id=${promotionID}`,
-    });
-  },
-
   goGoodsDetail(e) {
-    const { spuId, storeId } = e.detail.goods;
+    const { item, spec, cart } = e.detail.goods;
     wx.navigateTo({
-      url: `/pages/goods/details/index?spuId=${spuId}&storeId=${storeId}`,
+      // url: `/pages/goods/details/index?spuId=${item.id}&specId=${spec.id}&quantity=${cart.quantity}&tab=2`,
+      url: `/pages/goods/details/index?spuId=0&specId=${spec.id}&quantity=${cart.quantity}&tab=2`,
     });
-  },
-
-  clearInvalidGoods() {
-    // 实际场景时应该调用接口清空失效商品
-    this.clearInvalidGoodsService().then(() => this.refreshData());
   },
 
   onGoodsDelete(e) {
@@ -276,13 +227,11 @@ Page({
 
   onToSettle() {
     const goodsRequestList = [];
-    this.data.cartGroupData.storeGoods.forEach((store) => {
-      store.promotionGoodsList.forEach((promotion) => {
-        promotion.goodsPromotionList.forEach((m) => {
-          if (m.isSelected == 1) {
+    this.data.storeGoods.forEach((store) => {
+      store.list.forEach((m) => {
+          if (m.cart.selectStatus == 1) {
             goodsRequestList.push(m);
           }
-        });
       });
     });
     wx.setStorageSync('order.goodsRequestList', JSON.stringify(goodsRequestList));
