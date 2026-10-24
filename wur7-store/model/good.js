@@ -18,6 +18,7 @@ const allGoods = [
       deliveryThreshold: '',
       itemStatus: '',
       soldUnitNum: 1020,
+      salePrice: 29700,
     },
     spuId: '123456780',
     picList: [{

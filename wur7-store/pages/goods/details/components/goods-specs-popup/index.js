@@ -151,5 +151,12 @@ Component({
         buyNum,
       });
     },
+
+    handleShareHide() {
+      this.triggerEvent('closeSpecsPopup', {
+        show: false,
+      });
+    },
+
   },
 });

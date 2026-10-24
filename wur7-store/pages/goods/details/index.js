@@ -312,7 +312,7 @@ Page({
       });
       return new Promise((resolve) => {
         resolve(null); 
-      });;
+      });
     }
     // 登录的人可以分享出去
     const localUser = getLocalUserInfo();
@@ -327,21 +327,50 @@ Page({
     };
   },
 
+  onShareToTimeline() {
+    // 未登录不能分享
+    // if (!isLogin()) {
+    //   Toast({
+    //     context: this,
+    //     selector: '#t-toast',
+    //     message: '请登录后分享',
+    //     icon: '',
+    //     duration: 5000,
+    //   });
+    //   return new Promise((resolve) => {
+    //     resolve(null); 
+    //   });
+    // }
+    Toast({
+      context: this,
+      selector: '#t-toast',
+      message: '请点击右上角...分享到朋友圈吧~',
+      icon: '',
+      duration: 2000,
+    });
+  },
+
   openSharePopup() {
     // 未登录不能分享
-    // const token = wx.getStorageSync('token');
-    // if (!token) {
-    //   wx.showModal({
-    //     title: '提示',
-    //     content: '登录后才能分享哦',
-    //     success: (res) => {
-    //       if (res.confirm) {
-    //         wx.navigateTo({ url: '/pages/login/login' });
-    //       }
-    //     }
+    // if (!isLogin()) {
+    //   Toast({
+    //     context: this,
+    //     selector: '#t-toast',
+    //     message: '请登录后分享',
+    //     icon: '',
+    //     duration: 5000,
     //   });
-    //   return;
+    //   return new Promise((resolve) => {
+    //     resolve(null); 
+    //   });
     // }
+    // 有海报就直接发
+    if (this.data.posterPath) {
+      this.setData({
+        showSharePopup: true,
+      })
+      return
+    }
     // 生成海报
     this.fetchPoster(1, this.data.spuId);  // todo 改那个1
   },
@@ -376,7 +405,7 @@ Page({
 
   closeSharePopup() {
     this.setData({
-      showSharePopup: false 
+      showSharePopup: false, 
     });
   },
 

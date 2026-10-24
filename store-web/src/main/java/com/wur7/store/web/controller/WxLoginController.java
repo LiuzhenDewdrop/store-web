@@ -111,8 +111,6 @@ public class WxLoginController extends WxBasicController {
 		public void setCode(String code) { this.code = code; }
     }
 	
-	
-	
 	@PostMapping("/qrCode")
 	public IReturnBean<String> qrCode(@RequestBody WxLoginRequest request) {
 		try {

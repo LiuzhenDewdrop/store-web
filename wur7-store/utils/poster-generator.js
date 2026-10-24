@@ -34,7 +34,10 @@ export default class PosterGenerator {
       const imgInfo = await wx.getImageInfo({ src: imgUrl })
       const img = this.canvas.createImage()
       img.src = imgInfo.path
-      await new Promise(resolve => img.onload = resolve)
+      await new Promise((resolve, reject) => {
+        img.onload = resolve
+        img.onerror = reject
+      })
       return img
     }
     // 本地静态图片直接载入
@@ -68,7 +71,7 @@ export default class PosterGenerator {
   async exportTempFilePath() {
     return await wx.canvasToTempFilePath({
       canvas: this.canvas,
-      quality: 1
+      quality: 1,
     })
   }
 }
@@ -92,23 +95,16 @@ export async function generatePoster(canvasId, goodsInfo, qrCode) {
   // 2. 加载并绘制商品主图
   const goodsImage = await generator.preloadImage(goodsInfo.item.itemImage)
   ctx.drawImage(goodsImage, 50, 120, 650, 450)
-  // 给商品图添加圆角裁剪
-  ctx.beginPath()
-  ctx.roundRect(50, 120, 650, 450, 16)
-  ctx.clip()
-
   // 3. 绘制商品标题
   ctx.font = 'bold 40px Noto Sans SC'
   ctx.fillStyle = '#ffffff'
-  generator.drawWrapText(goodsInfo.item.itemName, 50, 620, 650, 60)
+  const y = generator.drawWrapText(goodsInfo.item.itemName, 50, 620, 650, 60)
 
   // 4. 绘制商品价格
   ctx.font = 'bold 56px Noto Sans SC'
   ctx.fillStyle = '#fef08a'
-  ctx.fillText(`¥${goodsInfo.item.salePrice}`, 50, 720)
-  ctx.font = '28px Noto Sans SC'
-  ctx.fillStyle = 'rgba(255,255,255,0.7)'
-  ctx.fillText(`市场价 ¥${goodsInfo.item.salePrice}`, 240, 725)
+  const pArr = priceFmt(goodsInfo.item.salePrice);
+  ctx.fillText(`¥${pArr[0]}.${pArr[1]}`, 50, y+20)
 
   // 5. 绘制底部区域：白色卡片 + 二维码
   ctx.fillStyle = '#ffffff'
@@ -126,7 +122,23 @@ export async function generatePoster(canvasId, goodsInfo, qrCode) {
   // 绘制小程序二维码
   const qrImg = await generator.preloadImage(qrCode)
   ctx.drawImage(qrImg, 550, 850, 140, 140)
-
   // 导出生成完成的海报
   return await generator.exportTempFilePath()
+}
+
+function priceFmt(priceInt) {
+  let price = parseFloat(priceInt);
+  const pArr = ['0', '00'];
+  if (isNaN(price)) {
+    return pArr
+  }
+  const isMinus = price < 0;
+  if (isMinus) {
+    price = -price;
+  }
+  price = Math.round(price * 10 ** 8) / 10 ** 8; // 恢复精度丢失
+  price = Math.ceil(price); // 向上取整
+  pArr[0] = price >= 100 ? `${price}`.slice(0, -2) : '0';
+  pArr[1] = `${price + 100}`.slice(-2);
+  return pArr;
 }

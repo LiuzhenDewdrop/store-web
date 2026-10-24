@@ -36,10 +36,10 @@
             <view class="btn-icon">
               <t-icon name="share" size="40rpx" color="#000" />
             <view class="share-text">分享</view>
+            </view>
           </view>
 
-          <t-popup visible="{{showSharePopup}}" placement="bottom" bind:visible-change="closeSharePopup"
-          bind:close="closeSharePopup">
+          <t-popup visible="{{showSharePopup}}" placement="bottom" bindtap="closeSharePopup">
             <view class="share-panel">
               <!-- 上部：海报 -->
               <view class="poster-area">
@@ -70,7 +70,6 @@
               <view class="cancel-btn" bindtap="closeSharePopup">取消</view>
             </view>
           </t-popup>
-        </view>
         </view>
       </view>
       <view class="goods-intro">{{intro}}</view>
@@ -141,5 +140,5 @@
 <canvas 
   type="2d" 
   id="goodsPosterCanvas" 
-  style="width: 750rpx; height: 1100rpx; position: fixed; left: -2000rpx; top: 0;"
+  style="width: 750px; height: 1100px; position: fixed; left: -9999px; top: 0; z-index: -1;"
 ></canvas>
