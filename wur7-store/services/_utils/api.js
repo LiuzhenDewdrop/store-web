@@ -26,10 +26,11 @@ export function wxItemDetail(id) {
 }
 
 // 查询商品详情
-export function wxQrCode(inviterId, spuId) {
+export function wxQrCode(inviterId, spuId, page) {
   return request('/wx/qrCode', 'POST', {
     inviterId: inviterId,
     spuId: spuId,
+    page: page,
   });
 }
 

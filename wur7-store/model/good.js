@@ -11,7 +11,7 @@ const allGoods = [
       shopName: '初始店铺',
       itemName: '白色短袖连衣裙荷叶边裙摆宽松韩版休闲纯白清爽优雅连衣裙',
       itemCode: '',
-      itemImage: 'https://tdesign.gtimg.com/miniprogram/template/retail/goods/nz-09a.png',
+      itemImage: 'https://5renqi.com/store-web/image/avatar/2026-10/09/Tz1QHB1791543859890.jpeg',
       itemType: 3,
       itemDetail: '',
       deliveryFee: '',

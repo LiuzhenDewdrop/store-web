@@ -116,10 +116,10 @@ public class WxLoginController extends WxBasicController {
 	@PostMapping("/qrCode")
 	public IReturnBean<String> qrCode(@RequestBody WxLoginRequest request) {
 		try {
-			return wxLoginService.qrCode(request.getInviterId(), request.getSpuId());
+			return wxLoginService.qrCode(request.getInviterId(), request.getSpuId(), request.getPage());
 		} catch (Exception e) {
 			log.error("wx login error", e);
-			return IReturnBean.fail("登录失败：" + e.getMessage());
+			return IReturnBean.fail("生成二维码失败：" + e.getMessage());
 		}
 	}
 }

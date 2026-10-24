@@ -38,13 +38,14 @@
             <view class="share-text">分享</view>
           </view>
 
-          <t-popup visible="{{showSharePopup}}" placement="bottom" bind:visible-change="closeSharePopup">
+          <t-popup visible="{{showSharePopup}}" placement="bottom" bind:visible-change="closeSharePopup"
+          bind:close="closeSharePopup">
             <view class="share-panel">
-              <!-- 上部：小程序码 -->
-              <view class="qr-area">
-                <image wx:if="{{qrCodeUrl}}" src="{{qrCodeUrl}}" mode="widthFix" class="qr-img" show-menu-by-longpress />
-                <view wx:else class="qr-loading">二维码生成中...</view>
-                <view class="qr-tip">长按识别 / 保存图片分享给好友</view>
+              <!-- 上部：海报 -->
+              <view class="poster-area">
+                <image wx:if="{{posterPath}}" src="{{posterPath}}" mode="widthFix" class="poster-img" show-menu-by-longpress />
+                <view wx:else class="poster-loading">海报生成中...</view>
+                <view class="poster-tip">长按识别 / 保存图片分享给好友</view>
               </view>
 
               <!-- 下部：三个按钮 -->
@@ -137,3 +138,8 @@
   </goods-specs-popup>
 </view>
 <t-toast id="t-toast" />
+<canvas 
+  type="2d" 
+  id="goodsPosterCanvas" 
+  style="width: 750rpx; height: 1100rpx; position: fixed; left: -2000rpx; top: 0;"
+></canvas>

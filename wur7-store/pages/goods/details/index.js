@@ -3,6 +3,7 @@ import { Toast } from 'tdesign-miniprogram';
 import { cdnBase } from '../../../config/index';
 
 import { wxItemDetail, wxQrCode } from '../../../services/_utils/api';
+import { generatePoster } from '../../../utils/poster-generator'
 import { isLogin, getLocalUserInfo } from '../../../utils/auth';
 
 import { fetchGood } from '../../../services/good/fetchGood';
@@ -71,7 +72,7 @@ Page({
     interval: 5000,
     soldUnitNum: 0, // 已售数量
     showSharePopup: false,
-    qrCodeUrl: '' // 小程序码图片地址
+    posterPath: '' // 海报
   },
 
   handlePopupHide() {
@@ -233,7 +234,7 @@ Page({
     }  // if end: !isNaN 
     const res = await wxItemDetail(spuId);
     if (res.code !== '0000') {
-      wx.showToast({
+      Toast({
         title: '查询失败',
         icon: 'error',
         message: res.msg,
@@ -341,59 +342,57 @@ Page({
     //   });
     //   return;
     // }
-    // 拉取带参小程序码
-    this.fetchQrCode();
-    this.setData({ showSharePopup: true });
+    // 生成海报
+    this.fetchPoster(1, this.data.spuId);  // todo 改那个1
   },
 
-  async fetchQrCode() {
-    const res = await wxQrCode(1, this.data.spuId); // todo 改那个1
-    if (res.code !== '0000') {
-      wx.showToast({
-        title: '查询失败',
-        icon: 'error',
-        message: res.msg,
-      });
-      return
+  async fetchPoster(inviterId, spuId, specId, quantity) {
+    wx.showLoading({ title: '海报生成中...' })
+    try {
+      // 拉取小程序码
+      const res = await wxQrCode(inviterId, spuId, specId, quantity, "pages/goods/detail"); 
+      if (res.code !== '0000') {
+        Toast({
+          title: '查询失败',
+          icon: 'error',
+          message: res.msg,
+        });
+        return
+      }
+      const qrRes = res.data;
+      // 把二维码转成本地临时路径避免绘制失败
+      const qrLocalPath = await wx.getImageInfo({ src: qrRes });
+      const posterRes = await generatePoster('goodsPosterCanvas', this.data.details, qrLocalPath.path);
+      this.setData({
+        showSharePopup: true,
+        posterPath: posterRes.tempFilePath
+      })
+    } catch (err) {
+      Toast({ title: '海报生成失败', icon: 'error' })
+    } finally {
+      wx.hideLoading()
     }
-    const data = res.data;
-    this.setData({
-      qrCodeUrl: data
-    });
   },
 
   closeSharePopup() {
-    this.setData({ 
+    this.setData({
       showSharePopup: false 
     });
   },
 
-  // 保存小程序码图片
-  onSaveImage() {
-    if (!this.data.qrCodeUrl) {
-      wx.showToast({ title: '二维码还未生成', icon: 'none' });
+  // 保存图片
+  async onSaveImage() {
+    if (!this.data.posterPath) {
+      Toast({ title: '图片还未生成', icon: 'none' });
       return;
     }
-    wx.downloadFile({
-      url: this.data.qrCodeUrl,
-      success: (res) => {
-        wx.saveImageToPhotosAlbum({
-          filePath: res.tempFilePath,
-          success: () => wx.showToast({ title: '已保存到相册' }),
-          fail: (err) => {
-            if (err.errMsg.indexOf('auth deny') > -1) {
-              wx.showModal({
-                title: '提示',
-                content: '需要您授权保存图片到相册',
-                success: (r) => {
-                  if (r.confirm) wx.openSetting();
-                }
-              });
-            }
-          }
-        });
-      }
-    });
+    // 先请求相册权限
+    const authRes = await wx.getSetting()
+    if (!authRes.authSetting['scope.writePhotosAlbum']) {
+      await wx.authorize({ scope: 'scope.writePhotosAlbum' })
+    }
+    await wx.saveImageToPhotosAlbum({ filePath: this.data.posterPath })
+    Toast({ title: '保存成功' })
   },
 
   onLoad(query) {

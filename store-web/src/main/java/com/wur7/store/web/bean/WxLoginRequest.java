@@ -10,4 +10,5 @@ public class WxLoginRequest {
     private String userInfoRaw;		// 用户信息JSON字符串（昵称头像）
 	private Integer inviterId;		// 邀请人的id
 	private Integer spuId;			// 商品id
+	private String page;			// 页面
 }
