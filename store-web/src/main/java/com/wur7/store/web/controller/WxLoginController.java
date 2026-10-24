@@ -31,27 +31,11 @@ public class WxLoginController extends WxBasicController {
     @PostMapping("/login")
     public IReturnBean<WxLoginResponse> login(@RequestBody WxLoginRequest request) {
         try {
-            WxLoginResponse response = wxLoginService.login(request);
-            return IReturnBean.success(response);
+            return wxLoginService.login(request);
         } catch (Exception e) {
         	log.error("wx login error", e);
             return IReturnBean.fail("登录失败：" + e.getMessage());
         }
-    }
-
-    // 获取当前登录用户信息
-    @GetMapping("/info")
-    public IReturnBean<ShopCustomer> getUserInfo(HttpServletRequest request) {
-        try {
-			ShopCustomer customer = getWxLoginUser(request);
-			if (customer == null) {
-				return IReturnBean.unlogin();
-			}
-			return IReturnBean.success(customer);
-		} catch (Exception e) {
-			log.error("wx info error", e);
-			return IReturnBean.fail("获取用户信息失败：" + e.getMessage());
-		}
     }
 
     // 退出登录
@@ -126,4 +110,16 @@ public class WxLoginController extends WxBasicController {
 		public String getCode() { return code; }
 		public void setCode(String code) { this.code = code; }
     }
+	
+	
+	
+	@PostMapping("/qrCode")
+	public IReturnBean<String> qrCode(@RequestBody WxLoginRequest request) {
+		try {
+			return wxLoginService.qrCode(request.getInviterId(), request.getSpuId());
+		} catch (Exception e) {
+			log.error("wx login error", e);
+			return IReturnBean.fail("登录失败：" + e.getMessage());
+		}
+	}
 }

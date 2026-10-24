@@ -2,6 +2,7 @@ package com.wur7.store.web.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
 
@@ -45,6 +46,22 @@ public class FileService {
 			}
 		}
 		file.transferTo(Paths.get(dirPath + "/" + filename));
+		return IReturnBean.success(basePath + serverPath + local + "/" + filename);
+	}
+	
+	public IReturnBean<String> saveQrCode(byte[] imageBytes) throws IOException {
+		String filename = StringUtil.randomString(6) + System.currentTimeMillis();
+		filename += ".jpeg";
+		String local = "qr_code/" + DateUtil.formatDate(new Date(), DateUtil.YYYY_MM) + "/" + DateUtil.formatDate(new Date(), DateUtil.DD);
+		String dirPath = localPath + local;
+		File dir = new File(dirPath);
+		if (!dir.exists() || !dir.isDirectory()) {
+			boolean mkdir = dir.mkdirs();
+			if (!mkdir) {
+				return IReturnBean.fail("本地存储失败，未能创建目录");
+			}
+		}
+		Files.write(Paths.get(dirPath + "/" + filename), imageBytes);
 		return IReturnBean.success(basePath + serverPath + local + "/" + filename);
 	}
 }

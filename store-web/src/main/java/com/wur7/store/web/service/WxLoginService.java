@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wur7.store.bean.IReturnBean;
+import com.wur7.store.constant.CommonConstant;
 import com.wur7.store.entity.ShopCustomer;
 import com.wur7.store.util.util.Base64;
 import com.wur7.store.web.bean.WxLoginRequest;
@@ -53,7 +55,7 @@ public class WxLoginService {
     private static String accessToken = null;
     private static long accessTokenExpireTime = 0;
 
-    public WxLoginResponse login(WxLoginRequest request) throws Exception {
+    public IReturnBean<WxLoginResponse> login(WxLoginRequest request) throws Exception {
 		// 用code请求微信接口获取openid和session_key
 		String wxUrl = String.format("https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code",
 				appid, secret, request.getCode());
@@ -73,12 +75,27 @@ public class WxLoginService {
             // 新用户自动注册
             customer = new ShopCustomer();
             customer.setOpenid(openid);
-            customer.setCreateTime(new Date());
-            customer.setStatus(1);
             customer.setGender(0);
         	customer.setCreateTime(new Date());
+            customer.setStatus(1);
+			customer.setDelStatus(CommonConstant.DEL_STATUS_EXIST);
+			// 新用户直接分上级, 没有的话分给公共账号作为上级
+			customer.setUpperId(123456789);		// todo 指定的上级是谁
+			if (request.getInviterId() != null) {
+				ShopCustomer upper = mapperSupport.shopCustomerMapper.selectByPrimaryKey(request.getInviterId());
+				if (upper != null) {
+					customer.setUpperId(request.getInviterId());
+				}
+			}
             mapperSupport.shopCustomerMapper.insert(customer);
-        }
+        } else if (customer.getStatus() == CommonConstant.NO) {
+			// 禁用
+			return IReturnBean.fail("无法登录");
+		} else if (customer.getDelStatus() == CommonConstant.DEL_STATUS_DEL) {
+			// 删除、注销
+			customer.setDelStatus(CommonConstant.DEL_STATUS_EXIST);
+			mapperSupport.shopCustomerMapper.updateByPrimaryKeySelective(customer);
+		}
         
         // 缓存session_key
         if (sessionKey != null) {
@@ -97,7 +114,7 @@ public class WxLoginService {
         response.setAvatarUrl(customer.getAvatar());
         response.setPhone(customer.getPhone());
         response.setGender(customer.getGender());
-        return response;
+        return IReturnBean.success(response);
     }
 
     public ShopCustomer getCustomerByToken(String token) {
@@ -214,4 +231,37 @@ public class WxLoginService {
         byte[] resultByte = cipher.doFinal(encryptedByte);
         return new String(resultByte, StandardCharsets.UTF_8);
     }
+	
+	public IReturnBean<String> qrCode(Integer inviterId, Integer id) throws IOException {
+		String token = getAccessToken();
+		String url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" + token;
+		JSONObject body = new JSONObject();
+		body.put("scene", "inviterId=" + inviterId + "&spuId=" + id);		// scene 最长 32 字符
+		body.put("page", "pages/index/index");
+		body.put("check_path", false);			// todo 联调期 false，上线后可改 true
+		body.put("width", 430);
+		body.put("auto_color", false);
+		body.put("is_hyaline", false);
+		JSONObject lineColor = new JSONObject();
+		lineColor.put("r", 0);
+		lineColor.put("g", 0);
+		lineColor.put("b", 0);
+		body.put("line_color", lineColor);
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<JSONObject> request = new HttpEntity<>(body, headers);
+		ResponseEntity<byte[]> resp = restTemplate.exchange(
+				url,
+				HttpMethod.POST,
+				request,
+				byte[].class
+		);
+		if (resp.getStatusCode().is2xxSuccessful()) {
+			byte[] imageBytes = resp.getBody();
+			return fileService.saveQrCode(imageBytes);
+		}
+		return IReturnBean.fail();
+	}
+	
 }

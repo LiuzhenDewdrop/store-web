@@ -1,7 +1,20 @@
-import { wxLogin, getWxUserInfo } from '../services/_utils/api';
+import { wxLogin } from '../services/_utils/api';
 
 const TOKEN_KEY = 'WX_LOGIN_TOKEN';
 const USER_INFO_KEY = 'WX_USER_INFO';
+const INVITER_ID = 'INVITER_ID';
+
+// 存储邀请人
+export function setInviter(inviterId) {
+  if (getInviter()) {
+    return;
+  }
+  wx.setStorageSync(INVITER_ID, inviterId);
+}
+
+export function getInviter() {
+  return wx.getStorageSync(INVITER_ID) || 0;
+}
 
 // 存储登录信息
 export function setLoginInfo(token, userInfo) {
@@ -37,7 +50,7 @@ export function doWxLogin() {
       success: async (res) => {
         if (res.code) {
           try {
-            const result = await wxLogin(res.code);
+            const result = await wxLogin(res.code, getInviter());
             if (result.code === '0000') {
               setLoginInfo(result.data.token, result.data);
               resolve(result.data);

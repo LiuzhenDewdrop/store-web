@@ -26,12 +26,50 @@
       <view class="goods-title">
         <view class="goods-name">{{details.item.itemName}}</view>
         <view class="goods-tag">
-          <t-button open-type="share" t-class="shareBtn" variant="text">
+          <!-- <t-button open-type="share" t-class="shareBtn" variant="text">
             <view class="btn-icon">
               <t-icon name="share" size="40rpx" color="#000" />
               <view class="share-text">分享</view>
             </view>
-          </t-button>
+          </t-button> -->
+          <view class="share-btn" bindtap="openSharePopup">
+            <view class="btn-icon">
+              <t-icon name="share" size="40rpx" color="#000" />
+            <view class="share-text">分享</view>
+          </view>
+
+          <t-popup visible="{{showSharePopup}}" placement="bottom" bind:visible-change="closeSharePopup">
+            <view class="share-panel">
+              <!-- 上部：小程序码 -->
+              <view class="qr-area">
+                <image wx:if="{{qrCodeUrl}}" src="{{qrCodeUrl}}" mode="widthFix" class="qr-img" show-menu-by-longpress />
+                <view wx:else class="qr-loading">二维码生成中...</view>
+                <view class="qr-tip">长按识别 / 保存图片分享给好友</view>
+              </view>
+
+              <!-- 下部：三个按钮 -->
+              <view class="action-area">
+                <view class="action-item">
+                  <button open-type="share" class="share-native-btn">
+                    <t-icon name="share" size="48rpx" color="#333" />
+                    <view class="action-label">发送给朋友</view>
+                  </button>
+                </view>
+                <view class="action-item" bindtap="onShareToTimeline">
+                  <t-icon name="image" size="48rpx" color="#333" />
+                  <view class="action-label">分享到朋友圈</view>
+                </view>
+                <view class="action-item" bindtap="onSaveImage">
+                  <t-icon name="download" size="48rpx" color="#333" />
+                  <view class="action-label">保存图片</view>
+                </view>
+              </view>
+
+              <!-- 取消 -->
+              <view class="cancel-btn" bindtap="closeSharePopup">取消</view>
+            </view>
+          </t-popup>
+        </view>
         </view>
       </view>
       <view class="goods-intro">{{intro}}</view>

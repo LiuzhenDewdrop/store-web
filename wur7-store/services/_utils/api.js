@@ -1,15 +1,11 @@
 import { RequestConfig, request } from './request';
 
 // 微信一键登录
-export function wxLogin(code) {
+export function wxLogin(code, inviterId) {
   return request('/wx/login', 'POST', {
-    code: code
+    code: code,
+    inviterId: inviterId,
   });
-}
-
-// 获取登录用户信息
-export function getWxUserInfo() {
-  return request('/wx/info', 'GET');
 }
 
 // 退出登录
@@ -28,6 +24,15 @@ export function wxItemDetail(id) {
     id: id
   });
 }
+
+// 查询商品详情
+export function wxQrCode(inviterId, spuId) {
+  return request('/wx/qrCode', 'POST', {
+    inviterId: inviterId,
+    spuId: spuId,
+  });
+}
+
 
 // 查询一级分类
 export function wxCategoryBase() {

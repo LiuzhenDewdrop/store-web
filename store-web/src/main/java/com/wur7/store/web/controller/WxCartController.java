@@ -34,7 +34,7 @@ public class WxCartController extends WxBasicController {
 	 * @return
 	 */
 	@RequestMapping(value = "/list")
-	public IReturnBean<List<ShopCartResp>> list(HttpServletRequest request) {
+	public IReturnBean<List<List<ShopCartResp>>> list(HttpServletRequest request) {
 		try {
 			ShopCustomer currentUser = getWxLoginUser(request);
 			if (currentUser == null) {

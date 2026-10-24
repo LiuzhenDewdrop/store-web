@@ -2,7 +2,8 @@
 import { Toast } from 'tdesign-miniprogram';
 import { cdnBase } from '../../../config/index';
 
-import { wxItemDetail } from '../../../services/_utils/api';
+import { wxItemDetail, wxQrCode } from '../../../services/_utils/api';
+import { isLogin, getLocalUserInfo } from '../../../utils/auth';
 
 import { fetchGood } from '../../../services/good/fetchGood';
 
@@ -69,6 +70,8 @@ Page({
     duration: 500,
     interval: 5000,
     soldUnitNum: 0, // 已售数量
+    showSharePopup: false,
+    qrCodeUrl: '' // 小程序码图片地址
   },
 
   handlePopupHide() {
@@ -117,9 +120,6 @@ Page({
   chooseSpecItem(e) {
     // const { specList } = this.data.details;
     const { selectedSku } = e.detail;
-    // this.setData({
-    //   isAllSelectedSku,
-    // });
     const { primaryImage } = this.data;
     let selectedAttrStr = ` 件, ${selectedSku.specName}`;
     this.selectSpecsName(selectedAttrStr);
@@ -150,8 +150,6 @@ Page({
       });
     }
   },
-
-
 
   addCart() {
     // todo 加入购物车
@@ -272,7 +270,21 @@ Page({
 
 
   onShareAppMessage() {
-    // 自定义的返回信息
+    // 未登录不能分享
+    if (!isLogin()) {
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '请登录后分享',
+        icon: '',
+        duration: 5000,
+      });
+      return new Promise((resolve) => {
+        resolve(null); 
+      });;
+    }
+    // 登录的人可以分享出去
+    const localUser = getLocalUserInfo();
     const { selectedAttrStr } = this.data;
     let shareSubTitle = '';
     if (selectedAttrStr.indexOf('件') > -1) {
@@ -280,19 +292,115 @@ Page({
       shareSubTitle = selectedAttrStr.slice(count + 1, selectedAttrStr.length);
     }
     const customInfo = {
-      imageUrl: this.data.details.primaryImage,
-      title: this.data.details.title + shareSubTitle,
-      path: `/pages/goods/details/index?spuId=${this.data.spuId}`,
+      imageUrl: this.data.details.item.itemImage,
+      title: this.data.details.item.itemName + shareSubTitle,
+      path: `/pages/goods/details/index?spuId=${this.data.spuId}&inviterId=${localUser.id}&specIdNum=${this.data.selectItem.id}&quantity=${this.data.buyNum}`,
     };
     return customInfo;
   },
 
+  onShareTimeline() {
+     // 未登录不能分享
+     if (!isLogin()) {
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '请登录后分享',
+        icon: '',
+        duration: 5000,
+      });
+      return new Promise((resolve) => {
+        resolve(null); 
+      });;
+    }
+    // 登录的人可以分享出去
+    const localUser = getLocalUserInfo();
+    let shareSubTitle = '';
+    if (selectedAttrStr.indexOf('件') > -1) {
+      const count = selectedAttrStr.indexOf('件');
+      shareSubTitle = selectedAttrStr.slice(count + 1, selectedAttrStr.length);
+    }
+    return {
+      title: this.data.details.item.itemName + shareSubTitle,
+      query: `spuId=${this.data.spuId}&inviterId=${localUser.id}&specIdNum=${this.data.selectItem.id}&quantity=${this.data.buyNum}`
+    };
+  },
+
+  openSharePopup() {
+    // 未登录不能分享
+    // const token = wx.getStorageSync('token');
+    // if (!token) {
+    //   wx.showModal({
+    //     title: '提示',
+    //     content: '登录后才能分享哦',
+    //     success: (res) => {
+    //       if (res.confirm) {
+    //         wx.navigateTo({ url: '/pages/login/login' });
+    //       }
+    //     }
+    //   });
+    //   return;
+    // }
+    // 拉取带参小程序码
+    this.fetchQrCode();
+    this.setData({ showSharePopup: true });
+  },
+
+  async fetchQrCode() {
+    const res = await wxQrCode(1, this.data.spuId); // todo 改那个1
+    if (res.code !== '0000') {
+      wx.showToast({
+        title: '查询失败',
+        icon: 'error',
+        message: res.msg,
+      });
+      return
+    }
+    const data = res.data;
+    this.setData({
+      qrCodeUrl: data
+    });
+  },
+
+  closeSharePopup() {
+    this.setData({ 
+      showSharePopup: false 
+    });
+  },
+
+  // 保存小程序码图片
+  onSaveImage() {
+    if (!this.data.qrCodeUrl) {
+      wx.showToast({ title: '二维码还未生成', icon: 'none' });
+      return;
+    }
+    wx.downloadFile({
+      url: this.data.qrCodeUrl,
+      success: (res) => {
+        wx.saveImageToPhotosAlbum({
+          filePath: res.tempFilePath,
+          success: () => wx.showToast({ title: '已保存到相册' }),
+          fail: (err) => {
+            if (err.errMsg.indexOf('auth deny') > -1) {
+              wx.showModal({
+                title: '提示',
+                content: '需要您授权保存图片到相册',
+                success: (r) => {
+                  if (r.confirm) wx.openSetting();
+                }
+              });
+            }
+          }
+        });
+      }
+    });
+  },
 
   onLoad(query) {
     const { spuId, tab, specId, quantity } = query;
     const tabIndex = parseInt(tab);
-    let specIdNum = parseInt(specId);
-    let quantityNum = parseInt(quantity);
+    const specIdNum = parseInt(specId);
+    const quantityNum = parseInt(quantity);
     this.setData({
       spuId: spuId,
       tab: tabIndex,

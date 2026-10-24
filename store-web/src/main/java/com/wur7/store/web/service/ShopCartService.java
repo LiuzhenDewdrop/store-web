@@ -27,7 +27,6 @@ public class ShopCartService {
 	
 	public IReturnBean<List<List<ShopCartResp>>> findByCustomer(Integer customer) {
 		List<ShopCart> list = mapperSupport.shopCartMapper.findByCustomer(customer, null, null);
-		List<ShopCartResp> queryResult = new ArrayList<>(list.size());
 		Map<Integer, List<ShopCartResp>> map = new LinkedHashMap<>();
 		for (ShopCart cart : list) {
 			ShopItem item = mapperSupport.shopItemMapper.selectByPrimaryKey(cart.getItemId());

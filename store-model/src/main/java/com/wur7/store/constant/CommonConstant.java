@@ -2,6 +2,9 @@ package com.wur7.store.constant;
 
 public class CommonConstant {
 	
+	public static final int YES = 1;
+	public static final int NO = 0;
+	
 	// 公共
 	
 	// `del_status` int(11) DEFAULT NULL COMMENT '删除状态【1：已删除，0：未删除】',
