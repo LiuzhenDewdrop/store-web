@@ -11,13 +11,23 @@
   <view class="action-area cell-box">
   <view class="action-item">
     <view class="action-label" bind:tap="onClickUnfund">
-    待提现
+      <price
+          symbol="{{￥}}"
+				  price="{{unfundAmt}}"
+          decimalSmaller
+        />
+        <text>待提现</text>
     </view>
     <view class="action-label" bind:tap="onClickPersons">
-    邀请人数
+    <text>{{persons}}</text><text>邀请人数</text>
     </view>
     <view class="action-label" bind:tap="onClickFund">
-    已提现
+      <price
+          symbol="{{￥}}"
+				  price="{{fundAmt}}"
+          decimalSmaller
+        />
+        <text>已提现</text>
     </view>
   </view>
 </view>

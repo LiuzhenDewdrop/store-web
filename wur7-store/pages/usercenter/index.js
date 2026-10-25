@@ -81,6 +81,9 @@ const getDefaultData = () => ({
   currAuthStep: 1, // 1=未登录 2=已登录
   showKefu: true,
   versionNo: '',
+  unfundAmt: 0,
+  persons: 0,
+  fundAmt: 0,
 });
 
 Page({
