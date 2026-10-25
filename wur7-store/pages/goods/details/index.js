@@ -272,18 +272,18 @@ Page({
 
   onShareAppMessage() {
     // 未登录不能分享
-    if (!isLogin()) {
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: '请登录后分享',
-        icon: '',
-        duration: 5000,
-      });
-      return new Promise((resolve) => {
-        resolve(null); 
-      });;
-    }
+    // if (!isLogin()) {
+    //   Toast({
+    //     context: this,
+    //     selector: '#t-toast',
+    //     message: '请登录后分享',
+    //     icon: '',
+    //     duration: 5000,
+    //   });
+    //   return new Promise((resolve) => {
+    //     resolve(null); 
+    //   });;
+    // }
     // 登录的人可以分享出去
     const localUser = getLocalUserInfo();
     const { selectedAttrStr } = this.data;
@@ -302,18 +302,18 @@ Page({
 
   onShareTimeline() {
      // 未登录不能分享
-     if (!isLogin()) {
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: '请登录后分享',
-        icon: '',
-        duration: 5000,
-      });
-      return new Promise((resolve) => {
-        resolve(null); 
-      });
-    }
+    //  if (!isLogin()) {
+    //   Toast({
+    //     context: this,
+    //     selector: '#t-toast',
+    //     message: '请登录后分享',
+    //     icon: '',
+    //     duration: 5000,
+    //   });
+    //   return new Promise((resolve) => {
+    //     resolve(null); 
+    //   });
+    // }
     // 登录的人可以分享出去
     const localUser = getLocalUserInfo();
     let shareSubTitle = '';

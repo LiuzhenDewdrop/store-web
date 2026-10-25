@@ -1,5 +1,4 @@
-import { fetchHome } from '../../services/home/home';
-import { fetchGoodsList } from '../../services/good/fetchGoods';
+import { wxItemList } from '../../services/_utils/api';
 import Toast from 'tdesign-miniprogram/toast/index';
 
 Page({
@@ -15,15 +14,16 @@ Page({
     interval: 5000,
     navigation: { type: 'dots' },
     swiperImageProps: { mode: 'scaleToFill' },
+    hasLoaded: false,
   },
 
   goodListPagination: {
-    index: 0,
+    index: 1,
     num: 20,
   },
 
   privateData: {
-    tabIndex: 0,
+    tabIndex: 1,
   },
 
   onShow() {
@@ -54,13 +54,38 @@ Page({
     this.setData({
       pageLoading: true,
     });
-    fetchHome().then(({ swiper, tabList }) => {
+    this.fetchHome().then(({ swiper, tabList }) => {
       this.setData({
         tabList,
         imgSrcs: swiper,
         pageLoading: false,
       });
       this.loadGoodsList(true);
+    });
+  },
+
+  fetchHome() {
+    const { delay } = require('../../services/_utils/delay');
+    const { genSwiperImageList } = require('../../model/swiper');
+    return delay().then(() => {
+      return {
+        swiper: genSwiperImageList(),
+        tabList: [
+          {
+            text: '活动',
+            key: 1,
+          },
+          {
+            text: '课程',
+            key: 2,
+          },
+          {
+            text: '商品',
+            key: 3,
+          },
+        ],
+        activityImg: `https://we-retail-static-1300977798.cos.ap-guangzhou.myqcloud.com/retail-mp/activity/banner.png`,
+      };
     });
   },
 
@@ -80,21 +105,44 @@ Page({
       });
     }
     this.setData({ goodsListLoadStatus: 1 });
-    const pageSize = this.goodListPagination.num;
-    let pageIndex = 0;
+    let pageIndex = 1;
     if (!fresh) {
       pageIndex = this.goodListPagination.index + 1;
     }
-
     try {
-      const nextList = await fetchGoodsList(this.privateData.tabIndex, pageIndex, pageSize);
+      const params = {
+        pageNum: pageIndex,
+        pageSize: this.goodListPagination.num,
+        itemType: this.privateData.tabIndex,
+      };
+      const result = await wxItemList(params);
+      if (result.code !== '0000') {
+        this.setData({
+          goodsListLoadStatus: 3,
+          hasLoaded: true,
+        });
+        wx.showToast({
+          title: '查询失败',
+          icon: 'error',
+          message: result.msg,
+        });
+        return
+      }
+      const nextList = result.data;
+      if (nextList.length) {
+        nextList.forEach((item) => {
+          item.spuId = item.item.id;
+          item.thumb = item.item.itemImage;
+          item.title = item.item.itemName;
+          item.price = item.item.salePrice
+        });
+      }
       this.setData({
         goodsList: fresh ? nextList : this.data.goodsList.concat(nextList),
         goodsListLoadStatus: 0,
+        hasLoaded: true,
       });
-
       this.goodListPagination.index = pageIndex;
-      this.goodListPagination.num = pageSize;
     } catch (err) {
       this.setData({ goodsListLoadStatus: 3 });
     }

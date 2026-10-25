@@ -8,4 +8,5 @@ public class AppQuery {
 	private String keyword;
 	private Integer pageNum;
 	private Integer pageSize;
+	private Integer itemType;
 }

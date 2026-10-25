@@ -13,6 +13,11 @@ export function wxLogout() {
   return request('/wx/logout', 'GET');
 }
 
+// 首页商品列表
+export function wxItemList(params) {
+  return request('/wx/item/list', 'POST', params);
+}
+
 // 查询商品
 export function wxItemQuery(params) {
   return request('/wx/item/query', 'POST', params);

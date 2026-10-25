@@ -8,6 +8,21 @@
   bind:gotoUserEditPage="gotoUserEditPage"
 />
 <view class="content-wrapper">
+  <view class="action-area cell-box">
+  <view class="action-item">
+    <view class="action-label" bind:tap="onClickUnfund">
+    待提现
+    </view>
+    <view class="action-label" bind:tap="onClickPersons">
+    邀请人数
+    </view>
+    <view class="action-label" bind:tap="onClickFund">
+    已提现
+    </view>
+  </view>
+</view>
+
+
   <view class="order-group-wrapper">
     <t-order-group orderTagInfos="{{orderTagInfos}}" bind:onClickTop="jumpAllOrder" bind:onClickItem="jumpNav" />
   </view>

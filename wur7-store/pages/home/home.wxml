@@ -32,8 +32,8 @@
       t-class="t-tabs"
       t-class-active="tabs-external__active"
       t-class-item="tabs-external__item"
-      defaultValue="{{0}}"
-      space-evenly="{{false}}"
+      defaultValue="{{1}}"
+      space-evenly="{{true}}"
       bind:change="tabChangeHandle"
     >
       <t-tab-panel
@@ -45,6 +45,10 @@
       />
     </t-tabs>
   </view>
+  <view class="empty-wrap" wx:if="{{goodsList.length === 0 && hasLoaded}}">
+    <t-empty t-class="empty-tips" size="240rpx" description="暂无相关内容" />
+  </view>
+  <view wx:if="{{goodsList.length}}">
 
   <goods-list
     wr-class="goods-list-container"
@@ -52,6 +56,7 @@
     bind:click="goodListClickHandle"
     bind:addcart="goodListAddCartHandle"
   />
+  </view>
   <load-more list-is-empty="{{!goodsList.length}}" status="{{goodsListLoadStatus}}" bind:retry="onReTry" />
   <t-toast id="t-toast" />
 </view>

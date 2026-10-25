@@ -57,10 +57,10 @@ public interface ShopItemMapper {
 	
 	List<ShopItem> findAll(ShopItem query);
 	
-	List<ShopItem> queryForApp(@Param("keyword") String keyword
+	List<ShopItem> queryForApp(@Param("keyword") String keyword, @Param("itemType") Integer itemType
 			, @Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
 	
-	long count(@Param("keyword") String keyword);
+	long count(@Param("keyword") String keyword, @Param("itemType") Integer itemType);
 	
 	List<Integer> findCategoryBase();
 	

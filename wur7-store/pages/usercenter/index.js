@@ -11,12 +11,7 @@ const menuData = [
       url: '',
       type: 'address',
     },
-    {
-      title: '积分',
-      tit: '',
-      url: '',
-      type: 'point',
-    },
+
   ],
   [
     // {
@@ -26,7 +21,7 @@ const menuData = [
     //   type: 'help-center',
     // },
     {
-      title: '客服热线',
+      title: '客服',
       tit: '',
       url: '',
       type: 'service',

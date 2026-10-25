@@ -115,9 +115,7 @@ Page({
           item.spuId = item.item.id;
           item.thumb = item.item.itemImage;
           item.title = item.item.itemName;
-          item.price = item.specList.reduce((min, obj) => {
-            return (!min || obj.salePrice < min.salePrice) ? obj : min;
-          }, null).salePrice
+          item.price = item.item.salePrice
         });
       }
 

@@ -356,6 +356,9 @@
 		<if test="keyword != null and keyword != ''">
 			AND item_name like CONCAT('%',#{keyword},'%')
 		</if>
+		<if test="itemType != null">
+			AND item_type = #{itemType}
+		</if>
 		AND item_status = 1
 		ORDER BY sold_unit_num DESC
 		LIMIT #{offset}, #{pageSize}
@@ -367,6 +370,9 @@
 		WHERE 1=1
 		<if test="keyword != null and keyword != ''">
 			AND item_name like CONCAT('%',#{keyword},'%')
+		</if>
+		<if test="itemType != null">
+			AND item_type = #{itemType}
 		</if>
 	</select>
 

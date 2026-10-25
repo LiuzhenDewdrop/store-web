@@ -36,6 +36,23 @@ public class WxShopItemController extends BasicController {
 	private ShopItemService shopItemService;
 	
 	/**
+	 * @title  list
+	 * @description 首页商品列表
+	 * @param request
+	 * @param query
+	 * @return
+	 */
+	@RequestMapping(value = "/list")
+	public IReturnBean<List<ShopItemDetail>> list(HttpServletRequest request, @RequestBody AppQuery query) {
+		try {
+			return shopItemService.listForApp(query);
+		} catch (Exception e) {
+			log.error("首页商品列表 error:", e);
+			return IReturnBean.error();
+		}
+	}
+	
+	/**
 	 * @title  query
 	 * @description 查询商品列表
 	 * @param request

@@ -205,7 +205,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-	<select id="selectByOpenid" resultType="com.wur7.store.entity.ShopCustomer">
+	<select id="selectByOpenid"  resultMap="BaseResultMap">
 		SELECT
 		<include refid="Base_Column_List" />
 		FROM shop_customer

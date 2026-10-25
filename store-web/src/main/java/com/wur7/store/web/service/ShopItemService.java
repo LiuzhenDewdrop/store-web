@@ -83,9 +83,19 @@ public class ShopItemService {
 		return IReturnBean.success();
 	}
 	
+	public IReturnBean<List<ShopItemDetail>> listForApp(AppQuery query) {
+		long total = mapperSupport.shopItemMapper.count(null, query.getItemType());
+		List<ShopItem> itemList = mapperSupport.shopItemMapper.queryForApp(null, query.getItemType(), (query.getPageNum()-1)* query.getPageSize(), query.getPageSize());
+		List<ShopItemDetail> list = new ArrayList<>(itemList.size());
+		for (ShopItem shopItem : itemList) {
+			list.add(genDetail(shopItem));
+		}
+		return IReturnBean.success(total, list);
+	}
+	
 	public IReturnBean<List<ShopItemDetail>> queryForApp(AppQuery query) {
-		long total = mapperSupport.shopItemMapper.count(query.getKeyword());
-		List<ShopItem> itemList = mapperSupport.shopItemMapper.queryForApp(query.getKeyword(), (query.getPageNum()-1)* query.getPageSize(), query.getPageSize());
+		long total = mapperSupport.shopItemMapper.count(query.getKeyword(), null);
+		List<ShopItem> itemList = mapperSupport.shopItemMapper.queryForApp(query.getKeyword(), null, (query.getPageNum()-1)* query.getPageSize(), query.getPageSize());
 		List<ShopItemDetail> list = new ArrayList<>(itemList.size());
 		for (ShopItem shopItem : itemList) {
 			list.add(genDetail(shopItem));
