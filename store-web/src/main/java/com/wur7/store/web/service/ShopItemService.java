@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wur7.store.bean.IReturnBean;
+import com.wur7.store.constant.CommonConstant;
 import com.wur7.store.entity.ShopItem;
 import com.wur7.store.entity.ShopItemPic;
 import com.wur7.store.entity.ShopItemSpec;
@@ -54,19 +55,26 @@ public class ShopItemService {
 		if (saveFlag) {
 			item.setShopId(operator.getId());
 			item.setShopName(operator.getUserName());
+			int minSalePrice = detail.getSpecList().stream()
+					.mapToInt(ShopItemSpec::getSalePrice)
+					.min().orElse(0);
+			item.setSalePrice(minSalePrice);
+			item.setItemStatus(ITEM_STATUS.DRAFT.STATUS);
+			item.setDelStatus(CommonConstant.DEL_STATUS_EXIST);
+			item.setSoldUnitNum(0);
 			item.setCreator(operator.getId());
 			item.setCreateTime(new Date());
-			item.setItemStatus(ITEM_STATUS.DRAFT.STATUS);
 			mapperSupport.shopItemMapper.insert(item);
 			Integer itemId = item.getId();
-			List<ShopItemSpec>  specList = detail.getSpecList();
-			for (ShopItemSpec spec : specList) {
+			for (ShopItemSpec spec : detail.getSpecList()) {
 				spec.setItemId(itemId);
+				spec.setDelStatus(CommonConstant.DEL_STATUS_EXIST);
 				mapperSupport.shopItemSpecMapper.insert(spec);
 			}
 			List<ShopItemPic> picList = detail.getPicList();
 			for (ShopItemPic pic : picList) {
 				pic.setItemId(itemId);
+				pic.setDelStatus(CommonConstant.DEL_STATUS_EXIST);
 				mapperSupport.shopItemPicMapper.insert(pic);
 			}
 		} else {

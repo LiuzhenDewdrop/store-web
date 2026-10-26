@@ -1,4 +1,6 @@
-import { wxItemList } from '../../services/_utils/api';
+import { wxItemList, wxCartAdd } from '../../services/_utils/api';
+import { isLogin } from '../../utils/auth';
+
 import Toast from 'tdesign-miniprogram/toast/index';
 
 Page({
@@ -156,11 +158,26 @@ Page({
     });
   },
 
-  goodListAddCartHandle() {
+  async onAddCart(e) {
+    if (!isLogin()) {
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '请先登录',
+      });
+      return
+    }
+    const {
+      goods: { item: {id} },
+    } = e.detail;
+    const res = await wxCartAdd(id);
+    if (res.code !== '0000') {
+      return;
+    }
     Toast({
       context: this,
       selector: '#t-toast',
-      message: '点击加入购物车',
+      message: '商品已加入购物车',
     });
   },
 

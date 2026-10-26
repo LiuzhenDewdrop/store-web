@@ -57,14 +57,24 @@ export function wxCartList() {
   return request('/wx/cart/list', 'POST');
 }
 // 添加进购物车
-export function wxCartAdd(cart) {
-  return request('/wx/cart/add', 'POST', cart);
+export function wxCartAdd(itemId, specId, quantity = 1) {
+  return request('/wx/cart/add', 'POST', {
+    itemId: itemId,
+    specId: specId,
+    quantity: quantity,
+  });
 }
 // 删除购物车中商品
-export function wxCartDel(cart) {
-  return request('/wx/cart/del', 'POST', cart);
+export function wxCartDel(id) {
+  return request('/wx/cart/del', 'POST', {
+    id: id
+  });
 }
 // 修改购物车商品
 export function wxCartUpd(cart) {
   return request('/wx/cart/upd', 'POST', cart);
+}
+// 批量修改购物车商品选中状态
+export function wxCartSel(sel) {
+  return request('/wx/cart/sel', 'POST', sel);
 }

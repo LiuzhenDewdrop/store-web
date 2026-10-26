@@ -81,9 +81,9 @@ const getDefaultData = () => ({
   currAuthStep: 1, // 1=未登录 2=已登录
   showKefu: true,
   versionNo: '',
-  unfundAmt: 0,
-  persons: 0,
-  fundAmt: 0,
+  unfundAmt: 103001,
+  persons: 500,
+  fundAmt: 520330054,
 });
 
 Page({
@@ -306,4 +306,49 @@ Page({
       versionNo: envVersion === 'release' ? version : envVersion,
     });
   },
+
+    // 待提现
+    onClickUnfund() {
+      if (!isLogin()) {
+        this.handleLogin();
+        return;
+      }
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '待提现列表',
+        icon: '',
+        duration: 1000,
+      });
+    },
+  
+    // 邀请人数
+    onClickPersons() {
+      if (!isLogin()) {
+        this.handleLogin();
+        return;
+      }
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '被邀请人列表',
+        icon: '',
+        duration: 1000,
+      });
+    },
+  
+    // 已提现
+    onClickFund() {
+      if (!isLogin()) {
+        this.handleLogin();
+        return;
+      }
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '已提现列表',
+        icon: '',
+        duration: 1000,
+      });
+    },
 });

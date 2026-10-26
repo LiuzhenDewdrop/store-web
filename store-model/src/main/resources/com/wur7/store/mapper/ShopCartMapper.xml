@@ -198,4 +198,22 @@
 		ORDER BY item_status ASC, update_time DESC
 	</select>
 
+	<update id="updateCustomerSelectStatus" parameterType="com.wur7.store.entity.ShopCart">
+		UPDATE shop_cart
+		SET select_status = #{selectStatus,jdbcType=INTEGER},
+			update_time = #{updateTime,jdbcType=TIMESTAMP}
+		WHERE customer_id = #{customerId,jdbcType=INTEGER}
+		AND item_status = 1
+		AND del_status = 0
+	</update>
+
+	<update id="updateCartSelectStatus" parameterType="com.wur7.store.entity.ShopCart">
+		UPDATE shop_cart
+		SET select_status = #{selectStatus,jdbcType=INTEGER},
+			update_time = #{updateTime,jdbcType=TIMESTAMP}
+		WHERE id = #{id,jdbcType=INTEGER}
+		AND item_status = 1
+		AND del_status = 0
+	</update>
+
 </mapper>

@@ -4,12 +4,12 @@
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title>5r7 store</title>
+    <title>乐活益家运营平台</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="keywords" content="5r7 store">
+    <meta name="keywords" content="乐活益家运营平台">
     <meta name="description" content="五人齐商铺 一个买卖东西的地方">
 
-    <link rel="shortcut icon" href="${ctx}/static/img/steam_logo.png">
+    <link rel="shortcut icon" href="${ctx}/static/img/5r7_logo.png">
     <link rel="stylesheet" href="${ctx}/static/layui/css/layui.css">
     <link rel="stylesheet" href="${ctx}/static/css/global.css">
     <link rel="stylesheet" href="${ctx}/static/css/fontcss.css">
@@ -204,7 +204,7 @@ function addTab(_this) {
     <!-- 顶部-->
     <div class="layui-header header header-menu ">
         <div class="layui-main ">
-            <a href="#" class="logo" style="font-size:16px">SteamHelper</a>
+            <a href="#" class="logo" style="font-size:16px">乐活益家运营平台</a>
             <!-- 左侧导航收缩开关 -->
             <div class="side-menu-switch">
                 <ul class="layui-nav clearfix ">
@@ -233,7 +233,7 @@ function addTab(_this) {
         <div class="user-photo">
             <a class="img" title="我的头像" id="updateAvatar">
 				<c:if test="${empty LOGIN_USER.avatar}">
-					<img id="avatarImg" src="${ctx}/static/img/stark.jpg">
+					<img id="avatarImg" src="${ctx}/static/img/avatar.png">
 				</c:if>
 				<c:if test="${not empty LOGIN_USER.avatar}">
 					<img id="avatarImg" src="${LOGIN_USER.avatar}">

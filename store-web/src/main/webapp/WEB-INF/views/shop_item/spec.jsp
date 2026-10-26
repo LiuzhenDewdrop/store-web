@@ -4,11 +4,11 @@
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title>5r7 store</title>
+    <title>乐活益家运营平台</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="keywords" content="5r7 store">
+    <meta name="keywords" content="乐活益家运营平台">
     <meta name="description" content="五人齐商铺 一个买卖东西的地方">
-    <link rel="shortcut icon" href="${ctx}/static/img/steam_logo.png">
+    <link rel="shortcut icon" href="${ctx}/static/img/5r7_logo.png">
 
     <link rel="stylesheet" href="${ctx}/static/layui/css/layui.css">
     <link rel="stylesheet" href="${ctx}/static/css/global.css">
@@ -57,15 +57,15 @@
 			</div>
 		</div>
 		<div class="layui-inline">
-			<label class="layui-form-label">供货价格（元）</label>
+			<label class="layui-form-label">供货价格（分）</label>
 			<div class="layui-input-inline">
-				<input id="addSpecSupplyPrice" type="text" lay-affix="number" min="0" lay-precision="2" class="layui-input" lay-verify="required" value="" placeholder="请输入供货价格">
+				<input id="addSpecSupplyPrice" type="text" lay-affix="number" min="0" lay-precision="0" class="layui-input" lay-verify="required" value="" placeholder="请输入供货价格">
 			</div>
 		</div>
 		<div class="layui-inline">
-			<label class="layui-form-label">销售价格（元）</label>
+			<label class="layui-form-label">销售价格（分）</label>
 			<div class="layui-input-inline">
-				<input id="addSpecSalePrice" type="text" lay-affix="number" min="0" lay-precision="2" class="layui-input" lay-verify="required" value="" placeholder="请输入销售价格">
+				<input id="addSpecSalePrice" type="text" lay-affix="number" min="0" lay-precision="0" class="layui-input" lay-verify="required" value="" placeholder="请输入销售价格">
 			</div>
 		</div>
 	</div>

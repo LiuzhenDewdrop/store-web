@@ -57,4 +57,8 @@ public interface ShopCartMapper {
 	
 	List<ShopCart> findByCustomer(@Param("customer") Integer customer
 	, @Param("itemId") Integer itemId, @Param("specId") Integer specId);
+	
+	void updateCustomerSelectStatus(ShopCart record);
+	
+	void updateCartSelectStatus(ShopCart record);
 }

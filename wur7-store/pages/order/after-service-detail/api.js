@@ -1,5 +1,5 @@
 import { resp } from '../after-service-list/api';
-import dayjs from 'dayjs';
+import dayjs from '../../../utils/dayjs.js';
 import { mockIp, mockReqId } from '../../../utils/mock';
 
 export const formatTime = (date, template) => dayjs(date).format(template);

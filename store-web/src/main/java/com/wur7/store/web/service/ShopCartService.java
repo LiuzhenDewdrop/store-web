@@ -16,6 +16,7 @@ import com.wur7.store.entity.ShopCart;
 import com.wur7.store.entity.ShopItem;
 import com.wur7.store.entity.ShopItemSpec;
 import com.wur7.store.util.util.CollectionUtil;
+import com.wur7.store.web.bean.request.CartSelectReq;
 import com.wur7.store.web.bean.response.ShopCartResp;
 import com.wur7.store.web.mapper.MapperSupport;
 
@@ -44,9 +45,22 @@ public class ShopCartService {
 		return IReturnBean.success(resultList);
 	}
 	
-	public IReturnBean<?> add(ShopCart cart) {
+	public IReturnBean<?> add(ShopCart cart, Integer customer) {
+		if (cart == null || cart.getItemId() == null) {
+			return IReturnBean.fail("添加失败，无此商品");
+		}
+		if (cart.getSpecId() == null) {
+			List<ShopItemSpec> specList = mapperSupport.shopItemSpecMapper.getByItem(cart.getItemId());
+			if (CollectionUtil.isEmpty(specList)) {
+				return IReturnBean.fail("添加失败，无此商品");
+			}
+			cart.setSpecId(specList.get(0).getId());
+		}
+		if (cart.getQuantity() == null || cart.getQuantity() < 1) {
+			cart.setQuantity(1);
+		}
 		List<ShopCart> list = mapperSupport.shopCartMapper.findByCustomer(
-				cart.getCustomerId(), cart.getItemId(), cart.getSpecId());
+				customer, cart.getItemId(), cart.getSpecId());
 		if (CollectionUtil.isNotEmpty(list)) {
 			ShopCart record = list.get(0);
 			record.setQuantity(record.getQuantity() + cart.getQuantity());
@@ -56,7 +70,7 @@ public class ShopCartService {
 			return IReturnBean.success();
 		}
 		cart.setId(null);
-//		cart.setCustomerId();
+		cart.setCustomerId(customer);
 //		cart.setItemId();
 //		cart.setSpecId();
 //		cart.setQuantity();
@@ -64,7 +78,7 @@ public class ShopCartService {
 		cart.setItemStatus(CommonConstant.ITEM_STATUS_UP);
 		cart.setDelStatus(CommonConstant.DEL_STATUS_EXIST);
 		cart.setCreateTime(new Date());
-//		cart.setUpdateTime();
+		cart.setUpdateTime(new Date());		// 排序用
 		mapperSupport.shopCartMapper.insert(cart);
 		return IReturnBean.success();
 	}
@@ -81,6 +95,34 @@ public class ShopCartService {
 	public IReturnBean<?> upd(ShopCart record) {
 		record.setUpdateTime(new Date());
 		mapperSupport.shopCartMapper.updateByPrimaryKeySelective(record);
+		return IReturnBean.success();
+	}
+	
+	public IReturnBean<?> select(Integer customer, CartSelectReq req) {
+		if (req == null) {
+			return IReturnBean.success();
+		}
+		if (req.getSelectAll() == 1) {
+			ShopCart record = new ShopCart();
+			record.setCustomerId(customer);
+			record.setSelectStatus(req.getSelectStatus());
+			record.setUpdateTime(new Date());
+			mapperSupport.shopCartMapper.updateCustomerSelectStatus(record);
+			return IReturnBean.success();
+		}
+		if (CollectionUtil.isEmpty(req.getCartIds())) {
+			return IReturnBean.success();
+		}
+		for (Integer cartId : req.getCartIds()) {
+			if (cartId == null) {
+				continue;
+			}
+			ShopCart record = new ShopCart();
+			record.setId(cartId);
+			record.setSelectStatus(req.getSelectStatus());
+			record.setUpdateTime(new Date());
+			mapperSupport.shopCartMapper.updateCartSelectStatus(record);
+		}
 		return IReturnBean.success();
 	}
 	

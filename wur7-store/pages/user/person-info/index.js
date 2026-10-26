@@ -1,7 +1,8 @@
-import { fetchPerson, updateGender, uploadAvatar, bindPhone } from '../../../services/usercenter/fetchPerson';
+import { updateGender, uploadAvatar, bindPhone } from '../../../services/usercenter/fetchPerson';
 import { phoneEncryption } from '../../../utils/util';
 import { getLocalUserInfo, clearLoginInfo, setLoginInfo, getToken } from '../../../utils/auth';
-import { wxLogout } from '../../../services/login/index';
+import { wxLogout } from '../../../services/_utils/api';
+
 import Toast from 'tdesign-miniprogram/toast/index';
 
 Page({
@@ -53,39 +54,6 @@ Page({
         }
       });
     }
-    // 调用真实接口刷新用户信息
-    this.fetchData();
-  },
-  fetchData() {
-    fetchPerson().then((personInfo) => {
-      // 合并本地登录信息和后端返回
-      const localUser = getLocalUserInfo();
-      const finalInfo = {
-        ...personInfo,
-        avatarUrl: personInfo.avatarUrl || localUser?.avatarUrl || localUser?.avatar || '',
-        nickName: personInfo.nickName || localUser?.userName || localUser?.nickname || '微信用户',
-        gender: personInfo.gender !== undefined ? personInfo.gender : (localUser?.gender || 0),
-      };
-      const rawPhone = personInfo.phoneNumber || localUser?.phoneNumber || localUser?.phone || '';
-      finalInfo.phoneNumber = phoneEncryption(rawPhone);
-      this.setData({
-        personInfo: finalInfo,
-        rawPhone: rawPhone,
-      });
-      // 更新本地缓存
-      setLoginInfo(getToken(), {
-        ...localUser,
-        avatarUrl: finalInfo.avatarUrl,
-        avatar: finalInfo.avatarUrl,
-        userName: finalInfo.nickName,
-        nickname: finalInfo.nickName,
-        gender: finalInfo.gender,
-        phoneNumber: rawPhone,
-        phone: rawPhone,
-      });
-    }).catch((err) => {
-      console.log('获取用户信息失败', err);
-    });
   },
   onClickCell({ currentTarget }) {
     const { dataset } = currentTarget;

@@ -1,12 +1,9 @@
-// import Toast from 'tdesign-miniprogram/toast/index';
 import { Toast } from 'tdesign-miniprogram';
 import { cdnBase } from '../../../config/index';
 
-import { wxItemDetail, wxQrCode } from '../../../services/_utils/api';
+import { wxItemDetail, wxQrCode, wxCartAdd } from '../../../services/_utils/api';
 import { generatePoster } from '../../../utils/poster-generator'
 import { isLogin, getLocalUserInfo } from '../../../utils/auth';
-
-import { fetchGood } from '../../../services/good/fetchGood';
 
 const imgPrefix = `${cdnBase}/`;
 
@@ -64,7 +61,6 @@ Page({
     selectSkuSellsPrice: 0,
     salePrice: 0,
     spuId: '',
-    tab: 0,
     navigation: { type: 'fraction' },
     current: 0,
     autoplay: true,
@@ -152,14 +148,24 @@ Page({
     }
   },
 
-  addCart() {
-    // todo 加入购物车
+  // 加入购物车
+  async addCart(itemId, specId, quantity) {
+    if (!isLogin()) {
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '请先登录',
+      });
+      return
+    }
+    const res = await wxCartAdd(itemId, specId, quantity);
+    if (res.code !== '0000') {
+      return;
+    }
     Toast({
       context: this,
       selector: '#t-toast',
-      message: '已加入购物车',
-      icon: '',
-      duration: 1000,
+      message: '商品已加入购物车',
     });
   },
 
@@ -193,45 +199,19 @@ Page({
     if (buyType === 1) {
       this.gotoBuy();
     } else {
-      this.addCart();
+      const {
+        details,
+        selectItem,
+        buyNum,
+       } = this.data;
+      this.addCart(details.item.id, selectItem?.id, buyNum);
     }
-    // this.handlePopupHide();
+    this.handlePopupHide();
   },
 
-  async getDetail(spuId, tab, specId, quantity) {
+  async getDetail(spuId, specId, quantity) {
     // 如果是点进来带数据的，需要刷一下数据
     let refresh = !isNaN(specId) && !isNaN(quantity);
-    if (!isNaN(tab)) {
-      Promise.all([fetchGood(tab, spuId)]).then((res) => {
-        const [details] = res;
-        details.images = details.picList.map(a=>a.picUrl);
-        this.setData({
-          details,
-          primaryImage: details.item.itemImage,
-          soldUnitNum: details.item.soldUnitNum,
-        });
-        if (!refresh) {
-          const salePrice = details.specList.reduce((min, obj) => {
-            return (!min || obj.salePrice < min.salePrice) ? obj : min;
-          }, null).salePrice;
-          this.setData({
-            salePrice: salePrice ? parseInt(salePrice) : 0,
-          });
-        } else {
-          let selectedSku = details.specList.find(item => item.id === specId);
-          let selectedAttrStr = ` 件, ${selectedSku.specName}`;
-          this.setData({
-            buyNum: quantity,
-            selectedAttrStr: selectedAttrStr,
-            selectItem: selectedSku,
-            selectSkuSellsPrice: selectedSku.salePrice*quantity,
-            salePrice: selectedSku.salePrice*quantity,
-            specImg: selectedSku.picUrl ? selectedSku.picUrl : primaryImage,
-          });
-        }
-      });
-      return;
-    }  // if end: !isNaN 
     const res = await wxItemDetail(spuId);
     if (res.code !== '0000') {
       Toast({
@@ -272,18 +252,18 @@ Page({
 
   onShareAppMessage() {
     // 未登录不能分享
-    // if (!isLogin()) {
-    //   Toast({
-    //     context: this,
-    //     selector: '#t-toast',
-    //     message: '请登录后分享',
-    //     icon: '',
-    //     duration: 5000,
-    //   });
-    //   return new Promise((resolve) => {
-    //     resolve(null); 
-    //   });;
-    // }
+    if (!isLogin()) {
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '请登录后分享',
+        icon: '',
+        duration: 5000,
+      });
+      return new Promise((resolve) => {
+        resolve(null); 
+      });;
+    }
     // 登录的人可以分享出去
     const localUser = getLocalUserInfo();
     const { selectedAttrStr } = this.data;
@@ -302,18 +282,18 @@ Page({
 
   onShareTimeline() {
      // 未登录不能分享
-    //  if (!isLogin()) {
-    //   Toast({
-    //     context: this,
-    //     selector: '#t-toast',
-    //     message: '请登录后分享',
-    //     icon: '',
-    //     duration: 5000,
-    //   });
-    //   return new Promise((resolve) => {
-    //     resolve(null); 
-    //   });
-    // }
+     if (!isLogin()) {
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '请登录后分享',
+        icon: '',
+        duration: 5000,
+      });
+      return new Promise((resolve) => {
+        resolve(null); 
+      });
+    }
     // 登录的人可以分享出去
     const localUser = getLocalUserInfo();
     let shareSubTitle = '';
@@ -329,18 +309,18 @@ Page({
 
   onShareToTimeline() {
     // 未登录不能分享
-    // if (!isLogin()) {
-    //   Toast({
-    //     context: this,
-    //     selector: '#t-toast',
-    //     message: '请登录后分享',
-    //     icon: '',
-    //     duration: 5000,
-    //   });
-    //   return new Promise((resolve) => {
-    //     resolve(null); 
-    //   });
-    // }
+    if (!isLogin()) {
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '请登录后分享',
+        icon: '',
+        duration: 5000,
+      });
+      return new Promise((resolve) => {
+        resolve(null); 
+      });
+    }
     Toast({
       context: this,
       selector: '#t-toast',
@@ -352,18 +332,18 @@ Page({
 
   openSharePopup() {
     // 未登录不能分享
-    // if (!isLogin()) {
-    //   Toast({
-    //     context: this,
-    //     selector: '#t-toast',
-    //     message: '请登录后分享',
-    //     icon: '',
-    //     duration: 5000,
-    //   });
-    //   return new Promise((resolve) => {
-    //     resolve(null); 
-    //   });
-    // }
+    if (!isLogin()) {
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '请登录后分享',
+        icon: '',
+        duration: 5000,
+      });
+      return new Promise((resolve) => {
+        resolve(null); 
+      });
+    }
     // 有海报就直接发
     if (this.data.posterPath) {
       this.setData({
@@ -425,14 +405,12 @@ Page({
   },
 
   onLoad(query) {
-    const { spuId, tab, specId, quantity } = query;
-    const tabIndex = parseInt(tab);
+    const { spuId, specId, quantity } = query;
     const specIdNum = parseInt(specId);
     const quantityNum = parseInt(quantity);
     this.setData({
       spuId: spuId,
-      tab: tabIndex,
     });
-    this.getDetail(spuId, tabIndex, specIdNum, quantityNum);
+    this.getDetail(spuId, specIdNum, quantityNum);
   },
 });

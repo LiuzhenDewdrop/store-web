@@ -58,7 +58,7 @@
       wr-class="wr-goods-list"
       goodsList="{{goodsList}}"
       bind:click="gotoGoodsDetail"
-      bind:addcart="handleAddCart"
+      bind:addcart="onAddCart"
     />
   </view>
   <load-more wx:if="{{goodsList.length > 0}}" status="{{loadMoreStatus}}" no-more-text="没有更多了" />

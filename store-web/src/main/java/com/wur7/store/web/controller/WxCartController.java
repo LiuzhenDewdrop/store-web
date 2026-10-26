@@ -5,12 +5,14 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wur7.store.bean.IReturnBean;
 import com.wur7.store.entity.ShopCart;
 import com.wur7.store.entity.ShopCustomer;
+import com.wur7.store.web.bean.request.CartSelectReq;
 import com.wur7.store.web.bean.response.ShopCartResp;
 import com.wur7.store.web.service.ShopCartService;
 import com.wur7.store.web.service.WxLoginService;
@@ -54,12 +56,13 @@ public class WxCartController extends WxBasicController {
 	 * @return
 	 */
 	@RequestMapping(value = "/add")
-	public IReturnBean<?> add(HttpServletRequest request, ShopCart cart) {
+	public IReturnBean<?> add(HttpServletRequest request, @RequestBody ShopCart cart) {
 		try {
-			if (checkWxUnlogin(request)) {
+			ShopCustomer currentUser = getWxLoginUser(request);
+			if (currentUser == null) {
 				return IReturnBean.unlogin();
 			}
-			return shopCartService.add(cart);
+			return shopCartService.add(cart, currentUser.getId());
 		} catch (Exception e) {
 			log.error("添加进购物车 error:", e);
 			return IReturnBean.error();
@@ -73,7 +76,7 @@ public class WxCartController extends WxBasicController {
 	 * @return
 	 */
 	@RequestMapping(value = "/del")
-	public IReturnBean<?> del(HttpServletRequest request, ShopCart cart) {
+	public IReturnBean<?> del(HttpServletRequest request, @RequestBody ShopCart cart) {
 		try {
 			if (checkWxUnlogin(request)) {
 				return IReturnBean.unlogin();
@@ -92,7 +95,7 @@ public class WxCartController extends WxBasicController {
 	 * @return
 	 */
 	@RequestMapping(value = "/upd")
-	public IReturnBean<?> upd(HttpServletRequest request, ShopCart cart) {
+	public IReturnBean<?> upd(HttpServletRequest request, @RequestBody ShopCart cart) {
 		try {
 			if (checkWxUnlogin(request)) {
 				return IReturnBean.unlogin();
@@ -100,6 +103,26 @@ public class WxCartController extends WxBasicController {
 			return shopCartService.upd(cart);
 		} catch (Exception e) {
 			log.error("修改购物车商品 error:", e);
+			return IReturnBean.error();
+		}
+	}
+	
+	/**
+	 * @title  sel
+	 * @description 批量修改购物车商品选中状态
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/sel")
+	public IReturnBean<?> select(HttpServletRequest request, @RequestBody CartSelectReq req) {
+		try {
+			ShopCustomer currentUser = getWxLoginUser(request);
+			if (currentUser == null) {
+				return IReturnBean.unlogin();
+			}
+			return shopCartService.select(currentUser.getId(), req);
+		} catch (Exception e) {
+			log.error("批量修改购物车商品选中状态 error:", e);
 			return IReturnBean.error();
 		}
 	}

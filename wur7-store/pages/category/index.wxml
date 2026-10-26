@@ -6,6 +6,6 @@
     itemList="{{list}}"
     bind:changeCatetory="changeCatetory"
     bind:chooseItem="chooseItem"
-    bind:handleAddCart="handleAddCart"
+    bind:handleAddCart="onAddCart"
   />
 </view>

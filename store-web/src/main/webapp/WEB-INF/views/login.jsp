@@ -5,8 +5,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>5r7 store 登录</title>
-	<link rel="shortcut icon" href="${ctx}/static/img/steam_logo.png">
+    <title>乐活益家运营平台 登录</title>
+	<link rel="shortcut icon" href="${ctx}/static/img/5r7_logo.png">
     <link rel="stylesheet" href="${ctx}/static/layui/css/layui.css">
     <link rel="stylesheet" href="${ctx}/static/css/login.css">
     <script type="text/javascript" src="${ctx}/static/layui/layui.js"></script>
@@ -14,7 +14,7 @@
 <body class="layui-bg-cyan">
 <div class="admin-login-block">
     <div class="admin-login-text">
-       	<span> 5r7 STORE </span>
+       	<span> 乐活益家运营平台 </span>
     </div>
     <div class="login-font">
     </div>

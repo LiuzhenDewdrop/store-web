@@ -33,8 +33,8 @@
             <view class="check-wrap" catchtap="selectGoods" data-goods="{{goods}}">
               <t-icon
                 size="40rpx"
-                color="{{goods.cart.selectStatus ? '#FA4126' : '#BBBBBB'}}"
-                name="{{goods.cart.selectStatus ? 'check-circle-filled' : 'circle'}}"
+                color="{{goods.cart.selectStatus === 1 ? '#FA4126' : '#BBBBBB'}}"
+                name="{{goods.cart.selectStatus === 1 ? 'check-circle-filled' : 'circle'}}"
                 class="check"
               />
             </view>

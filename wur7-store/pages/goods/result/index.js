@@ -1,6 +1,5 @@
-/* eslint-disable no-param-reassign */
-import { wxItemQuery } from '../../../services/_utils/api';
-import { imgPrefix } from '../../../config/index';
+import { isLogin } from '../../../utils/auth';
+import { wxItemQuery, wxCartAdd } from '../../../services/_utils/api';
 import Toast from 'tdesign-miniprogram/toast/index';
 
 const initFilters = {
@@ -140,12 +139,7 @@ Page({
     }
   },
 
-  handleCartTap() {
-    wx.switchTab({
-      url: '/pages/cart/index',
-    });
-  },
-
+  // 搜索
   handleSubmit(e) {
     this.setData(
       {
@@ -171,11 +165,26 @@ Page({
     this.init(false);
   },
 
-  handleAddCart() {
+  async onAddCart(e) {
+    if (!isLogin()) {
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '请先登录',
+      });
+      return
+    }
+    const {
+      goods: { item: {id} },
+    } = e.detail;
+    const res = await wxCartAdd(id);
+    if (res.code !== '0000') {
+      return;
+    }
     Toast({
       context: this,
       selector: '#t-toast',
-      message: '点击加购',
+      message: '商品已加入购物车',
     });
   },
 

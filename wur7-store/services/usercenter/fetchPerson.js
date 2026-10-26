@@ -1,43 +1,6 @@
 import { config } from '../../config/index';
 import { request } from '../_utils/request';
 
-/** 获取个人中心信息 - mock */
-function mockFetchPerson() {
-  const { delay } = require('../_utils/delay');
-  const { genSimpleUserInfo } = require('../../model/usercenter');
-  const { genAddress } = require('../../model/address');
-  const address = genAddress(0);
-  return delay().then(() => ({
-    ...genSimpleUserInfo(),
-    address: {
-      provinceName: address.provinceName,
-      provinceCode: address.provinceCode,
-      cityName: address.cityName,
-      cityCode: address.cityCode,
-    },
-  }));
-}
-
-/** 获取个人中心信息 - 真实接口 */
-export function fetchPerson() {
-  // if (config.useMock) {
-  //   return mockFetchPerson();
-  // }
-  return request('/wx/info', 'GET').then(res => {
-    if (res.code === '0000' || res.code === 0) {
-      const data = res.data || {};
-      // 字段兼容转换
-      return {
-        avatarUrl: data.avatarUrl || data.avatar || '',
-        nickName: data.nickname || data.userName || '微信用户',
-        gender: data.gender || 0,
-        phoneNumber: data.phone || data.phoneNumber || '',
-      };
-    }
-    return Promise.reject(res);
-  });
-}
-
 /** 更新用户昵称 */
 export function updateNickname(nickname) {
   return request('/wx/update', 'POST', { nickname });

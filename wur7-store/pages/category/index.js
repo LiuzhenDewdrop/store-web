@@ -1,8 +1,7 @@
 import { Toast } from 'tdesign-miniprogram';
+import { isLogin } from '../../utils/auth';
+import { wxCategoryBase, wxCategoryDetail, wxCartAdd } from '../../services/_utils/api';
 
-import { wxCategoryBase, wxCategoryDetail } from '../../services/_utils/api';
-
-import { getCategoryList } from '../../services/good/fetchCategoryList';
 Page({
   data: {
     categoryList: [],
@@ -63,12 +62,25 @@ Page({
     });
 
   },
-  handleAddCart(e) {
-    // e.detail 就是id
+
+  async onAddCart(e) {
+    if (!isLogin()) {
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '请先登录',
+      });
+      return
+    }
+    const id = e.detail;
+    const res = await wxCartAdd(id);
+    if (res.code !== '0000') {
+      return;
+    }
     Toast({
       context: this,
       selector: '#t-toast',
-      message: '点击加购',
+      message: '商品已加入购物车',
     });
-  }
+  },
 });

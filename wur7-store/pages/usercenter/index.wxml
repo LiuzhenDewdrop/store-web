@@ -9,28 +9,34 @@
 />
 <view class="content-wrapper">
   <view class="action-area cell-box">
-  <view class="action-item">
-    <view class="action-label" bind:tap="onClickUnfund">
-      <price
-          symbol="{{￥}}"
-				  price="{{unfundAmt}}"
-          decimalSmaller
-        />
-        <text>待提现</text>
+    <view class="action-item" bind:tap="onClickUnfund">
+      <view class="action-num">
+        <price
+            symbol="￥"
+            price="{{unfundAmt}}"
+            decimalSmaller
+          />
+      </view>
+      <view class="action-label">待到账</view>
     </view>
-    <view class="action-label" bind:tap="onClickPersons">
-    <text>{{persons}}</text><text>邀请人数</text>
+    <view class="action-divider"></view>
+    <view class="action-item" bind:tap="onClickPersons">
+      <view class="action-num">{{persons}}</view>
+      <view class="action-label">邀请人数</view>
     </view>
-    <view class="action-label" bind:tap="onClickFund">
-      <price
-          symbol="{{￥}}"
-				  price="{{fundAmt}}"
-          decimalSmaller
-        />
-        <text>已提现</text>
+    <view class="action-divider"></view>
+    <view class="action-item" bind:tap="onClickFund">
+      <view class="action-num">
+        <price
+            symbol="￥"
+            price="{{fundAmt}}"
+            decimalSmaller
+            
+          />
+      </view>
+      <view class="action-label">已到账</view>
     </view>
   </view>
-</view>
 
 
   <view class="order-group-wrapper">

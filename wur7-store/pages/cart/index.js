@@ -1,6 +1,7 @@
 import Dialog from 'tdesign-miniprogram/dialog/index';
 import Toast from 'tdesign-miniprogram/toast/index';
-import { fetchCartGroupData } from '../../services/cart/cart';
+
+import { wxCartList, wxCartAdd, wxCartDel, wxCartUpd, wxCartSel } from '../../services/_utils/api'
 
 Page({
   data: {
@@ -10,219 +11,159 @@ Page({
     selectedGoodsCount: 0,
     totalAmount: 0,
   },
-
-  // 调用自定义tabbar的init函数，使页面与tabbar激活状态保持一致
+  
   onShow() {
+    // 调用自定义tabbar的init函数，使页面与tabbar激活状态保持一致
     this.getTabBar().init();
+    this.getCartGroupData();
   },
 
   onLoad() {
-    this.getCartGroupData().then((res) => {
-      const { storeGoods } = this.data; 
-      let selectedGoodsCount = 0;
-      let totalAmount = 0;
-      let isEmpty = true;
-      const carts = res.data;
-      for (const cart of carts) {
-        const store = {};
-        store.isSelected = true; // 该门店已加购商品是否全选
-        store.storeName = cart[0].item.shopName;
-        store.storeId = cart[0].item.shopId;
-        store.shortageGoodsList = []; 
-        store.list = cart.filter((goods) => {
-          // 统计是否全选
-          if (goods.cart.selectStatus === 0) {
-            store.isSelected = false;
-          }
-          if (goods.cart.itemStatus === 1) {
+  },
+
+  // 获取购物车数据
+  async getCartGroupData() {
+    const res = await wxCartList();
+    if (res.code !== '0000') {
+      return
+    }
+    const carts = res.data;
+    let selectedGoodsCount = 0;
+    let totalAmount = 0;
+    let isEmpty = true;
+    const storeGoods = [];
+    let isAllSelected = true;
+    for (const cart of carts) {
+      const store = {};
+      store.isSelected = true; // 该门店已加购商品是否全选
+      store.storeName = cart[0].item.shopName;
+      store.storeId = cart[0].item.shopId;
+      store.shortageGoodsList = []; 
+      store.list = cart.filter((goods) => {
+        // 统计是否全选
+        if (goods.cart.selectStatus === 0) {
+          store.isSelected = false;
+        }
+        if (goods.cart.itemStatus === 1) {
+          if (goods.cart.selectStatus === 1) {
             selectedGoodsCount += goods.cart.quantity;
             totalAmount += goods.cart.quantity * goods.spec.salePrice;
-          } else {
-            store.shortageGoodsList.push(goods);
           }
-          return goods.cart.itemStatus === 1;
-        });
-        if (store.list.length > 0) {
-          isEmpty = false;
+        } else {
+          store.shortageGoodsList.push(goods);
         }
-        storeGoods.push(store);
+        return goods.cart.itemStatus === 1;
+      });
+      if (store.list.length > 0) {
+        isEmpty = false;
       }
-      this.setData({ 
-        storeGoods,
-        isNotEmpty: !isEmpty,
-        totalAmount: totalAmount, 
-        selectedGoodsCount: selectedGoodsCount,
-       });
+      if (!store.isSelected) {
+        isAllSelected = false;
+      }
+      storeGoods.push(store);
+    }
+    this.setData({ 
+      storeGoods,
+      isNotEmpty: !isEmpty,
+      totalAmount: totalAmount, 
+      selectedGoodsCount: selectedGoodsCount,
+      isAllSelected: isAllSelected,
     });
   },
 
-  refreshData() {
-    
-  },
-
-  findGoods(spuId, skuId) {
-    let currentStore;
-    let currentActivity;
-    let currentGoods;
-    const { storeGoods } = this.data;
-    for (const store of storeGoods) {
-      for (const activity of store.promotionGoodsList) {
-        for (const goods of activity.goodsPromotionList) {
-          if (goods.spuId === spuId && goods.skuId === skuId) {
-            currentStore = store;
-            currentActivity = currentActivity;
-            currentGoods = goods;
-            return {
-              currentStore,
-              currentActivity,
-              currentGoods,
-            };
-          }
-        }
-      }
+  // 全选
+  async onSelectAll(e) {
+    const { isAllSelected } = e.detail;
+    const params = {
+      selectAll: 1,
+      selectStatus: isAllSelected ? 0: 1,
     }
-    return {
-      currentStore,
-      currentActivity,
-      currentGoods,
-    };
-  },
-
-  // 注：实际场景时应该调用接口获取购物车数据
-  getCartGroupData() {
-    const { storeGoods } = this.data;
-    if (storeGoods.length == 0) {
-      return fetchCartGroupData();
+    const res = await wxCartSel(params);
+    if (res.code !== '0000') {
+      return
     }
-    return Promise.resolve({ data: storeGoods });
+    this.getCartGroupData();
   },
 
-  // 全选门店
-  selectStoreService({ storeId, isSelected }) {
-    const currentStore = this.data.storeGoods.find((s) => s.storeId === storeId);
-    currentStore.isSelected = isSelected;
-    currentStore.list.forEach((goods) => {
-        goods.cart.selectStatus = isSelected;
-      });
-    return Promise.resolve();
-  },
-
-  // 加购数量变更
-  changeQuantityService({ spuId, skuId, quantity }) {
-    this.findGoods(spuId, skuId).currentGoods.quantity = quantity;
-    return Promise.resolve();
-  },
-
-  // 删除加购商品
-  deleteGoodsService({ spuId, skuId }) {
-    function deleteGoods(group) {
-      for (const gindex in group) {
-        const goods = group[gindex];
-        if (goods.spuId === spuId && goods.skuId === skuId) {
-          group.splice(gindex, 1);
-          return gindex;
-        }
-      }
-      return -1;
+   // 选店铺所有
+  async onStoreSelect(e) {
+    const {
+      store,
+      isSelected,
+    } = e.detail;
+    const params = {
+      selectAll: 0,
+      cartIds: [],
+      selectStatus: isSelected ? 1: 0,
     }
-    const { storeGoods } = this.data;
-    for (const store of storeGoods) {
-        if (deleteGoods(store.list) > -1) {
-          return Promise.resolve();
-      }
-      if (deleteGoods(store.shortageGoodsList) > -1) {
-        return Promise.resolve();
-      }
+    for (const item of store.list) {
+      params.cartIds.push(item.cart.id);
     }
-    return Promise.reject();
+    const res = await wxCartSel(params);
+    if (res.code !== '0000') {
+      return
+    }
+    this.getCartGroupData();
   },
 
   // 选一个
-  onGoodsSelect(e) {
+  async onGoodsSelect(e) {
     const {
-      goods,
+      goods: { cart: {id} },
       isSelected,
     } = e.detail;
-    const { storeGoods } = this.data;
-    const store = storeGoods.find(item => item.storeId === goods.item.shopId);
-    const selectedGoods = store.list.find(item => item.item.id === goods.item.id);
-    selectedGoods.cart.selectStatus = isSelected ? 1 : 0;
-    // todo api
-    // success
-    let selectedGoodsCount = this.data.selectedGoodsCount;
-    let totalAmount = this.data.totalAmount;
-    if (isSelected) {
-      selectedGoodsCount += selectedGoods.cart.quantity;
-      totalAmount += selectedGoods.cart.quantity * selectedGoods.spec.salePrice;
-    } else {
-      selectedGoodsCount -= selectedGoods.cart.quantity;
-      totalAmount -= selectedGoods.cart.quantity * selectedGoods.spec.salePrice;
+    const params = {
+      id: id,
+      selectStatus: isSelected ? 1: 0,
     }
-   
-    this.setData({
-      storeGoods,
-      selectedGoodsCount: selectedGoodsCount,
-      totalAmount: totalAmount,
-    })
-  },
-
-  // 选店铺所有
-  onStoreSelect(e) {
-    const {
-      store: { storeId },
-      isSelected,
-    } = e.detail;
-    const currentStore = this.data.storeGoods.find((s) => s.storeId === storeId);
-    currentStore.isSelected = isSelected;
-    currentStore.list.forEach((goods) => {
-        goods.cart.selectStatus = isSelected;
-      });
-    return Promise.resolve();
+    const res = await wxCartUpd(params);
+    if (res.code !== '0000') {
+      return
+    }
+    this.getCartGroupData();
   },
 
   // 改变数量，直接触发选中
-  onQuantityChange(e) {
+  async onQuantityChange(e) {
     const {
-      goods: { spuId, skuId },
+      goods: { cart: {id} },
       quantity,
     } = e.detail;
-    const { currentGoods } = this.findGoods(spuId, skuId);
-    // 加购数量超过库存数量
-    this.changeQuantityService({ spuId, skuId, quantity }).then(() => this.refreshData());
+    const params = {
+      id: id,
+      quantity: quantity,
+    }
+    const res = await wxCartUpd(params);
+    if (res.code !== '0000') {
+      return
+    }
+    this.getCartGroupData();
   },
 
-  goGoodsDetail(e) {
-    const { item, spec, cart } = e.detail.goods;
-    wx.navigateTo({
-      // url: `/pages/goods/details/index?spuId=${item.id}&specId=${spec.id}&quantity=${cart.quantity}&tab=2`,
-      url: `/pages/goods/details/index?spuId=0&specId=${spec.id}&quantity=${cart.quantity}&tab=2`,
-    });
-  },
-
-  onGoodsDelete(e) {
+  // 删除
+  async onGoodsDelete(e) {
     const {
-      goods: { spuId, skuId },
+      goods: { cart: {id} },
     } = e.detail;
     Dialog.confirm({
       content: '确认删除该商品吗?',
       confirmBtn: '确定',
       cancelBtn: '取消',
-    }).then(() => {
-      this.deleteGoodsService({ spuId, skuId }).then(() => {
-        Toast({ context: this, selector: '#t-toast', message: '商品删除成功' });
-        this.refreshData();
-      });
+    }).then(async() => {
+      const res = await wxCartDel(id);
+      if (res.code !== '0000') {
+        return
+      }
+      Toast({ context: this, selector: '#t-toast', message: '商品删除成功' });
+      this.getCartGroupData();
     });
   },
 
-  onSelectAll(event) {
-    const { isAllSelected } = event?.detail ?? {};
-    Toast({
-      context: this,
-      selector: '#t-toast',
-      message: `${isAllSelected ? '取消' : '点击'}了全选按钮`,
+  goGoodsDetail(e) {
+    const { item, spec, cart } = e.detail.goods;
+    wx.navigateTo({
+      url: `/pages/goods/details/index?spuId=${item.id}&specId=${spec.id}&quantity=${cart.quantity}`,
     });
-    // 调用接口改变全选
   },
 
   onToSettle() {

@@ -4,11 +4,11 @@
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title>5r7 store</title>
+    <title>乐活益家运营平台</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="keywords" content="5r7 store">
+    <meta name="keywords" content="乐活益家运营平台">
     <meta name="description" content="五人齐商铺 一个买卖东西的地方">
-    <link rel="shortcut icon" href="${ctx}/static/img/steam_logo.png">
+    <link rel="shortcut icon" href="${ctx}/static/img/5r7_logo.png">
 
     <link rel="stylesheet" href="${ctx}/static/layui/css/layui.css">
     <link rel="stylesheet" href="${ctx}/static/css/global.css">
@@ -44,7 +44,7 @@
 	<div class="layui-form-item">
 		<div class="layui-inline">
 			<label class="layui-form-label">商品类别</label>
-			<div class="layui-input-inline">
+			<div class="layui-input-inline" style="width:320px;">
 				<c:if test="${pageFlag == 'add' }">
 					<input type="radio" name="itemType" value="1" title="活动" checked="checked">
 					<input type="radio" name="itemType" value="2" title="课程">
@@ -152,17 +152,17 @@
 		</div>
 		<div class="layui-form-item">
 			<div class="layui-inline">
-				<label class="layui-form-label">供货价格（元）</label>
+				<label class="layui-form-label">供货价格（分）</label>
 				<div class="layui-input-inline">
-					<input id="supplyPrice" type="text" lay-filter="supplyPrice" lay-affix="number" min="0" lay-precision="2" class="layui-input" lay-verify="supplyPrice" value="${detail.specs[0].supplyPrice}" placeholder="请输入供货价格">
+					<input id="supplyPrice" type="text" lay-filter="supplyPrice" lay-affix="number" min="0" lay-precision="0" class="layui-input" lay-verify="supplyPrice" value="${detail.specs[0].supplyPrice}" placeholder="请输入供货价格">
 				</div>
 			</div>
 		</div>
 		<div class="layui-form-item">
 			<div class="layui-inline">
-				<label class="layui-form-label">销售价格（元）</label>
+				<label class="layui-form-label">销售价格（分）</label>
 				<div class="layui-input-inline">
-					<input id="salePrice" type="text" lay-filter="salePrice" lay-affix="number" min="0" lay-precision="2" class="layui-input" lay-verify="salePrice" value="${detail.specs[0].salePrice}" placeholder="请输入销售价格">
+					<input id="salePrice" type="text" lay-filter="salePrice" lay-affix="number" min="0" lay-precision="0" class="layui-input" lay-verify="salePrice" value="${detail.specs[0].salePrice}" placeholder="请输入销售价格">
 				</div>
 			</div>
 		</div>
@@ -183,13 +183,13 @@
 	</div>
 	<div class="layui-form-item">
 		<div class="layui-inline">
-			<label class="layui-form-label">快递费</label>
+			<label class="layui-form-label">快递费(分)</label>
 			<div class="layui-input-inline">
-				<input id="deliveryFee" name="deliveryFee" type="text" lay-affix="number" min="0" lay-precision="2" class="layui-input" lay-verify="required|number" value="${detail.item.deliveryFee}" placeholder="请输入快递费">
+				<input id="deliveryFee" name="deliveryFee" type="text" lay-affix="number" min="0" lay-precision="0" class="layui-input" lay-verify="required|number" value="${detail.item.deliveryFee}" placeholder="请输入快递费">
 			</div>
-			<label class="layui-form-label">快递费门槛</label>
+			<label class="layui-form-label">快递费门槛(分)</label>
 			<div class="layui-input-inline">
-				<input id="deliveryThreshold" name="deliveryThreshold" type="text" lay-affix="number" min="0" lay-precision="2" class="layui-input" lay-verify="required|number" value="${detail.item.deliveryThreshold}" placeholder="请输入快递费门槛">
+				<input id="deliveryThreshold" name="deliveryThreshold" type="text" lay-affix="number" min="0" lay-precision="0" class="layui-input" lay-verify="required|number" value="${detail.item.deliveryThreshold}" placeholder="请输入快递费门槛">
 			</div>
 		</div>
 		<div class="layui-inline">
@@ -553,7 +553,7 @@ layui.config({
 			skin : 'layui-layer-molv',
 			offset: '50px',
 			content : url,
-			area: ['400px','500px'],
+			area: ['500px','500px'],
 			resize:true,
 			anim:1,
 			btn: ['确定', '取消'],
@@ -592,7 +592,7 @@ layui.config({
 		var costRatio = '${LOGIN_USER.costRatio}' || 1.25;	// 默认1.25
 		var minPrice = Math.round(supplyPrice * costRatio * 100)/100;
 		if (minPrice > salePrice) {
-			return '销售价格过低，至少达到'+minPrice+'元，或者调低供货价格';
+			return '销售价格过低，至少达到'+minPrice+'分，或者调低供货价格';
 		}
 	}
 
@@ -675,8 +675,8 @@ layui.config({
 		}
 		var postData = {
 			item: data.field,
-			specs: specs,
-			pics: table.cache['picTable'],
+			specList: specs,
+			picList: table.cache['picTable'],
 		};
 		postData.item.itemImage = itemImageUrl;
 		postData.item.itemDetail = tinymce.get('#itemDetail').getContent();

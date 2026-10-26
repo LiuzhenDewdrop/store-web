@@ -4,11 +4,11 @@
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title>5r7 store</title>
+    <title>乐活益家运营平台</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="keywords" content="5r7 store">
+    <meta name="keywords" content="乐活益家运营平台">
     <meta name="description" content="五人齐商铺 一个买卖东西的地方">
-    <link rel="shortcut icon" href="${ctx}/static/img/steam_logo.png">
+    <link rel="shortcut icon" href="${ctx}/static/img/5r7_logo.png">
     <link rel="stylesheet" href="${ctx}/static/layui/css/layui.css">
 
     <script src="${ctx}/static/layui/layui.js"></script>
