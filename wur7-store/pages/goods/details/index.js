@@ -352,7 +352,8 @@ Page({
       return
     }
     // 生成海报
-    this.fetchPoster(1, this.data.spuId);  // todo 改那个1
+    const localUser = getLocalUserInfo();
+    this.fetchPoster(localUser.id, this.data.spuId);
   },
 
   async fetchPoster(inviterId, spuId, specId, quantity) {
