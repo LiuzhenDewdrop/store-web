@@ -1,4 +1,4 @@
-import { wxItemList, wxCartAdd } from '../../services/_utils/api';
+import { wxItemList, wxCartAdd, wxSysSwiper } from '../../services/_utils/api';
 import { isLogin } from '../../utils/auth';
 
 import Toast from 'tdesign-miniprogram/toast/index';
@@ -66,12 +66,21 @@ Page({
     });
   },
 
-  fetchHome() {
+  async fetchHome() {
     const { delay } = require('../../services/_utils/delay');
     const { genSwiperImageList } = require('../../model/swiper');
+    const res = await wxSysSwiper();
+    let swiper = [];
+    if (res.code === '0000') {
+      res.data.forEach((item) => {
+        swiper.push(item.picUrl);
+      });
+    } else {
+      swiper = genSwiperImageList();
+    }
     return delay().then(() => {
       return {
-        swiper: genSwiperImageList(),
+        swiper: swiper,
         tabList: [
           {
             text: '活动',

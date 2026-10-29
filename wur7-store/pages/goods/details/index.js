@@ -362,11 +362,6 @@ Page({
       // 拉取小程序码
       const res = await wxQrCode(inviterId, spuId, specId, quantity, "pages/goods/detail"); 
       if (res.code !== '0000') {
-        Toast({
-          title: '查询失败',
-          icon: 'error',
-          message: res.msg,
-        });
         return
       }
       const qrRes = res.data;
@@ -378,7 +373,11 @@ Page({
         posterPath: posterRes.tempFilePath
       })
     } catch (err) {
-      Toast({ title: '海报生成失败', icon: 'error' })
+      Toast({ 
+        title: '海报生成失败',
+        message: err,
+        icon: 'error' ,
+      })
     } finally {
       wx.hideLoading()
     }
@@ -393,16 +392,135 @@ Page({
   // 保存图片
   async onSaveImage() {
     if (!this.data.posterPath) {
-      Toast({ title: '图片还未生成', icon: 'none' });
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '图片还未生成，请稍后重试',
+        theme: 'warning',
+      });
       return;
     }
-    // 先请求相册权限
-    const authRes = await wx.getSetting()
-    if (!authRes.authSetting['scope.writePhotosAlbum']) {
-      await wx.authorize({ scope: 'scope.writePhotosAlbum' })
+    // 1. 先确保拿到「保存到相册」权限（含被拒后的设置页引导）
+    const authed = await this.ensureAlbumAuth();
+    if (!authed) {
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '未获得相册权限，无法保存',
+        theme: 'warning',
+      });
+      return;
     }
-    await wx.saveImageToPhotosAlbum({ filePath: this.data.posterPath })
-    Toast({ title: '保存成功' })
+
+    // 2. 保存本地临时图片到相册
+    wx.showLoading({ title: '保存中...', mask: true });
+    try {
+      await this.saveToAlbum(posterPath);
+      wx.hideLoading();
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '图片已保存到相册',
+        theme: 'success',
+      });
+    } catch (err) {
+      wx.hideLoading();
+      const errMsg = (err && err.errMsg) || '';
+      console.error('[onSaveImage] 保存失败:', errMsg);
+
+      // 用户主动取消，不打扰
+      if (/cancel/i.test(errMsg)) return;
+
+      // 系统层面关掉了相册权限：再引导一次设置页，开启成功则重试保存
+      if (/auth/i.test(errMsg) && (await this.guideToOpenSetting())) {
+        try {
+          wx.showLoading({ title: '保存中...', mask: true });
+          await this.saveToAlbum(posterPath);
+          wx.hideLoading();
+          Toast({
+            context: this,
+            selector: '#t-toast',
+            message: '图片已保存到相册',
+            theme: 'success',
+          });
+          return;
+        } catch (retryErr) {
+          wx.hideLoading();
+          console.error('[onSaveImage] 重试保存失败:', retryErr);
+        }
+      }
+
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '保存失败，请重试',
+        theme: 'error',
+      });
+    }
+  },
+
+  // 确保已获得「保存到相册」权限，返回布尔值
+  ensureAlbumAuth() {
+    const scope = 'scope.writePhotosAlbum';
+    return new Promise((resolve) => {
+      wx.getSetting({
+        success: (res) => {
+          const value = (res.authSetting || {})[scope];
+          if (value === true) {
+            // 已授权，直接放行
+            resolve(true);
+          } else if (value === false) {
+            // 曾被拒绝：wx.authorize 不会再弹窗，只能引导去设置页
+            resolve(this.guideToOpenSetting());
+          } else {
+            // 首次申请授权
+            wx.authorize({
+              scope,
+              success: () => resolve(true),
+              fail: () => resolve(this.guideToOpenSetting()),
+            });
+          }
+        },
+        fail: () => resolve(false),
+      });
+    });
+  },
+
+  // 引导用户到设置页开启相册权限，返回最终是否已开启
+  guideToOpenSetting() {
+    return new Promise((resolve) => {
+      wx.showModal({
+        title: '需要相册权限',
+        content: '保存图片需要您授权「保存到相册」，请在设置中开启后重试',
+        confirmText: '去设置',
+        confirmColor: '#FA550F',
+        cancelText: '取消',
+        success: (modalRes) => {
+          if (!modalRes.confirm) {
+            resolve(false);
+            return;
+          }
+          wx.openSetting({
+            success: (settingRes) => {
+              resolve(!!(settingRes.authSetting || {})['scope.writePhotosAlbum']);
+            },
+            fail: () => resolve(false),
+          });
+        },
+        fail: () => resolve(false),
+      });
+    });
+  },
+
+  // 保存到相册（Promise 化，便于 await / try-catch）
+  saveToAlbum(filePath) {
+    return new Promise((resolve, reject) => {
+      wx.saveImageToPhotosAlbum({
+        filePath,
+        success: resolve,
+        fail: reject,
+      });
+    });
   },
 
   onLoad(query) {

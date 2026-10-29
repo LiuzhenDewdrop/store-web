@@ -46,14 +46,14 @@
 			<label class="layui-form-label">商品类别</label>
 			<div class="layui-input-inline" style="width:320px;">
 				<c:if test="${pageFlag == 'add' }">
-					<input type="radio" name="itemType" value="1" title="活动" checked="checked">
-					<input type="radio" name="itemType" value="2" title="课程">
-					<input type="radio" name="itemType" value="3" title="商品">
+					<input type="radio" name="itemType" lay-filter="itemTypeFilter" value="1" title="活动" checked="checked">
+					<input type="radio" name="itemType" lay-filter="itemTypeFilter" value="2" title="课程">
+					<input type="radio" name="itemType" lay-filter="itemTypeFilter" value="3" title="商品">
 				</c:if>
 				<c:if test="${pageFlag == 'upd' }">
-					<input type="radio" name="itemType" value="1" title="活动" <c:if test="${detail.item.itemType == 1 }">checked</c:if>/>
-					<input type="radio" name="itemType" value="2" title="课程" <c:if test="${detail.item.itemType == 2 }">checked</c:if>/>
-					<input type="radio" name="itemType" value="2" title="商品" <c:if test="${detail.item.itemType == 3 }">checked</c:if>/>
+					<input type="radio" name="itemType" lay-filter="itemTypeFilter" value="1" title="活动" <c:if test="${detail.item.itemType == 1 }">checked</c:if>/>
+					<input type="radio" name="itemType" lay-filter="itemTypeFilter" value="2" title="课程" <c:if test="${detail.item.itemType == 2 }">checked</c:if>/>
+					<input type="radio" name="itemType" lay-filter="itemTypeFilter" value="3" title="商品" <c:if test="${detail.item.itemType == 3 }">checked</c:if>/>
 				</c:if>
 			</div>
 		</div>
@@ -97,7 +97,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="layui-form-item">
+	<div class="layui-form-item" id="catergoryDiv">
 		<div class="layui-inline">
 			<label class="layui-form-label">商品分类</label>
 			<div class="layui-input-inline" style="width:140px;">
@@ -176,11 +176,15 @@
 	<div class="layui-form-item">
 		<div class="layui-inline">
 			<label class="layui-form-label">商品详情</label>
-			<div class="layui-input-block" style="margin-left: 150px;">
-				<textarea type="text" id="itemDetail" name="itemDetail" class="layui-textarea" maxlength="100" style="resize:none;min-height:80px;width: 93%;" placeholder="请输入详细介绍"></textarea>
+<%--			<div class="layui-input-block" style="margin-left: 150px;">--%>
+<%--				<textarea type="text" id="itemDetail" name="itemDetail" class="layui-textarea" maxlength="100" style="resize:none;min-height:80px;width: 93%;" placeholder="请输入详细介绍"></textarea>--%>
+<%--			</div>--%>
+			<div class="layui-form-mid layui-word-aux">
+				<a class="layui-btn layui-btn-xs layui-btn-normal select_picture" id="uploadDescBtn" data-id="" title="选择图片"><i class="layui-icon layui-icon-picture"></i>选择图片</a>'
 			</div>
 		</div>
 	</div>
+	<table id="descTable"></table>
 	<div class="layui-form-item">
 		<div class="layui-inline">
 			<label class="layui-form-label">快递费(分)</label>
@@ -198,12 +202,8 @@
 	</div>
     <div class="layui-form-item" style="text-align: center;margin-top: 18px;height:138px;">
 		<div class="layui-inline">
-			<c:if test="${pageFlag == 'add' || pageFlag == 'upd'}">
-				<button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="saveRes">保存为草稿</button>
-			</c:if>
-			<c:if test="${pageFlag == 'detail'}">
-				<button class="layui-btn layui-btn-disabled" lay-submit="" lay-filter="saveRes">保存为草稿</button>
-			</c:if>
+			<button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="saveRes1">保存为草稿</button>
+			<button class="layui-btn layui-btn-warm" lay-submit="" lay-filter="saveRes3">保存并发布</button>
 			<button id="cancle" class="layui-btn layui-btn-primary">取消</button>
 		</div>
     </div>
@@ -228,6 +228,7 @@ layui.config({
 		switch (pageFlag) {
 			case "add":
 				queryCategory(1, 0);
+				$("#catergoryDiv").hide();
 				break;
 			case "upd":
 			case "detail":
@@ -239,6 +240,9 @@ layui.config({
 				queryCategory(2, itemCategory1);
 				$("#itemCategory2 option[value='" + itemCategory2 + "']").prop("selected","selected");
 				$("#itemCategory3 option[value='" + itemCategory3 + "']").prop("selected","selected");
+				if ('${detail.item.itemType}' !== '3') {
+					$("#catergoryDiv").hide();
+				}
 				break;
 			default:
 				break;
@@ -254,6 +258,35 @@ layui.config({
 		table.render({
 			elem: '#picTable',
 			data: itemPictures,
+			initSort: {
+				field: 'sortNo',
+				type: 'asc'
+			},
+			skin:'row',
+			even:'true',
+			size: 'lg',
+			height: '120',
+			maxHeight: '500',
+			cols: [[
+				// {field:'id', title: '序号', width: '6%', align:'center'},
+				{field:'sortNo', title: '排序(升序)', width: '10%', align:'center', sort:true},
+				{field:'picUrl', title: '商品图片', width: '20%', minWidth: '120', align:'center',templet: '#resImageTpl'},
+				// {field:'progressPercent', title: '上传进度', width: '10%', align:'center',templet: '#resProgressTpl'},
+				{title: '上传进度', width: '20%', align:'center',templet: '#resProgressTpl'},
+				{fixed:'right', title: '操作', width: '20%', align:'center',toolbar: '#resPicBar'}
+			]],
+		});
+
+		var itemDesc = '${detail.desc}';
+		if (itemDesc) {
+			itemDesc = JSON.parse('${detail.desc}');
+		} else {
+			itemDesc = [];
+		}
+
+		table.render({
+			elem: '#descTable',
+			data: itemDesc,
 			initSort: {
 				field: 'sortNo',
 				type: 'asc'
@@ -296,40 +329,60 @@ layui.config({
 		// 	convert_urls: false,
 		// 	relative_urls: false,
 		// });
-		tinymce.render({
-			width: 800,
-			height: 800,
-			elem: '#itemDetail',		// 绑定指定的textarea
-			convert_urls: false,		// 关闭 URL 自动转换
-			relative_urls: false,		// 强制绝对路径
-			remove_script_host: false,	// 保留域名
-			plugins: 'lists link image paste advlist',
-			paste_data_images: true,
-			menubar: 'edit insert format',
-			toolbar: ['image | formatselect | bold italic backcolor | bullist numlist', 'undo redo | alignleft aligncenter alignright alignjustify | outdent indent | removeformat'],
-			// 只保留 p, div, span, img, a, h1-h6, ul/ol/li, br, hr, b/strong, i/em
-			valid_elements: 'p[style|class],div[style|class],span[style|class],' +
-				'img[src|alt|width|height|style|class],' +
-				'a[href|style|class],' +
-				'h1[style|class],h2[style|class],h3[style|class],h4[style|class],h5[style|class],h6[style|class],' +
-				'ul[style|class],ol[style|class],li[style|class],' +
-				'br[style|class],hr[style|class],' +
-				'b[style|class],strong[style|class],i[style|class],em[style|class]',
-			setup: function(editor) {
-				editor.on('init', function() {
-					this.setContent('${detail.item.itemDetail}');
-				});
-			},
-			// 图片
-			images_upload_url: '${ctx}/item/upload.do',
-			form:{
-				name: 'file',
-			}
-		});
+		<%--tinymce.render({--%>
+		<%--	width: 800,--%>
+		<%--	height: 800,--%>
+		<%--	elem: '#itemDetail',		// 绑定指定的textarea--%>
+		<%--	convert_urls: false,		// 关闭 URL 自动转换--%>
+		<%--	relative_urls: false,		// 强制绝对路径--%>
+		<%--	remove_script_host: false,	// 保留域名--%>
+		<%--	plugins: 'lists link image paste advlist',--%>
+		<%--	paste_data_images: true,--%>
+		<%--	menubar: 'edit insert format',--%>
+		<%--	toolbar: ['image | formatselect | bold italic backcolor | bullist numlist', 'undo redo | alignleft aligncenter alignright alignjustify | outdent indent | removeformat'],--%>
+		<%--	// 只保留 p, div, span, img, a, h1-h6, ul/ol/li, br, hr, b/strong, i/em--%>
+		<%--	valid_elements: 'p[style|class],div[style|class],span[style|class],' +--%>
+		<%--		'img[src|alt|width|height|style|class],' +--%>
+		<%--		'a[href|style|class],' +--%>
+		<%--		'h1[style|class],h2[style|class],h3[style|class],h4[style|class],h5[style|class],h6[style|class],' +--%>
+		<%--		'ul[style|class],ol[style|class],li[style|class],' +--%>
+		<%--		'br[style|class],hr[style|class],' +--%>
+		<%--		'b[style|class],strong[style|class],i[style|class],em[style|class]',--%>
+		<%--	setup: function(editor) {--%>
+		<%--		editor.on('init', function() {--%>
+		<%--			this.setContent('${detail.item.itemDetail}');--%>
+		<%--		});--%>
+		<%--	},--%>
+		<%--	// 图片--%>
+		<%--	images_upload_url: '${ctx}/item/upload.do',--%>
+		<%--	form:{--%>
+		<%--		name: 'file',--%>
+		<%--	}--%>
+		<%--});--%>
 	}
 
 	/*初始化*/
 	resInit();
+
+	// 改变商品类别时
+	form.on('radio(itemTypeFilter)', function(data) {
+		changeItemType(data.value)
+	});
+	function changeItemType(itemType) {
+		// $('input[name="itemType"][value="' + itemType + '"]').prop('checked', true);
+		switch (itemType) {
+			case '1':
+			case '2':
+				$("#catergoryDiv").hide();
+				break;
+			case '3':
+				$("#catergoryDiv").show();
+				break;
+			default:
+				break;
+		}
+		form.render('radio');
+	}
 
 	// 上传封面图片
 	var uploadInst = upload.render({
@@ -433,6 +486,106 @@ layui.config({
 					}
 					obj.dataCache.sortNo = num;
 					table.renderData('picTable');
+					table.sort();
+				});
+				break;
+			case 'detail':
+				layer.photos({
+					photos: {
+						"title": "图片详情",
+						"start": 0,
+						"data": [
+							{
+								"alt": "图片详情",
+								"src": obj.data.picUrl,
+							}
+						]
+					},
+					// footer: false // 是否显示底部栏 --- 2.8.16+
+				});
+				break;
+			default:
+				break;
+		}
+	});
+
+	// 上传详情图
+	var uploadInst2 = upload.render({
+		elem: '#uploadDescBtn',
+		url: '${ctx}/item/upload.do',
+		before: function(obj) {
+			// 预读本地文件示例，不支持ie8
+			obj.preview(function(index, file, result) {
+				var picCache = table.cache['descTable'];
+				let maxSortNo = 0;
+				if (picCache) {
+					for (let i = 0; i < picCache.length; i++) {
+						let item = picCache[i].sortNo;
+						if (item && item > maxSortNo) {
+							maxSortNo = item;
+						}
+					}
+				}
+				picCache.push({
+					sortNo: maxSortNo + 1,
+					picUrl: result,
+					index: index,
+				});
+				table.renderData('descTable');
+				element.render('progress'); // 渲染新加的进度条组件
+			});
+		},
+		done: function(res, index) {
+			// 上传结果
+			if(res.code === '0000') {
+				var result = res.data;
+				var picCache = table.cache['descTable'];
+				const pic = picCache.find(pic => pic.index === index);
+				pic.picUrl = result;
+				table.renderData('descTable');
+				layer.msg('上传完毕', {icon: 1});
+			} else {
+				return layer.msg('上传失败:'+res.msg);
+			}
+		},
+		error: function(index) {
+			var picCache = table.cache['descTable'];
+			const picIndex = picCache.findIndex(pic => pic.index === index);
+			if (picIndex !== -1) {
+				picCache.splice(picIndex, 1);
+			}
+			return layer.msg('上传失败');
+		},
+		progress: function(n, elem, e, index){
+			element.progress('progress-'+ index, n + '%');
+		}
+	});
+
+	table.on('tool(descTable)', function(obj) {
+		var data = obj.data;
+		var layEvent = obj.event;
+		switch (layEvent) {
+			case 'delPic':
+				obj.del();
+				break;
+			case 'changeSort':
+				layer.prompt({title: '请输入排序数字0靠前，9靠后', formType: 0, type: 'number'}, function(text, index){
+					layer.close(index);
+					if (text == null || text === '') {
+						layer.msg("请输入内容");
+						return ;
+					}
+					if (isNaN(text)) {
+						layer.msg("不是数字，请重新输入");
+						return ;
+					}
+					var num = parseInt(text);
+					if (num < 1) {
+						layer.msg("请输入正整数");
+						return ;
+					}
+					obj.dataCache.sortNo = num;
+					table.renderData('descTable');
 					table.sort();
 				});
 				break;
@@ -596,16 +749,28 @@ layui.config({
 		}
 	}
 
-	$('#supplyPrice').on('input', function(e) {
+	$('#supplyPrice').on('change', function(e) {
+		if ($('#salePrice').val() === '') {
+			return;
+		}
 		return form.validate('#supplyPrice');
 	});
-	$('#salePrice').on('input', function(e) {
+	$('#salePrice').on('change', function(e) {
+		if ($('#supplyPrice').val() === '') {
+			return;
+		}
 		return form.validate('#salePrice');
 	});
 	form.on('input-affix(supplyPrice)', function(data){
+		if ($('#salePrice').val() === '') {
+			return;
+		}
 		return form.validate('#supplyPrice');
 	});
 	form.on('input-affix(salePrice)', function(data){
+		if ($('#supplyPrice').val() === '') {
+			return;
+		}
 		return form.validate('#salePrice');
 	});
 
@@ -653,7 +818,16 @@ layui.config({
 	});
 
 	/**保存*/
-	form.on("submit(saveRes)",function(data) {
+	form.on("submit(saveRes1)", function (data) {
+		save(data, 1);
+		return false;
+	});
+	form.on("submit(saveRes3)", function (data) {
+		save(data, 3);
+		return false;
+	});
+
+	function save(data, type) {
 		var pageFlag = $("#pageFlag").val();
 		var itemImageUrl = $('#itemImage').attr('data-url')
 		var specs = [];
@@ -677,9 +851,11 @@ layui.config({
 			item: data.field,
 			specList: specs,
 			picList: table.cache['picTable'],
+			desc: table.cache['descTable'],
 		};
 		postData.item.itemImage = itemImageUrl;
-		postData.item.itemDetail = tinymce.get('#itemDetail').getContent();
+		//postData.item.itemDetail = tinymce.get('#itemDetail').getContent();
+		postData.item.itemStatus = type;
 		$.ajax({
 			url : '${ctx}/item/' + pageFlag + '.do',
 			type : 'post',
@@ -688,20 +864,19 @@ layui.config({
 			data : JSON.stringify(postData),
 			success : function(data) {
 				if (data.code === "0000") {
-					location.reload();
 					common.cmsLaySucMsg("保存成功");
-					var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-					parent.layer.close(index); //再执行关闭
-					parent.location.reload();
+					setTimeout(() => {
+						var layId = top.layui.$('.layui-tab-title .layui-this').attr('lay-id')
+						parent.layui.element.tabDelete('bodyTab', layId).init();
+					}, 500);
 				} else {
 					common.cmsLayErrorMsg(data.msg);
 				}
 			}, error:function(data) {
-				layer.close(index);
+				common.cmsLayErrorMsg(data.msg);
 			}
 		});
-		return false;
-	});
+	}
 
 	/**取消*/
 	$("#cancle").click(function() {

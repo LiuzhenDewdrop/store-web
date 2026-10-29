@@ -1,7 +1,4 @@
-/**
- * 微信小程序海报生成通用工具
- * 基于Canvas 2D实现，兼容TDesign零售项目基础库2.6.5+要求
- */
+import { patchRoundRect } from './canvas';
 export default class PosterGenerator {
   constructor(canvasId, ctx) {
     this.canvasId = canvasId
@@ -83,6 +80,7 @@ export async function generatePoster(canvasId, goodsInfo, qrCode) {
   const generator = new PosterGenerator(canvasId)
   await generator.init(POSTER_SIZE.width, POSTER_SIZE.height)
   const ctx = generator.ctx
+  patchRoundRect(ctx);
 
   // 1. 绘制背景
   const gradient = ctx.createLinearGradient(0, 0, POSTER_SIZE.width, POSTER_SIZE.height)

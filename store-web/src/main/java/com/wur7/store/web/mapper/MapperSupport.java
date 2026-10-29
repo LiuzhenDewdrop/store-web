@@ -14,6 +14,7 @@ import com.wur7.store.mapper.SysItemCategoryMapper;
 import com.wur7.store.mapper.SysMenuMapper;
 import com.wur7.store.mapper.SysRoleMapper;
 import com.wur7.store.mapper.SysRoleMenuMapper;
+import com.wur7.store.mapper.SysSwiperMapper;
 import com.wur7.store.mapper.SysUserMapper;
 
 @Component
@@ -41,4 +42,6 @@ public class MapperSupport {
 	public ShopCustomerMapper shopCustomerMapper;
 	@Resource
 	public ShopCartMapper shopCartMapper;
+	@Resource
+	public SysSwiperMapper sysSwiperMapper;
 }

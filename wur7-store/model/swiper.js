@@ -26,6 +26,7 @@
 // ];
 
 const images = [
+  'https://5renqi.com/store-web/image/avatar/2026-10/29/spW9xS1793255362889.jpg',
   'https://tdesign.gtimg.com/miniprogram/template/retail/home/v2/banner1.png',
   'https://tdesign.gtimg.com/miniprogram/template/retail/home/v2/banner2.png',
   'https://tdesign.gtimg.com/miniprogram/template/retail/home/v2/banner3.png',

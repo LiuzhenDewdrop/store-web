@@ -78,3 +78,7 @@ export function wxCartUpd(cart) {
 export function wxCartSel(sel) {
   return request('/wx/cart/sel', 'POST', sel);
 }
+// 查询swiper列表
+export function wxSysSwiper() {
+  return request('/wx/sys/swiper', 'POST');
+}

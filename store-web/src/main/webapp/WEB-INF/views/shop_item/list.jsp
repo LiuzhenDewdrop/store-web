@@ -179,9 +179,9 @@
 					{field:'brandName', title: '商品品牌', width: '10%', align:'center'},
 					{field:'shopName', title: '供应商', width: '10%', align:'center'},
 					{field:'itemStatus', title: '商品状态', width: '10%', align:'center',templet: '#resStatusTpl'},
-					{field:'updateTime', title: '更新时间', width: '10%', align:'center', templet: '#updateTimeTpl'},
-					{field:'createTime', title: '创建时间', width: '10%', align:'center', templet: '#createTimeTpl'},
-					{fixed:'right', title: '操作', width: '10%', align:'center',toolbar: '#resBar'}
+					{field:'updateTime', title: '更新时间', width: '15%', align:'center', templet: '#updateTimeTpl'},
+					{field:'createTime', title: '创建时间', width: '15%', align:'center', templet: '#createTimeTpl'},
+					{fixed:'right', title: '操作', width: '15%', align:'center',toolbar: '#resBar'}
 				]],
 				page: true,
 				limit: 20
@@ -217,10 +217,6 @@
 					url =  '${ctx}/item/upd?id=' + data.id;
 					common.cmsLayOpen('编辑商品',url,'880px','600px');
 					break;
-				case 'res_detail':
-					url =  '${ctx}/item/detail?id=' + data.id;
-					common.cmsLayOpen('查看商品详情',url,'880px','600px');
-					break;
 				case 'res_del':
 					url = "${ctx}/item/del.do";
 					var param = {id: data.id};
@@ -234,6 +230,7 @@
 				default:
 					break;
 			}
+			searchList();
 		});
 	});
 </script>
@@ -284,13 +281,10 @@
 	<div class="layui-btn-group">
 		<shiro:hasPermission name="shop:item:upd">
 			{{# if(d.itemStatus == 1){ }}
-			<a class="layui-btn layui-btn-xs layui-btn-disabled" lay-event="res_edit"><i class="layui-icon  layui-icon-edit"></i>编辑</a>
+			<a class="layui-btn layui-btn-xs layui-btn-disabled"><i class="layui-icon  layui-icon-edit"></i>编辑</a>
 			{{# } else if(d.itemStatus == 2 || d.itemStatus == 3){ }}
 			<a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="res_edit"><i class="layui-icon  layui-icon-edit"></i>编辑</a>
 			{{# } }}
-		</shiro:hasPermission>
-		<shiro:hasPermission name="shop:item:detail">
-			<a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="res_detail"><i class="layui-icon  layui-icon-read"></i>详情</a>
 		</shiro:hasPermission>
 		<shiro:hasPermission name="shop:item:operate">
 			{{# if(d.itemStatus == 1){ }}
@@ -300,9 +294,8 @@
 			{{# } }}
 		</shiro:hasPermission>
 		<shiro:hasPermission name="shop:item:del">
-			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="res_del"><i class="layui-icon  layui-icon-delete"></i>删除</a>
 			{{# if(d.itemStatus == 1){ }}
-			<a class="layui-btn layui-btn-xs layui-btn-disabled" lay-event="res_del"><i class="layui-icon  layui-icon-delete"></i>删除</a>
+			<a class="layui-btn layui-btn-xs layui-btn-disabled"><i class="layui-icon  layui-icon-delete"></i>删除</a>
 			{{# } else if(d.itemStatus == 2 || d.itemStatus == 3){ }}
 			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="res_del"><i class="layui-icon  layui-icon-delete"></i>删除</a>
 			{{# } }}

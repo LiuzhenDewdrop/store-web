@@ -55,5 +55,5 @@ public interface ShopItemPicMapper {
      */
     int updateByPrimaryKey(ShopItemPic record);
 	
-	List<ShopItemPic> getByItem(@Param("itemId") Integer itemId);
+	List<ShopItemPic> getByItem(@Param("itemId") Integer itemId, @Param("picType") Integer picType);
 }

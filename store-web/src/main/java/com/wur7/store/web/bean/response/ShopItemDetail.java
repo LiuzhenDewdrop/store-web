@@ -13,13 +13,15 @@ public class ShopItemDetail {
 	private ShopItem item;
 	private List<ShopItemSpec> specList;
 	private List<ShopItemPic> picList;
+	private List<ShopItemPic> desc;
 	
 	public ShopItemDetail() {
 	}
 	
-	public ShopItemDetail(ShopItem item, List<ShopItemSpec> specList, List<ShopItemPic> picList) {
+	public ShopItemDetail(ShopItem item, List<ShopItemSpec> specList, List<ShopItemPic> picList, List<ShopItemPic> detailList) {
 		this.item = item;
 		this.specList = specList;
 		this.picList = picList;
+		this.desc = detailList;
 	}
 }

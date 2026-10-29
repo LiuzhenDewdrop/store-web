@@ -40,7 +40,7 @@
 }
 
 .goods-category-normal-item-container-item {
-  height: 196rpx;
+  height: 360rpx;
   display: flex;
   flex-direction: column;
   align-items: center;

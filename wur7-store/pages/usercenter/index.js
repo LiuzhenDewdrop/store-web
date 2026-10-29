@@ -82,8 +82,8 @@ const getDefaultData = () => ({
   showKefu: true,
   versionNo: '',
   unfundAmt: 103001,
-  persons: 500,
-  fundAmt: 520330054,
+  persons: 20,
+  fundAmt: 2655654,
 });
 
 Page({

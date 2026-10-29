@@ -18,10 +18,8 @@ import com.github.pagehelper.PageInfo;
 import com.wur7.store.bean.IReturnBean;
 import com.wur7.store.entity.ShopItem;
 import com.wur7.store.entity.SysRole;
-import com.wur7.store.util.util.JsonUtil;
 import com.wur7.store.web.bean.LayPage;
 import com.wur7.store.web.bean.response.ShopItemDetail;
-import com.wur7.store.web.bean.response.SysMenuResp;
 import com.wur7.store.web.service.ShopItemService;
 import com.wur7.store.web.service.SysMenuService;
 import com.wur7.store.web.service.SysRoleService;
@@ -181,47 +179,30 @@ public class ShopItemController extends BasicController {
 	@RequestMapping(value = "/del.do")
 	@ResponseBody
 	@RequiresPermissions("shop:item:del")
-	public IReturnBean<?> del(HttpServletRequest request, Integer id) {
+	public IReturnBean<?> del(HttpServletRequest request, @RequestParam("id") Integer id) {
 		try {
-			return sysRoleService.del(id);
+			return shopItemService.del(id);
 		} catch (Exception e) {
-			log.error("del role error:", e);
+			log.error("del item error:", e);
 			return IReturnBean.error();
 		}
 	}
 	
 	/**
-	 * @title  toGrant
-	 * @description 跳转到商品授权页面
+	 * @title  operate
+	 * @description 修改状态
 	 * @param request
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value = "/grant")
-	@RequiresPermissions("shop:item:grant")
-	public String toGrant(HttpServletRequest request, Integer id) {
-		List<SysMenuResp> tree = sysMenuService.getTree(id);
-		request.setAttribute("tree", JsonUtil.toJSONString(tree));
-		request.setAttribute("roleId", id);
-		return "shop_item/grant";
-	}
-	
-	/**
-	 * @title  grant
-	 * @description 授权
-	 * @param request
-	 * @param roleId
-	 * @param menuIds
-	 * @return
-	 */
-	@RequestMapping(value = "/grant.do")
+	@RequestMapping(value = "/operate.do")
 	@ResponseBody
-	@RequiresPermissions("shop:item:grant")
-	public IReturnBean<?> grant(HttpServletRequest request, @RequestParam("roleId") Integer roleId, @RequestParam("menuIds[]") List<Integer> menuIds) {
+	@RequiresPermissions("shop:item:operate")
+	public IReturnBean<?> operate(HttpServletRequest request, @RequestParam("id") Integer id) {
 		try {
-			return sysRoleService.grant(roleId, menuIds, getCurrentUser());
+			return shopItemService.operate(id);
 		} catch (Exception e) {
-			log.error("del role error:", e);
+			log.error("operate item error:", e);
 			return IReturnBean.error();
 		}
 	}

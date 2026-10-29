@@ -20,10 +20,10 @@ import com.wur7.store.entity.ShopItem;
 import com.wur7.store.entity.ShopItemPic;
 import com.wur7.store.entity.ShopItemSpec;
 import com.wur7.store.entity.SysUser;
-import com.wur7.store.enums.ITEM_STATUS;
 import com.wur7.store.web.bean.LayPage;
-import com.wur7.store.web.bean.response.ShopItemDetail;
 import com.wur7.store.web.bean.request.AppQuery;
+import com.wur7.store.web.bean.response.ShopItemDetail;
+import com.wur7.store.web.emuns.Category;
 import com.wur7.store.web.mapper.MapperSupport;
 
 @Service
@@ -58,8 +58,14 @@ public class ShopItemService {
 			int minSalePrice = detail.getSpecList().stream()
 					.mapToInt(ShopItemSpec::getSalePrice)
 					.min().orElse(0);
+			if (item.getItemType() == Category.ACTIVITY.getItemType()
+				|| item.getItemType() == Category.COURSE.getItemType()) {
+				item.setItemCategory1(null);
+				item.setItemCategory2(null);
+				item.setItemCategory3(null);
+			}
 			item.setSalePrice(minSalePrice);
-			item.setItemStatus(ITEM_STATUS.DRAFT.STATUS);
+//			item.setItemStatus(ITEM_STATUS.DRAFT.STATUS);
 			item.setDelStatus(CommonConstant.DEL_STATUS_EXIST);
 			item.setSoldUnitNum(0);
 			item.setCreator(operator.getId());
@@ -75,10 +81,18 @@ public class ShopItemService {
 			for (ShopItemPic pic : picList) {
 				pic.setItemId(itemId);
 				pic.setDelStatus(CommonConstant.DEL_STATUS_EXIST);
+				pic.setPicType(CommonConstant.PIC_TYPE_SWIPPER);
 				mapperSupport.shopItemPicMapper.insert(pic);
 			}
+			List<ShopItemPic> descList = detail.getDesc();
+			for (ShopItemPic desc : descList) {
+				desc.setItemId(itemId);
+				desc.setDelStatus(CommonConstant.DEL_STATUS_EXIST);
+				desc.setPicType(CommonConstant.PIC_TYPE_DETAIL);
+				mapperSupport.shopItemPicMapper.insert(desc);
+			}
 		} else {
-			item.setItemStatus(ITEM_STATUS.DRAFT.STATUS);
+//			item.setItemStatus(ITEM_STATUS.DRAFT.STATUS);
 			item.setUpdateTime(new Date());
 			// todo item其它字段
 			mapperSupport.shopItemMapper.updateByPrimaryKeySelective(item);
@@ -113,8 +127,12 @@ public class ShopItemService {
 	
 	private ShopItemDetail genDetail(ShopItem shopItem) {
 		List<ShopItemSpec> specs = mapperSupport.shopItemSpecMapper.getByItem(shopItem.getId());
-		List<ShopItemPic> pics = mapperSupport.shopItemPicMapper.getByItem(shopItem.getId());
-		return new ShopItemDetail(shopItem, specs, pics);
+		List<ShopItemPic> pics = mapperSupport.shopItemPicMapper.getByItem(shopItem.getId(), CommonConstant.PIC_TYPE_SWIPPER);
+		ShopItemPic first = new ShopItemPic();
+		first.setPicUrl(shopItem.getItemImage());
+		pics.add(0, first);
+		List<ShopItemPic> details = mapperSupport.shopItemPicMapper.getByItem(shopItem.getId(), CommonConstant.PIC_TYPE_DETAIL);
+		return new ShopItemDetail(shopItem, specs, pics, details);
 	}
 	
 	public IReturnBean<ShopItemDetail> detailForApp(Integer id) {
@@ -123,5 +141,43 @@ public class ShopItemService {
 			return IReturnBean.fail("查不到此商品");
 		}
 		return IReturnBean.success(genDetail(shopItem));
+	}
+	
+	public IReturnBean<?> del(Integer id) {
+		if (id == null) {
+			return IReturnBean.fail("未查询到商品");
+		}
+		ShopItem item = mapperSupport.shopItemMapper.selectByPrimaryKey(id);
+		if (item == null) {
+			return IReturnBean.fail("未查询到商品");
+		}
+		ShopItem del = new ShopItem();
+		del.setId(id);
+		del.setDelStatus(CommonConstant.DEL_STATUS_DEL);
+		del.setUpdateTime(new Date());
+		mapperSupport.shopItemMapper.updateByPrimaryKeySelective(del);
+		return IReturnBean.success();
+	}
+	
+	public IReturnBean<?> operate(Integer id) {
+		if (id == null) {
+			return IReturnBean.fail("未查询到商品");
+		}
+		ShopItem item = mapperSupport.shopItemMapper.selectByPrimaryKey(id);
+		if (item == null) {
+			return IReturnBean.fail("未查询到商品");
+		}
+		ShopItem record = new ShopItem();
+		record.setId(id);
+		// 商品状态【1：上架，2：下架，3：草稿】
+		// 上架变为下架，下架和草稿都上架
+		if (item.getItemStatus() == CommonConstant.ITEM_STATUS_UP) {
+			record.setItemStatus(CommonConstant.ITEM_STATUS_DOWN);
+		} else {
+			record.setItemStatus(CommonConstant.ITEM_STATUS_UP);
+		}
+		record.setUpdateTime(new Date());
+		mapperSupport.shopItemMapper.updateByPrimaryKeySelective(record);
+		return IReturnBean.success();
 	}
 }

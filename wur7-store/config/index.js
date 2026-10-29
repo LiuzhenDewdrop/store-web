@@ -2,9 +2,9 @@ export const config = {
   /** 是否使用mock代替api返回 */
   useMock: true,
   /** 项目域名 */
-  //apiRoot: 'https://www.5renqi.com/store-web',
-  //apiRoot: 'http://127.0.0.1:8011/store-web',
-  apiRoot: 'https://127.0.0.1:8443/store-web',
+  apiRoot: 'https://www.5renqi.com/store-web',
+  // apiRoot: 'http://127.0.0.1:8011/store-web',
+  // apiRoot: 'https://127.0.0.1:8443/store-web',
 };
 
 export const imgPrefix = config.apiRoot;

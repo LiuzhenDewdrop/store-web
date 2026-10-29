@@ -58,7 +58,7 @@ public class Test001 {
 	
 	public static void main(String[] args) {
 		// 商品分类
-		parseJsonFile();
+		// parseJsonFile();
 		//readFile();
 	}
 	

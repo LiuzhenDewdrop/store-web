@@ -106,7 +106,7 @@ public class ShopCartService {
 			ShopCart record = new ShopCart();
 			record.setCustomerId(customer);
 			record.setSelectStatus(req.getSelectStatus());
-			record.setUpdateTime(new Date());
+//			record.setUpdateTime(new Date());	切换选中状态不影响排序
 			mapperSupport.shopCartMapper.updateCustomerSelectStatus(record);
 			return IReturnBean.success();
 		}
@@ -120,7 +120,7 @@ public class ShopCartService {
 			ShopCart record = new ShopCart();
 			record.setId(cartId);
 			record.setSelectStatus(req.getSelectStatus());
-			record.setUpdateTime(new Date());
+//			record.setUpdateTime(new Date());	切换选中状态不影响排序
 			mapperSupport.shopCartMapper.updateCartSelectStatus(record);
 		}
 		return IReturnBean.success();

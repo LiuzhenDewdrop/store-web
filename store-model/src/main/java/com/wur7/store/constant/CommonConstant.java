@@ -20,6 +20,11 @@ public class CommonConstant {
 	public final static int SELECT_STATUS_YES = 1;
 	public final static int SELECT_STATUS_NO = 0;
 	
+	// shop_item_pic
+	// `pic_type` int(11) DEFAULT NULL COMMENT '图片类型【1：轮播图，2：详情图】',
+	public final static int PIC_TYPE_SWIPPER = 1;
+	public final static int PIC_TYPE_DETAIL = 2;
+	
 	// 字典组group
 	/**
 	 * 字典组 DICT_GROUP 【角色】 ROLE

@@ -35,6 +35,9 @@ public class SysItemCategoryService {
 		resultList.add(cat2);
 		List<Integer> list = mapperSupport.shopItemMapper.findCategoryBase();
 		for (Integer id : list) {
+			if (id == null) {
+				continue;
+			}
 			SysItemCategory cat = mapperSupport.sysItemCategoryMapper.selectByPrimaryKey(id);
 			resultList.add(cat);
 		}

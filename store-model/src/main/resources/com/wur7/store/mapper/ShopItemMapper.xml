@@ -347,6 +347,7 @@
 		<if test="itemType != null">
 			AND  item_type = #{itemType}
 		</if>
+		ORDER BY id DESC
 	</select>
 
 	<select id="queryForApp" resultMap="BaseResultMap">
@@ -379,6 +380,7 @@
 	<select id="findCategoryBase" resultType="java.lang.Integer">
 		SELECT DISTINCT item_category_1
 		FROM shop_item
+		WHERE item_type = 3
 	</select>
 
 	<select id="findByType" resultMap="BaseResultMap">
