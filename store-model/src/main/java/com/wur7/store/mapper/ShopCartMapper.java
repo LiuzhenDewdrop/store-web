@@ -61,4 +61,6 @@ public interface ShopCartMapper {
 	void updateCustomerSelectStatus(ShopCart record);
 	
 	void updateCartSelectStatus(ShopCart record);
+	
+	List<ShopCart> getByItem(@Param("itemId") Integer itemId);
 }

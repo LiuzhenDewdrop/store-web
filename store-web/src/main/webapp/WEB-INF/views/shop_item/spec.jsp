@@ -57,15 +57,15 @@
 			</div>
 		</div>
 		<div class="layui-inline">
-			<label class="layui-form-label">供货价格（分）</label>
+			<label class="layui-form-label">供货价格（元）</label>
 			<div class="layui-input-inline">
-				<input id="addSpecSupplyPrice" type="text" lay-affix="number" min="0" lay-precision="0" class="layui-input" lay-verify="required" value="" placeholder="请输入供货价格">
+				<input id="addSpecSupplyPrice" type="text" lay-affix="number" min="0" lay-precision="2" class="layui-input" lay-verify="required" value="" placeholder="请输入供货价格">
 			</div>
 		</div>
 		<div class="layui-inline">
-			<label class="layui-form-label">销售价格（分）</label>
+			<label class="layui-form-label">销售价格（元）</label>
 			<div class="layui-input-inline">
-				<input id="addSpecSalePrice" type="text" lay-affix="number" min="0" lay-precision="0" class="layui-input" lay-verify="required" value="" placeholder="请输入销售价格">
+				<input id="addSpecSalePrice" type="text" lay-affix="number" min="0" lay-precision="2" class="layui-input" lay-verify="required" value="" placeholder="请输入销售价格">
 			</div>
 		</div>
 	</div>

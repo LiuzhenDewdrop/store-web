@@ -347,6 +347,7 @@
 		<if test="itemType != null">
 			AND  item_type = #{itemType}
 		</if>
+		AND del_status = 0
 		ORDER BY id DESC
 	</select>
 
@@ -361,6 +362,7 @@
 			AND item_type = #{itemType}
 		</if>
 		AND item_status = 1
+		AND del_status = 0
 		ORDER BY sold_unit_num DESC
 		LIMIT #{offset}, #{pageSize}
 	</select>
@@ -375,12 +377,15 @@
 		<if test="itemType != null">
 			AND item_type = #{itemType}
 		</if>
+		AND item_status = 1
+		AND del_status = 0
 	</select>
 
 	<select id="findCategoryBase" resultType="java.lang.Integer">
 		SELECT DISTINCT item_category_1
 		FROM shop_item
 		WHERE item_type = 3
+		AND del_status = 0
 	</select>
 
 	<select id="findByType" resultMap="BaseResultMap">
@@ -388,6 +393,7 @@
 		FROM shop_item
 		WHERE item_type = #{itemType}
 		AND item_status = 1
+		AND del_status = 0
 		ORDER BY sold_unit_num DESC
 	</select>
 
@@ -396,6 +402,7 @@
 		FROM shop_item
 		WHERE item_category_1 = #{cat}
 		AND item_status = 1
+		AND del_status = 0
 		ORDER BY item_category_2 ASC, sold_unit_num DESC
 	</select>
 

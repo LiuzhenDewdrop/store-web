@@ -163,6 +163,9 @@
 		<include refid="Base_Column_List" />
 		FROM shop_item_spec
 		WHERE item_id = #{itemId}
-		AND spec_status = 1
+		<if test="specStatus != null">
+			AND spec_status = #{specStatus}
+		</if>
+		AND del_status = 0
 	</select>
 </mapper>

@@ -55,5 +55,5 @@ public interface ShopItemSpecMapper {
      */
     int updateByPrimaryKey(ShopItemSpec record);
 	
-	List<ShopItemSpec> getByItem(@Param("itemId") Integer itemId);
+	List<ShopItemSpec> getByItem(@Param("itemId") Integer itemId, @Param("specStatus") Integer specStatus);
 }

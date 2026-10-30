@@ -50,7 +50,7 @@ public class ShopCartService {
 			return IReturnBean.fail("添加失败，无此商品");
 		}
 		if (cart.getSpecId() == null) {
-			List<ShopItemSpec> specList = mapperSupport.shopItemSpecMapper.getByItem(cart.getItemId());
+			List<ShopItemSpec> specList = mapperSupport.shopItemSpecMapper.getByItem(cart.getItemId(), CommonConstant.ITEM_STATUS_UP);
 			if (CollectionUtil.isEmpty(specList)) {
 				return IReturnBean.fail("添加失败，无此商品");
 			}

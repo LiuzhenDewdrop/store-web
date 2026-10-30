@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.github.pagehelper.PageInfo;
 import com.wur7.store.bean.IReturnBean;
 import com.wur7.store.entity.ShopItem;
-import com.wur7.store.entity.SysRole;
 import com.wur7.store.web.bean.LayPage;
 import com.wur7.store.web.bean.response.ShopItemDetail;
 import com.wur7.store.web.service.ShopItemService;
@@ -100,7 +99,7 @@ public class ShopItemController extends BasicController {
 	@RequiresPermissions("shop:item:add")
 	public IReturnBean<?> add(HttpServletRequest request, @RequestBody ShopItemDetail detail) {
 		try {
-			return shopItemService.saveOrUpd(detail, true, getCurrentUser());
+			return shopItemService.save(detail, getCurrentUser());
 		} catch (Exception e) {
 			log.error("add ShopItemDetail error:"+e.getMessage());
 			return IReturnBean.error();
@@ -144,8 +143,10 @@ public class ShopItemController extends BasicController {
 	@RequestMapping(value = "/upd")
 	@RequiresPermissions("shop:item:upd")
 	public String toUpd(HttpServletRequest request, Integer id) {
-		SysRole role = sysRoleService.selectByPrimaryKey(id);
-		request.setAttribute("role", role);
+		IReturnBean<ShopItemDetail> detail = shopItemService.detail(id);
+		if (detail.isSuccess()) {
+			request.setAttribute("detail", detail);
+		}
 		request.setAttribute("pageFlag", "upd");
 		return "shop_item/addEdit";
 	}
@@ -154,17 +155,17 @@ public class ShopItemController extends BasicController {
 	 * @title  upd
 	 * @description 修改商品
 	 * @param request
-	 * @param role
+	 * @param detail
 	 * @return
 	 */
 	@RequestMapping(value = "/upd.do")
 	@ResponseBody
 	@RequiresPermissions("shop:item:upd")
-	public IReturnBean<?> upd(HttpServletRequest request, SysRole role) {
+	public IReturnBean<?> upd(HttpServletRequest request, ShopItemDetail detail) {
 		try {
-			return sysRoleService.saveOrUpd(role, false, getCurrentUser());
+			return shopItemService.update(detail, getCurrentUser());
 		} catch (Exception e) {
-			log.error("upd role error:"+e.getMessage());
+			log.error("upd item error:"+e.getMessage());
 			return IReturnBean.error();
 		}
 	}

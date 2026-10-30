@@ -15,6 +15,12 @@ public class CommonConstant {
 	public final static int ITEM_STATUS_UP = 1;
 	public final static int ITEM_STATUS_DOWN = 2;
 	
+	// shop_item
+	// `model_type` int(11) DEFAULT NULL COMMENT '型号类别【1：单一型号规格，2：多种型号规格】',
+	public final static int MODEL_TYPE_SINGLE = 1;
+	public final static int MODEL_TYPE_MULTI = 2;
+	
+	
 	// shop_cart
 	// `select_status` int(11) DEFAULT NULL COMMENT '选中状态【1：选中，2：未选中】',
 	public final static int SELECT_STATUS_YES = 1;

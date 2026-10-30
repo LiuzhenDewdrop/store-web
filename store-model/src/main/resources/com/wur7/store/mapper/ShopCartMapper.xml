@@ -216,4 +216,12 @@
 		AND del_status = 0
 	</update>
 
+	<select id="getByItem" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM shop_cart
+		WHERE item_id = #{itemId}
+		AND del_status = 0
+	</select>
+
 </mapper>

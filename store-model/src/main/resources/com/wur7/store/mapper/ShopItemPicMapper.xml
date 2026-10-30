@@ -139,7 +139,9 @@
 		<include refid="Base_Column_List" />
 		FROM shop_item_pic
 		WHERE item_id = #{itemId}
-		AND pic_type = #{picType}
+		<if test="picType != null">
+			AND pic_type = #{picType}
+		</if>
 		AND del_status = 0
 		ORDER BY sort_no ASC
 	</select>

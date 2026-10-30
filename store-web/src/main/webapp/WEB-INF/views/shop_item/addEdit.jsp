@@ -40,6 +40,7 @@
 <form class="layui-form layui-form-pane">
 	<input id="pageFlag"  type="hidden" value="${pageFlag}">
 	<input id="resId" name="id" type="hidden" value="${detail.item.id}">
+	<input id="specId" name="id" type="hidden" value="${detail.specList[0].id}">
 
 	<div class="layui-form-item">
 		<div class="layui-inline">
@@ -127,46 +128,46 @@
 	</div>
 	<div class="layui-form-item">
 		<div class="layui-inline">
-			<label class="layui-form-label">型号类别</label>
-			<div class="layui-input-inline" style="width: 500px;">
-				<c:if test="${pageFlag == 'add' }">
-					<input type="radio" name="modelType" lay-filter="modelTypeFilter" value="1" title="单一型号规格" checked="checked">
-					<input type="radio" name="modelType" lay-filter="modelTypeFilter" value="2" title="多种型号规格">
-				</c:if>
-				<c:if test="${pageFlag == 'upd' }">
-					<input type="radio" name="modelType" lay-filter="modelTypeFilter" value="1" title="单一型号规格" <c:if test="${detail.item.modelType == 1 }">checked</c:if>/>
-					<input type="radio" name="modelType" lay-filter="modelTypeFilter" value="2" title="多种型号规格" <c:if test="${detail.item.modelType == 2 }">checked</c:if>/>
-				</c:if>
-			</div>
+			<label class="layui-form-label">型号规格</label>
+<%--			<div class="layui-input-inline" style="width: 500px;">--%>
+<%--				<c:if test="${pageFlag == 'add' }">--%>
+<%--					<input type="radio" name="modelType" lay-filter="modelTypeFilter" value="1" title="单一型号规格" checked="checked">--%>
+<%--					<input type="radio" name="modelType" lay-filter="modelTypeFilter" value="2" title="多种型号规格">--%>
+<%--				</c:if>--%>
+<%--				<c:if test="${pageFlag == 'upd' }">--%>
+<%--					<input type="radio" name="modelType" lay-filter="modelTypeFilter" value="1" title="单一型号规格" <c:if test="${detail.item.modelType == 1 }">checked</c:if>/>--%>
+<%--					<input type="radio" name="modelType" lay-filter="modelTypeFilter" value="2" title="多种型号规格" <c:if test="${detail.item.modelType == 2 }">checked</c:if>/>--%>
+<%--				</c:if>--%>
+<%--			</div>--%>
 		</div>
 	</div>
 
-	<div id="resModelType1">
-		<div class="layui-form-item">
-		<div class="layui-inline">
-			<label class="layui-form-label">规格名称</label>
-			<div class="layui-input-inline">
-				<input type="text" id="specName" class="layui-input" maxlength="20" value="${detail.specs[0].specName}" lay-verify="specName" placeholder="请输入规格名称">
-			</div>
-		</div>
-		</div>
-		<div class="layui-form-item">
-			<div class="layui-inline">
-				<label class="layui-form-label">供货价格（分）</label>
-				<div class="layui-input-inline">
-					<input id="supplyPrice" type="text" lay-filter="supplyPrice" lay-affix="number" min="0" lay-precision="0" class="layui-input" lay-verify="supplyPrice" value="${detail.specs[0].supplyPrice}" placeholder="请输入供货价格">
-				</div>
-			</div>
-		</div>
-		<div class="layui-form-item">
-			<div class="layui-inline">
-				<label class="layui-form-label">销售价格（分）</label>
-				<div class="layui-input-inline">
-					<input id="salePrice" type="text" lay-filter="salePrice" lay-affix="number" min="0" lay-precision="0" class="layui-input" lay-verify="salePrice" value="${detail.specs[0].salePrice}" placeholder="请输入销售价格">
-				</div>
-			</div>
-		</div>
-	</div>
+<%--	<div id="resModelType1">--%>
+<%--		<div class="layui-form-item">--%>
+<%--		<div class="layui-inline">--%>
+<%--			<label class="layui-form-label">规格名称</label>--%>
+<%--			<div class="layui-input-inline">--%>
+<%--				<input type="text" id="specName" class="layui-input" maxlength="20" value="${detail.specList[0].specName}" lay-verify="specName" placeholder="请输入规格名称">--%>
+<%--			</div>--%>
+<%--		</div>--%>
+<%--		</div>--%>
+<%--		<div class="layui-form-item">--%>
+<%--			<div class="layui-inline">--%>
+<%--				<label class="layui-form-label">供货价格（元）</label>--%>
+<%--				<div class="layui-input-inline">--%>
+<%--					<input id="supplyPriceFloat" type="text" lay-filter="supplyPriceFloat" lay-affix="number" min="0" lay-precision="2" class="layui-input" lay-verify="supplyPriceFloat" placeholder="请输入供货价格">--%>
+<%--				</div>--%>
+<%--			</div>--%>
+<%--		</div>--%>
+<%--		<div class="layui-form-item">--%>
+<%--			<div class="layui-inline">--%>
+<%--				<label class="layui-form-label">销售价格（元）</label>--%>
+<%--				<div class="layui-input-inline">--%>
+<%--					<input id="salePriceFloat" type="text" lay-filter="salePriceFloat" lay-affix="number" min="0" lay-precision="2" class="layui-input" lay-verify="salePriceFloat" placeholder="请输入销售价格">--%>
+<%--				</div>--%>
+<%--			</div>--%>
+<%--		</div>--%>
+<%--	</div>--%>
 	<div id="resModelType2" style="display: none;">
 		<table class="layui-hide" id="specTable"></table>
 		<div class="layui-inline" style="margin-bottom: 10px;">
@@ -187,13 +188,13 @@
 	<table id="descTable"></table>
 	<div class="layui-form-item">
 		<div class="layui-inline">
-			<label class="layui-form-label">快递费(分)</label>
+			<label class="layui-form-label">快递费(元)</label>
 			<div class="layui-input-inline">
-				<input id="deliveryFee" name="deliveryFee" type="text" lay-affix="number" min="0" lay-precision="0" class="layui-input" lay-verify="required|number" value="${detail.item.deliveryFee}" placeholder="请输入快递费">
+				<input id="deliveryFeeFloat" name="deliveryFeeFloat" type="text" lay-affix="number" min="0" lay-precision="2" class="layui-input" lay-verify="required|number" placeholder="请输入快递费">
 			</div>
-			<label class="layui-form-label">快递费门槛(分)</label>
+			<label class="layui-form-label">快递费门槛(元)</label>
 			<div class="layui-input-inline">
-				<input id="deliveryThreshold" name="deliveryThreshold" type="text" lay-affix="number" min="0" lay-precision="0" class="layui-input" lay-verify="required|number" value="${detail.item.deliveryThreshold}" placeholder="请输入快递费门槛">
+				<input id="deliveryThresholdFloat" name="deliveryThresholdFloat" type="text" lay-affix="number" min="0" lay-precision="2" class="layui-input" lay-verify="required|number" placeholder="请输入快递费门槛">
 			</div>
 		</div>
 		<div class="layui-inline">
@@ -202,8 +203,8 @@
 	</div>
     <div class="layui-form-item" style="text-align: center;margin-top: 18px;height:138px;">
 		<div class="layui-inline">
-			<button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="saveRes1">保存为草稿</button>
-			<button class="layui-btn layui-btn-warm" lay-submit="" lay-filter="saveRes3">保存并发布</button>
+			<button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="saveRes3">保存为草稿</button>
+			<button class="layui-btn layui-btn-warm" lay-submit="" lay-filter="saveRes1">保存并发布</button>
 			<button id="cancle" class="layui-btn layui-btn-primary">取消</button>
 		</div>
     </div>
@@ -223,34 +224,74 @@ layui.config({
 	tinymce = layui.tinymce,
 	layer = parent.layer === undefined ? layui.layer : parent.layer;
 
+	function fenToYuan(fen) {
+		if (!fen) {
+			return 0;
+		}
+		// 除以100，保留2位小数
+		return (fen / 100).toFixed(2);
+	}
+
+	function yuanToFen(yuan) {
+		if (!yuan) {
+			return 0;
+		}
+		// 乘以100并四舍五入取整，确保结果是整数
+		return Math.round(yuan * 100);
+	}
+
 	function resInit() {
 		var pageFlag = $("#pageFlag").val();
+		var specs = [];
 		switch (pageFlag) {
 			case "add":
 				queryCategory(1, 0);
 				$("#catergoryDiv").hide();
 				break;
 			case "upd":
-			case "detail":
-				var itemCategory1 = '${detail.item.itemCategory1}',
-					itemCategory2 = '${detail.item.itemCategory2}',
-					itemCategory3 = '${detail.item.itemCategory3}';
-				queryCategory(1, 0);
-				$("#itemCategory1 option[value='" + itemCategory1 + "']").prop("selected","selected");
-				queryCategory(2, itemCategory1);
-				$("#itemCategory2 option[value='" + itemCategory2 + "']").prop("selected","selected");
-				$("#itemCategory3 option[value='" + itemCategory3 + "']").prop("selected","selected");
-				if ('${detail.item.itemType}' !== '3') {
-					$("#catergoryDiv").hide();
+				const isShow = changeItemType('${detail.item.itemType}');
+				if (isShow) {
+					var itemCategory1 = '${detail.item.itemCategory1}',
+						itemCategory2 = '${detail.item.itemCategory2}',
+						itemCategory3 = '${detail.item.itemCategory3}';
+					queryCategory(1, 0);
+					$("#itemCategory1 option[value='" + itemCategory1 + "']").prop("selected","selected");
+					queryCategory(2, itemCategory1);
+					$("#itemCategory2 option[value='" + itemCategory2 + "']").prop("selected","selected");
+					$("#itemCategory3 option[value='" + itemCategory3 + "']").prop("selected","selected");
 				}
+				// 处理金额
+				$("#deliveryFeeFloat").val(fenToYuan(${detail.item.deliveryFee}));
+				$("#deliveryThresholdFloat").val(fenToYuan(${detail.item.deliveryThreshold}));
+				<%--changeModelType('${detail.item.modelType}');--%>
+				var specList = '${detail.item.specList}';
+				if (specList) {
+					specList = JSON.parse(specList);
+					<%--switch ('${detail.item.modelType}') {--%>
+					<%--	case '1':--%>
+					<%--		$("#supplyPriceFloat").val(fenToYuan(specList[0].supplyPrice));--%>
+					<%--		$("#salePriceFloat").val(fenToYuan(specList[0].salePrice));--%>
+					<%--		break;--%>
+					<%--	case '2':--%>
+							for (const spec in specList) {
+								spec.supplyPriceFloat = fenToYuan(spec.supplyPrice);
+								spec.salePriceFloat = fenToYuan(spec.salePrice);
+							}
+							specs = specList;
+					// 		break;
+					// 	default:
+					// 		break;
+					// }
+				}
+
 				break;
 			default:
 				break;
 		}
 
-		var itemPictures = '${detail.pics}';
+		var itemPictures = '${detail.picList}';
 		if (itemPictures) {
-			itemPictures = JSON.parse('${detail.pics}');
+			itemPictures = JSON.parse('${detail.picList}');
 		} else {
 			itemPictures = [];
 		}
@@ -306,20 +347,14 @@ layui.config({
 			]],
 		});
 
-		var specs = '${detail.item.specs}';
-		if (specs) {
-			specs = JSON.parse('${detail.item.specs}');
-		} else {
-			specs = [];
-		}
 		table.render({
 			elem: '#specTable',
 			data: specs,
 			cols: [[
 				{field: 'specName', title: '规格名称', width: '15%', align:'center'},
 				{field: 'picUrl', title: '规格图片', width: '20%', align:'center',templet: '#resImageTpl'},
-				{field: 'supplyPrice', title: '供货价格', width: '15%', align:'center'},
-				{field: 'salePrice', title: '销售价格', width: '15%', align:'center'},
+				{field: 'supplyPriceFloat', title: '供货价格', width: '15%', align:'center'},
+				{field: 'salePriceFloat', title: '销售价格', width: '15%', align:'center'},
 				{fixed:'right', title: '操作', width: '10%', align:'center',toolbar: '#resBar'}
 			]],
 		});
@@ -370,6 +405,7 @@ layui.config({
 	});
 	function changeItemType(itemType) {
 		// $('input[name="itemType"][value="' + itemType + '"]').prop('checked', true);
+		var isShow = false;
 		switch (itemType) {
 			case '1':
 			case '2':
@@ -377,11 +413,13 @@ layui.config({
 				break;
 			case '3':
 				$("#catergoryDiv").show();
+				isShow = true;
 				break;
 			default:
 				break;
 		}
 		form.render('radio');
+		return isShow;
 	}
 
 	// 上传封面图片
@@ -661,9 +699,9 @@ layui.config({
 	});
 
 	// 改变型号规格类型时
-	form.on('radio(modelTypeFilter)', function(data) {
-		changeModelType(data.value)
-	});
+	// form.on('radio(modelTypeFilter)', function(data) {
+	// 	changeModelType(data.value)
+	// });
 
 	table.on('tool(specTable)', function(obj) {
 		var data = obj.data;
@@ -682,22 +720,22 @@ layui.config({
 				break;
 		}
 	});
-	function changeModelType(modelType) {
-		$('input[name="modelType"][value="' + modelType + '"]').prop('checked', true);
-		switch (modelType) {
-			case '1':
-				$("#resModelType2").hide();
-				$("#resModelType1").show();
-				break;
-			case '2':
-				$("#resModelType1").hide();
-				$("#resModelType2").show();
-				break;
-			default:
-				break;
-		}
-		form.render('radio');
-	}
+	// function changeModelType(modelType) {
+	// 	$('input[name="modelType"][value="' + modelType + '"]').prop('checked', true);
+	// 	switch (modelType) {
+	// 		case '1':
+	// 			$("#resModelType2").hide();
+	// 			$("#resModelType1").show();
+	// 			break;
+	// 		case '2':
+	// 			$("#resModelType1").hide();
+	// 			$("#resModelType2").show();
+	// 			break;
+	// 		default:
+	// 			break;
+	// 	}
+	// 	form.render('radio');
+	// }
 	$("#resAddSpec_btn").click(function() {
 		var url = "${ctx}/item/spec";
 		layui.layer.open({
@@ -719,9 +757,9 @@ layui.config({
 					common.cmsLayErrorMsg('规格名称只能为中文、数字、字母或-_');
 					return ;
 				}
-				var addSpecSalePrice = sub.$('#addSpecSalePrice').val();
-				var addSpecSupplyPrice = sub.$('#addSpecSupplyPrice').val();
-				var checkResult = checkPrice(addSpecSalePrice, addSpecSupplyPrice);
+				var addSpecsalePriceFloat = sub.$('#addSpecsalePriceFloat').val();
+				var addSpecsupplyPriceFloat = sub.$('#addSpecsupplyPriceFloat').val();
+				var checkResult = checkPrice(addSpecsalePriceFloat, addSpecsupplyPriceFloat);
 				if (checkResult) {
 					common.cmsLayErrorMsg(checkResult);
 					return ;
@@ -730,8 +768,10 @@ layui.config({
 				var specCache = table.cache['specTable'];
 				specCache.push({
 					specName: addSpecSpecName,
-					salePrice: addSpecSalePrice,
-					supplyPrice: addSpecSupplyPrice,
+					salePriceFloat: addSpecsalePriceFloat,
+					salePrice: yuanToFen(addSpecsalePriceFloat),
+					supplyPriceFloat: addSpecsupplyPriceFloat,
+					supplyPrice: yuanToFen(addSpecsupplyPriceFloat),
 					picUrl: addSpecPicUrl,
 					specStatus: 1,
 				});
@@ -741,37 +781,37 @@ layui.config({
 		});
 	});
 
-	function checkPrice(salePrice, supplyPrice) {
+	function checkPrice(salePriceFloat, supplyPriceFloat) {
 		var costRatio = '${LOGIN_USER.costRatio}' || 1.25;	// 默认1.25
-		var minPrice = Math.round(supplyPrice * costRatio * 100)/100;
-		if (minPrice > salePrice) {
-			return '销售价格过低，至少达到'+minPrice+'分，或者调低供货价格';
+		var minPrice = (supplyPriceFloat * costRatio).toFixed(2);
+		if (minPrice > salePriceFloat) {
+			return '销售价格过低，至少达到'+minPrice+'元，或者调低供货价格';
 		}
 	}
 
-	$('#supplyPrice').on('change', function(e) {
-		if ($('#salePrice').val() === '') {
+	$('#supplyPriceFloat').on('change', function(e) {
+		if ($('#salePriceFloat').val() === '') {
 			return;
 		}
-		return form.validate('#supplyPrice');
+		return form.validate('#supplyPriceFloat');
 	});
-	$('#salePrice').on('change', function(e) {
-		if ($('#supplyPrice').val() === '') {
+	$('#salePriceFloat').on('change', function(e) {
+		if ($('#supplyPriceFloat').val() === '') {
 			return;
 		}
-		return form.validate('#salePrice');
+		return form.validate('#salePriceFloat');
 	});
-	form.on('input-affix(supplyPrice)', function(data){
-		if ($('#salePrice').val() === '') {
+	form.on('input-affix(supplyPriceFloat)', function(data){
+		if ($('#salePriceFloat').val() === '') {
 			return;
 		}
-		return form.validate('#supplyPrice');
+		return form.validate('#supplyPriceFloat');
 	});
-	form.on('input-affix(salePrice)', function(data){
-		if ($('#supplyPrice').val() === '') {
+	form.on('input-affix(salePriceFloat)', function(data){
+		if ($('#supplyPriceFloat').val() === '') {
 			return;
 		}
-		return form.validate('#salePrice');
+		return form.validate('#salePriceFloat');
 	});
 
 	/**表单验证*/
@@ -794,26 +834,26 @@ layui.config({
 				return '品牌名称只能为中文、数字、字母或-_';
 			}
 		},
-		specName: function(value, item) {
-			// 验证规格名称
-			if ($('input[name="modelType"]:checked').val() === '1') {
-				if (!new RegExp("^[0-9a-zA-Z\u4e00-\u9fa5\-_]+$").test(value)) {
-					return '规格名称只能为中文、数字、字母或-_';
-				}
-			}
-		},
-		salePrice: function(value, item) {
-			// 验证价格
-			if ($('input[name="modelType"]:checked').val() === '1') {
-				return checkPrice(value, $('#supplyPrice').val());
-			}
-		},
-		supplyPrice: function(value, item) {
-			// 验证价格
-			if ($('input[name="modelType"]:checked').val() === '1') {
-				return checkPrice($('#salePrice').val(), value);
-			}
-		},
+		// specName: function(value, item) {
+		// 	// 验证规格名称
+		// 	if ($('input[name="modelType"]:checked').val() === '1') {
+		// 		if (!new RegExp("^[0-9a-zA-Z\u4e00-\u9fa5\-_]+$").test(value)) {
+		// 			return '规格名称只能为中文、数字、字母或-_';
+		// 		}
+		// 	}
+		// },
+		// salePriceFloat: function(value, item) {
+		// 	// 验证价格
+		// 	if ($('input[name="modelType"]:checked').val() === '1') {
+		// 		return checkPrice(value, $('#supplyPriceFloat').val());
+		// 	}
+		// },
+		// supplyPriceFloat: function(value, item) {
+		// 	// 验证价格
+		// 	if ($('input[name="modelType"]:checked').val() === '1') {
+		// 		return checkPrice($('#salePriceFloat').val(), value);
+		// 	}
+		// },
 
 	});
 
@@ -829,24 +869,39 @@ layui.config({
 
 	function save(data, type) {
 		var pageFlag = $("#pageFlag").val();
-		var itemImageUrl = $('#itemImage').attr('data-url')
-		var specs = [];
-		switch ($('input[name="modelType"]:checked').val()) {
-			case '1':
-				specs.push({
-					specName: $('#specName').val(),
-					picUrl: itemImageUrl,
-					supplyPrice: $('#supplyPrice').val(),
-					salePrice: $('#salePrice').val(),
-					specStatus: 1,
-				});
-				break;
-			case '2':
-				specs = table.cache['specTable'];
-				break;
-			default:
-				break;
+		var itemImageUrl = $('#itemImage').attr('data-url');
+		if (!itemImageUrl) {
+			common.cmsLayErrorMsg("商品封面图不能为空，请上传商品封面图");
+			return;
 		}
+		var specs = [];
+		// switch ($('input[name="modelType"]:checked').val()) {
+		// 	case '1':
+		// 		specs.push({
+		// 			id: $('#specId').val() || null,
+		// 			specName: $('#specName').val(),
+		// 			picUrl: itemImageUrl,
+		// 			// supplyPriceFloat: $('#supplyPriceFloat').val(),
+		// 			supplyPrice: yuanToFen($('#supplyPriceFloat').val()),
+		// 			// salePriceFloat: $('#salePriceFloat').val(),
+		// 			salePrice: yuanToFen($('#salePriceFloat').val()),
+		// 			specStatus: 1,
+		// 		});
+		// 		break;
+		// 	case '2':
+				specs = table.cache['specTable'];
+				if (type === 1) {
+					// 直接上架时，需判断是否有spec是上架的
+					const existUp = specs.some(spec => spec.specStatus === 1);
+					if (!existUp) {
+						common.cmsLayErrorMsg("上架商品时必须有上架的规格");
+						return;
+					}
+				}
+		// 		break;
+		// 	default:
+		// 		break;
+		// }
 		var postData = {
 			item: data.field,
 			specList: specs,
@@ -856,6 +911,9 @@ layui.config({
 		postData.item.itemImage = itemImageUrl;
 		//postData.item.itemDetail = tinymce.get('#itemDetail').getContent();
 		postData.item.itemStatus = type;
+		// 处理快递相关金额
+		postData.item.deliveryFee = yuanToFen(postData.item.deliveryFeeFloat);
+		postData.item.deliveryThreshold = yuanToFen(postData.item.deliveryThresholdFloat);
 		$.ajax({
 			url : '${ctx}/item/' + pageFlag + '.do',
 			type : 'post',
