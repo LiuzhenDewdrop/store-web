@@ -17,6 +17,7 @@
     <link rel="stylesheet" type="text/css" href="${ctx}/static/css/fontcss.css">
 
     <script src="${ctx}/static/layui/layui.js"></script>
+    <script src="${ctx}/static/js/util.js"></script>
 <%--    <script src="${ctx}/static/layui_exts/tinymce/tinymce.js"></script>--%>
     <style type="text/css">
         .layui-form-item .layui-form-label{
@@ -224,21 +225,7 @@ layui.config({
 	tinymce = layui.tinymce,
 	layer = parent.layer === undefined ? layui.layer : parent.layer;
 
-	function fenToYuan(fen) {
-		if (!fen) {
-			return 0;
-		}
-		// 除以100，保留2位小数
-		return (fen / 100).toFixed(2);
-	}
 
-	function yuanToFen(yuan) {
-		if (!yuan) {
-			return 0;
-		}
-		// 乘以100并四舍五入取整，确保结果是整数
-		return Math.round(yuan * 100);
-	}
 
 	function resInit() {
 		var pageFlag = $("#pageFlag").val();

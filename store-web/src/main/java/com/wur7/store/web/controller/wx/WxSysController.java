@@ -1,4 +1,4 @@
-package com.wur7.store.web.controller;
+package com.wur7.store.web.controller.wx;
 
 import java.util.List;
 
@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.wur7.store.bean.IReturnBean;
 import com.wur7.store.entity.SysSwiper;
+import com.wur7.store.web.controller.BasicController;
 import com.wur7.store.web.service.ShopItemService;
 import com.wur7.store.web.service.SysSwiperService;
 
@@ -35,7 +36,7 @@ public class WxSysController extends BasicController {
 	@RequestMapping(value = "/swiper")
 	public IReturnBean<List<SysSwiper>> swiper(HttpServletRequest request) {
 		try {
-			return sysSwiperService.listForApp();
+			return sysSwiperService.list();
 		} catch (Exception e) {
 			log.error("查询一级分类列表 error:", e);
 			return IReturnBean.error();

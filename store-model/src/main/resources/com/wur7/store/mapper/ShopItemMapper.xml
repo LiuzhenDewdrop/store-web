@@ -406,4 +406,6 @@
 		ORDER BY item_category_2 ASC, sold_unit_num DESC
 	</select>
 
+
+
 </mapper>

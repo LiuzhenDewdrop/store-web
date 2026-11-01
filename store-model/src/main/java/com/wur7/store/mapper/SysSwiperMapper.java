@@ -54,5 +54,4 @@ public interface SysSwiperMapper {
     int updateByPrimaryKey(SysSwiper record);
 	
 	List<SysSwiper> list();
-	List<SysSwiper> listForApp();
 }

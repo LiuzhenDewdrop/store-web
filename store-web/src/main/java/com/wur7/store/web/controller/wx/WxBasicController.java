@@ -1,4 +1,4 @@
-package com.wur7.store.web.controller;
+package com.wur7.store.web.controller.wx;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import com.wur7.store.entity.ShopCustomer;
+import com.wur7.store.web.controller.BasicController;
 import com.wur7.store.web.service.WxLoginService;
 
 @Controller

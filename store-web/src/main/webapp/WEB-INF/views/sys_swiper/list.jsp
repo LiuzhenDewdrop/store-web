@@ -1,3 +1,4 @@
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@include file="/comm/mytags.jsp" %>
 <!DOCTYPE html>
@@ -46,7 +47,7 @@
 			<label class="layui-form-label">商品轮播图</label>
 
 			<div class="layui-form-mid layui-word-aux">
-				<a class="layui-btn layui-btn-xs layui-btn-normal select_picture" id="uploadPicBtn" data-id="" title="选择图片"><i class="layui-icon layui-icon-picture"></i>选择图片</a>'
+				<a class="layui-btn layui-btn-xs layui-btn-normal select_picture" id="uploadPicBtn" data-id="" title="添加图片"><i class="layui-icon layui-icon-picture"></i>添加图片</a>'
 			</div>
 		</div>
 	</div>
@@ -54,7 +55,9 @@
 
     <div class="layui-form-item" style="text-align: center;margin-top: 18px;height:138px;">
 		<div class="layui-inline">
+			<shiro:hasPermission name="sys:swiper:list">
 			<button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="saveRes">保存</button>
+			</shiro:hasPermission>
 			<button id="cancle" class="layui-btn layui-btn-primary">取消</button>
 		</div>
     </div>
@@ -73,17 +76,14 @@ layui.config({
 	table = layui.table,
 	layer = parent.layer === undefined ? layui.layer : parent.layer;
 
-	function resInit() {
-		var itemPictures = '${detail.pics}';
-		if (itemPictures) {
-			itemPictures = JSON.parse('${detail.pics}');
-		} else {
-			itemPictures = [];
-		}
-
+	/*初始化*/
+	<shiro:hasPermission name="sys:swiper:list">
+	function searchList() {
 		table.render({
 			elem: '#picTable',
-			data: itemPictures,
+			url: '${ctx}/swiper/list.do',
+			method: 'post',
+			loading:true,
 			initSort: {
 				field: 'sortNo',
 				type: 'asc'
@@ -103,12 +103,12 @@ layui.config({
 			]],
 		});
 	}
-
-	/*初始化*/
-	resInit();
+	searchList();
+	</shiro:hasPermission>
 
 	// 上传轮播图片
-	var uploadInst1 = upload.render({
+	<shiro:hasPermission name="sys:swiper:upd">
+	upload.render({
 		elem: '#uploadPicBtn',
 		url: '${ctx}/item/upload.do',
 		before: function(obj) {
@@ -210,54 +210,27 @@ layui.config({
 	/**保存*/
 	form.on("submit(saveRes)",function(data) {
 		var pageFlag = $("#pageFlag").val();
-		var itemImageUrl = $('#itemImage').attr('data-url')
-		var specs = [];
-		switch ($('input[name="modelType"]:checked').val()) {
-			case '1':
-				specs.push({
-					specName: $('#specName').val(),
-					picUrl: itemImageUrl,
-					supplyPrice: $('#supplyPrice').val(),
-					salePrice: $('#salePrice').val(),
-					specStatus: 1,
-				});
-				break;
-			case '2':
-				specs = table.cache['specTable'];
-				break;
-			default:
-				break;
-		}
-		var postData = {
-			item: data.field,
-			specList: specs,
-			picList: table.cache['picTable'],
-			desc: table.cache['descTable'],
-		};
-		postData.item.itemImage = itemImageUrl;
-		postData.item.itemDetail = tinymce.get('#itemDetail').getContent();
+		var param = table.cache['picTable'];
 		$.ajax({
-			url : '${ctx}/item/' + pageFlag + '.do',
+			url : '${ctx}/swiper/upd.do',
 			type : 'post',
 			async: false,
 			contentType: 'application/json;charset=utf-8',
-			data : JSON.stringify(postData),
+			data : JSON.stringify(param),
 			success : function(data) {
 				if (data.code === "0000") {
-					location.reload();
+					// location.reload();
 					common.cmsLaySucMsg("保存成功");
-					var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-					parent.layer.close(index); //再执行关闭
-					parent.location.reload();
 				} else {
 					common.cmsLayErrorMsg(data.msg);
 				}
 			}, error:function(data) {
-				layer.close(index);
+				common.cmsLayErrorMsg("保存失败");
 			}
 		});
 		return false;
 	});
+	</shiro:hasPermission>
 
 	/**取消*/
 	$("#cancle").click(function() {
@@ -292,20 +265,10 @@ layui.config({
 <script type="text/html" id="resPicBar">
 	<div class="layui-btn-group">
 		<a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="detail"><i class="layui-icon  layui-icon-edit"></i>查看</a>
+		<shiro:hasPermission name="sys:swiper:upd">
 		<a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="changeSort"><i class="layui-icon  layui-icon-edit"></i>修改排序</a>
 		<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delPic"><i class="layui-icon  layui-icon-delete"></i>删除</a>
-	</div>
-</script>
-
-<!--工具条 -->
-<script type="text/html" id="resBar">
-	<div class="layui-btn-group">
-		{{# if(d.specStatus && d.specStatus == 1){ }}
-		<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="res_down"><i class="layui-icon  layui-icon-down"></i>下架</a>
-		{{# } else if(d.specStatus && d.specStatus == 2){ }}
-		<a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="res_up"><i class="layui-icon  layui-icon-up"></i>上架</a>
-		{{# } }}
-		<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="res_del"><i class="layui-icon  layui-icon-delete"></i>删除</a>
+		</shiro:hasPermission>
 	</div>
 </script>
 </body>

@@ -1,4 +1,4 @@
-package com.wur7.store.web.controller;
+package com.wur7.store.web.controller.wx;
 
 import java.util.List;
 
@@ -17,6 +17,7 @@ import com.wur7.store.bean.IReturnBean;
 import com.wur7.store.entity.ShopItem;
 import com.wur7.store.web.bean.response.ShopItemDetail;
 import com.wur7.store.web.bean.request.AppQuery;
+import com.wur7.store.web.controller.BasicController;
 import com.wur7.store.web.service.ShopItemService;
 import com.wur7.store.web.service.SysMenuService;
 import com.wur7.store.web.service.SysRoleService;

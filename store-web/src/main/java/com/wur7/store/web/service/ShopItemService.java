@@ -90,7 +90,7 @@ public class ShopItemService {
 		for (ShopItemPic pic : picList) {
 			pic.setItemId(itemId);
 			pic.setDelStatus(CommonConstant.DEL_STATUS_EXIST);
-			pic.setPicType(CommonConstant.PIC_TYPE_SWIPPER);
+			pic.setPicType(CommonConstant.PIC_TYPE_SWIPER);
 			mapperSupport.shopItemPicMapper.insert(pic);
 		}
 		List<ShopItemPic> descList = detail.getDesc();
@@ -132,7 +132,7 @@ public class ShopItemService {
 		}
 		item.setDelStatus(CommonConstant.DEL_STATUS_EXIST);
 		mapperSupport.shopItemMapper.updateByPrimaryKeySelective(item);
-		// 规格
+		// 1.规格
 		List<ShopItemSpec> specsOld = mapperSupport.shopItemSpecMapper.getByItem(itemId, null);
 		Set<Integer> specsOldSet = specsOld.stream().map(ShopItemSpec::getId).collect(Collectors.toSet());
 		// 区分 增/删/改 (不变归入改)
@@ -163,13 +163,61 @@ public class ShopItemService {
 			mapperSupport.shopItemSpecMapper.updateByPrimaryKeySelective(spec);
 		}
 		
-		
-		
-		// todo 图片
-		List<ShopItemPic> picList = detail.getPicList();
-		// todo 详情图
+		// 2.图片swiper
+		List<ShopItemPic> picsOld = mapperSupport.shopItemPicMapper.getByItem(itemId, CommonConstant.PIC_TYPE_SWIPER);
+		Set<Integer> picsOldSet = picsOld.stream().map(ShopItemPic::getId).collect(Collectors.toSet());
+		// 区分 增/删/改 (不变归入改)
+		for (ShopItemPic pic : detail.getPicList()) {
+			pic.setItemId(itemId);
+			pic.setPicType(CommonConstant.PIC_TYPE_SWIPER);
+			pic.setDelStatus(CommonConstant.DEL_STATUS_EXIST);
+			if (pic.getId() == null) {
+				// 增
+				mapperSupport.shopItemPicMapper.insert(pic);
+			} else {
+				// 改
+				if (!picsOldSet.contains(pic.getId())) {
+					continue;
+				}
+				mapperSupport.shopItemPicMapper.updateByPrimaryKeySelective(pic);
+				picsOldSet.remove(pic.getId());
+			}
+		}
+		// 剩下的都删掉
+		for (Integer id : picsOldSet) {
+			ShopItemPic pic = new ShopItemPic();
+			pic.setId(id);
+			pic.setDelStatus(CommonConstant.DEL_STATUS_DEL);
+			mapperSupport.shopItemPicMapper.updateByPrimaryKeySelective(pic);
+		}
+		// 3.详情图
 		List<ShopItemPic> desc = detail.getDesc();
-		
+		List<ShopItemPic> descOld = mapperSupport.shopItemPicMapper.getByItem(itemId, CommonConstant.PIC_TYPE_DETAIL);
+		Set<Integer> descOldSet = picsOld.stream().map(ShopItemPic::getId).collect(Collectors.toSet());
+		// 区分 增/删/改 (不变归入改)
+		for (ShopItemPic pic : detail.getDesc()) {
+			pic.setItemId(itemId);
+			pic.setPicType(CommonConstant.PIC_TYPE_DETAIL);
+			pic.setDelStatus(CommonConstant.DEL_STATUS_EXIST);
+			if (pic.getId() == null) {
+				// 增
+				mapperSupport.shopItemPicMapper.insert(pic);
+			} else {
+				// 改
+				if (!descOldSet.contains(pic.getId())) {
+					continue;
+				}
+				mapperSupport.shopItemPicMapper.updateByPrimaryKeySelective(pic);
+				picsOldSet.remove(pic.getId());
+			}
+		}
+		// 剩下的都删掉
+		for (Integer id : picsOldSet) {
+			ShopItemPic pic = new ShopItemPic();
+			pic.setId(id);
+			pic.setDelStatus(CommonConstant.DEL_STATUS_DEL);
+			mapperSupport.shopItemPicMapper.updateByPrimaryKeySelective(pic);
+		}
 		return IReturnBean.success();
 	}
 		
@@ -195,7 +243,7 @@ public class ShopItemService {
 	
 	private ShopItemDetail genDetailForApp(ShopItem shopItem) {
 		List<ShopItemSpec> specs = mapperSupport.shopItemSpecMapper.getByItem(shopItem.getId(), CommonConstant.ITEM_STATUS_UP);
-		List<ShopItemPic> pics = mapperSupport.shopItemPicMapper.getByItem(shopItem.getId(), CommonConstant.PIC_TYPE_SWIPPER);
+		List<ShopItemPic> pics = mapperSupport.shopItemPicMapper.getByItem(shopItem.getId(), CommonConstant.PIC_TYPE_SWIPER);
 		ShopItemPic first = new ShopItemPic();
 		first.setPicUrl(shopItem.getItemImage());
 		pics.add(0, first);
@@ -224,7 +272,7 @@ public class ShopItemService {
 			return IReturnBean.fail("查不到此商品");
 		}
 		List<ShopItemSpec> specs = mapperSupport.shopItemSpecMapper.getByItem(shopItem.getId(), null);
-		List<ShopItemPic> pics = mapperSupport.shopItemPicMapper.getByItem(shopItem.getId(), CommonConstant.PIC_TYPE_SWIPPER);
+		List<ShopItemPic> pics = mapperSupport.shopItemPicMapper.getByItem(shopItem.getId(), CommonConstant.PIC_TYPE_SWIPER);
 		List<ShopItemPic> details = mapperSupport.shopItemPicMapper.getByItem(shopItem.getId(), CommonConstant.PIC_TYPE_DETAIL);
 		return IReturnBean.success(new ShopItemDetail(shopItem, specs, pics, details));
 	}
@@ -259,7 +307,7 @@ public class ShopItemService {
 //			cart.setUpdateTime(new Date());		非用户操作，应该是不影响用户那边的排序
 			mapperSupport.shopCartMapper.updateByPrimaryKeySelective(cart);
 		}
-		return IReturnBean.success();
+		return IReturnBean.success("商品已删除，请刷新列表");
 	}
 	
 	public IReturnBean<?> operate(Integer id) {

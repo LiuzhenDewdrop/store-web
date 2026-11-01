@@ -80,7 +80,7 @@ public class WxLoginService {
             customer.setStatus(1);
 			customer.setDelStatus(CommonConstant.DEL_STATUS_EXIST);
 			// 新用户直接分上级, 没有的话分给公共账号作为上级
-			customer.setUpperId(123456789);		// todo 指定的上级是谁
+			customer.setUpperId(3);		// 指定的上级是[至高],id为3
 			if (request.getInviterId() != null) {
 				ShopCustomer upper = mapperSupport.shopCustomerMapper.selectByPrimaryKey(request.getInviterId());
 				if (upper != null) {

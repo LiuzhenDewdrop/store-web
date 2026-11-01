@@ -1,5 +1,7 @@
 package com.wur7.store.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 import com.wur7.store.entity.ShopCustomer;
@@ -54,4 +56,6 @@ public interface ShopCustomerMapper {
     int updateByPrimaryKey(ShopCustomer record);
 	
 	ShopCustomer selectByOpenid(@Param("openid") String openid);
+	
+	List<ShopCustomer> findAll(ShopCustomer query);
 }

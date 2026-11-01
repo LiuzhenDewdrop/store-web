@@ -307,7 +307,7 @@ Page({
     });
   },
 
-    // 待提现
+    // 待到账
     onClickUnfund() {
       if (!isLogin()) {
         this.handleLogin();
@@ -316,7 +316,7 @@ Page({
       Toast({
         context: this,
         selector: '#t-toast',
-        message: '待提现列表',
+        message: '待到账列表',
         icon: '',
         duration: 1000,
       });
@@ -337,7 +337,7 @@ Page({
       });
     },
   
-    // 已提现
+    // 已到账
     onClickFund() {
       if (!isLogin()) {
         this.handleLogin();
@@ -346,7 +346,7 @@ Page({
       Toast({
         context: this,
         selector: '#t-toast',
-        message: '已提现列表',
+        message: '已到账列表',
         icon: '',
         duration: 1000,
       });

@@ -1,4 +1,4 @@
-package com.wur7.store.web.controller;
+package com.wur7.store.web.controller.wx;
 
 import javax.servlet.http.HttpServletRequest;
 

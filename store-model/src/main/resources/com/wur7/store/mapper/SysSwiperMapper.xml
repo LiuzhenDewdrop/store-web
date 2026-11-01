@@ -116,13 +116,6 @@
 		SELECT
 		<include refid="Base_Column_List" />
 		FROM sys_swiper
-		ORDER BY sort_no ASC
-	</select>
-
-	<select id="listForApp" resultMap="BaseResultMap">
-		SELECT
-		<include refid="Base_Column_List" />
-		FROM sys_swiper
 		WHERE del_status = 0
 		ORDER BY sort_no ASC
 	</select>

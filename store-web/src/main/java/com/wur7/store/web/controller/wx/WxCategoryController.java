@@ -1,4 +1,4 @@
-package com.wur7.store.web.controller;
+package com.wur7.store.web.controller.wx;
 
 import java.util.List;
 
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.wur7.store.bean.IReturnBean;
 import com.wur7.store.entity.SysItemCategory;
 import com.wur7.store.web.bean.response.CategoryDetailResp;
+import com.wur7.store.web.controller.BasicController;
 import com.wur7.store.web.service.ShopItemService;
 import com.wur7.store.web.service.SysItemCategoryService;
 
