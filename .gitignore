@@ -3,3 +3,4 @@
 */target/*
 *.iml
 catalina.home_IS_UNDEFINED
+*.yml
