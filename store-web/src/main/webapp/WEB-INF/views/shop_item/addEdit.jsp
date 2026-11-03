@@ -40,8 +40,8 @@
 <body class="childrenBody" style="font-size: 12px;margin: 10px 10px 0;">
 <form class="layui-form layui-form-pane">
 	<input id="pageFlag"  type="hidden" value="${pageFlag}">
-	<input id="resId" name="id" type="hidden" value="${detail.item.id}">
-	<input id="specId" name="id" type="hidden" value="${detail.specList[0].id}">
+	<input id="resId" name="id" type="hidden" value="${item.id}">
+<%--	<input id="specId" name="id" type="hidden" value="${specList[0].id}">--%>
 
 	<div class="layui-form-item">
 		<div class="layui-inline">
@@ -53,9 +53,9 @@
 					<input type="radio" name="itemType" lay-filter="itemTypeFilter" value="3" title="商品">
 				</c:if>
 				<c:if test="${pageFlag == 'upd' }">
-					<input type="radio" name="itemType" lay-filter="itemTypeFilter" value="1" title="活动" <c:if test="${detail.item.itemType == 1 }">checked</c:if>/>
-					<input type="radio" name="itemType" lay-filter="itemTypeFilter" value="2" title="课程" <c:if test="${detail.item.itemType == 2 }">checked</c:if>/>
-					<input type="radio" name="itemType" lay-filter="itemTypeFilter" value="3" title="商品" <c:if test="${detail.item.itemType == 3 }">checked</c:if>/>
+					<input type="radio" name="itemType" lay-filter="itemTypeFilter" value="1" title="活动" <c:if test="${item.itemType == 1 }">checked</c:if>/>
+					<input type="radio" name="itemType" lay-filter="itemTypeFilter" value="2" title="课程" <c:if test="${item.itemType == 2 }">checked</c:if>/>
+					<input type="radio" name="itemType" lay-filter="itemTypeFilter" value="3" title="商品" <c:if test="${item.itemType == 3 }">checked</c:if>/>
 				</c:if>
 			</div>
 		</div>
@@ -64,7 +64,7 @@
 		<div class="layui-inline">
 			<label class="layui-form-label">商品名称</label>
 			<div class="layui-input-inline">
-				<input type="text" id="resName" name="itemName" class="layui-input" maxlength="20" value="${detail.item.itemName}" lay-verify="required|itemName" placeholder="请输入商品名称">
+				<input type="text" id="resName" name="itemName" class="layui-input" maxlength="20" value="${item.itemName}" lay-verify="required|itemName" placeholder="请输入商品名称">
 			</div>
 		</div>
 	</div>
@@ -73,7 +73,7 @@
 			<label class="layui-form-label">商品封面图</label>
 			<div class="layui-input-inline" style="width:150px;">
 				<a class="img" title="商品封面图">
-					<img id="itemImage" src="${ctx}/${detail.item.itemImage}" style="width: 120px; height: 120px;">
+					<img id="itemImage" src="${item.itemImage}" style="width: 120px; height: 120px;">
 				</a>
 			</div>
 			<div class="layui-form-mid layui-word-aux">
@@ -95,7 +95,7 @@
 		<div class="layui-inline">
 			<label class="layui-form-label">商品编码</label>
 			<div class="layui-input-inline">
-				<input type="text" id="itemCode" name="itemCode" class="layui-input" maxlength="20" value="${detail.item.itemCode}" lay-verify="required|name" placeholder="请输入商品编码">
+				<input type="text" id="itemCode" name="itemCode" class="layui-input" maxlength="20" value="${item.itemCode}" lay-verify="required|name" placeholder="请输入商品编码">
 			</div>
 		</div>
 	</div>
@@ -123,7 +123,7 @@
 		<div class="layui-inline">
 			<label class="layui-form-label">品牌名称</label>
 			<div class="layui-input-inline">
-				<input type="text" id="brandName" name="brandName" class="layui-input" maxlength="20" value="${detail.item.brandName}" lay-verify="required|brandName" placeholder="请输入品牌名称">
+				<input type="text" id="brandName" name="brandName" class="layui-input" maxlength="20" value="${item.brandName}" lay-verify="required|brandName" placeholder="请输入品牌名称">
 			</div>
 		</div>
 	</div>
@@ -136,8 +136,8 @@
 <%--					<input type="radio" name="modelType" lay-filter="modelTypeFilter" value="2" title="多种型号规格">--%>
 <%--				</c:if>--%>
 <%--				<c:if test="${pageFlag == 'upd' }">--%>
-<%--					<input type="radio" name="modelType" lay-filter="modelTypeFilter" value="1" title="单一型号规格" <c:if test="${detail.item.modelType == 1 }">checked</c:if>/>--%>
-<%--					<input type="radio" name="modelType" lay-filter="modelTypeFilter" value="2" title="多种型号规格" <c:if test="${detail.item.modelType == 2 }">checked</c:if>/>--%>
+<%--					<input type="radio" name="modelType" lay-filter="modelTypeFilter" value="1" title="单一型号规格" <c:if test="${item.modelType == 1 }">checked</c:if>/>--%>
+<%--					<input type="radio" name="modelType" lay-filter="modelTypeFilter" value="2" title="多种型号规格" <c:if test="${item.modelType == 2 }">checked</c:if>/>--%>
 <%--				</c:if>--%>
 <%--			</div>--%>
 		</div>
@@ -148,7 +148,7 @@
 <%--		<div class="layui-inline">--%>
 <%--			<label class="layui-form-label">规格名称</label>--%>
 <%--			<div class="layui-input-inline">--%>
-<%--				<input type="text" id="specName" class="layui-input" maxlength="20" value="${detail.specList[0].specName}" lay-verify="specName" placeholder="请输入规格名称">--%>
+<%--				<input type="text" id="specName" class="layui-input" maxlength="20" value="${specList[0].specName}" lay-verify="specName" placeholder="请输入规格名称">--%>
 <%--			</div>--%>
 <%--		</div>--%>
 <%--		</div>--%>
@@ -169,7 +169,8 @@
 <%--			</div>--%>
 <%--		</div>--%>
 <%--	</div>--%>
-	<div id="resModelType2" style="display: none;">
+<%--	<div id="resModelType2">--%>
+	<div>
 		<table class="layui-hide" id="specTable"></table>
 		<div class="layui-inline" style="margin-bottom: 10px;">
 			<a class="layui-btn layui-btn-normal" id="resAddSpec_btn"> <i class="layui-icon  layui-icon-add-circle"></i>新增规格</a>
@@ -225,60 +226,34 @@ layui.config({
 	tinymce = layui.tinymce,
 	layer = parent.layer === undefined ? layui.layer : parent.layer;
 
-
-
 	function resInit() {
 		var pageFlag = $("#pageFlag").val();
-		var specs = [];
 		switch (pageFlag) {
 			case "add":
 				queryCategory(1, 0);
 				$("#catergoryDiv").hide();
 				break;
 			case "upd":
-				const isShow = changeItemType('${detail.item.itemType}');
+				const isShow = changeItemType('${item.itemType}');
 				if (isShow) {
-					var itemCategory1 = '${detail.item.itemCategory1}',
-						itemCategory2 = '${detail.item.itemCategory2}',
-						itemCategory3 = '${detail.item.itemCategory3}';
-					queryCategory(1, 0);
-					$("#itemCategory1 option[value='" + itemCategory1 + "']").prop("selected","selected");
-					queryCategory(2, itemCategory1);
-					$("#itemCategory2 option[value='" + itemCategory2 + "']").prop("selected","selected");
-					$("#itemCategory3 option[value='" + itemCategory3 + "']").prop("selected","selected");
+					var itemCategory1 = '${item.itemCategory1}',
+						itemCategory2 = '${item.itemCategory2}',
+						itemCategory3 = '${item.itemCategory3}';
+					queryCategory(1, 0, itemCategory1, false);
+					queryCategory(2, itemCategory1, itemCategory2, false);
+					queryCategory(3, itemCategory2, itemCategory3, false);
 				}
 				// 处理金额
-				$("#deliveryFeeFloat").val(fenToYuan(${detail.item.deliveryFee}));
-				$("#deliveryThresholdFloat").val(fenToYuan(${detail.item.deliveryThreshold}));
-				<%--changeModelType('${detail.item.modelType}');--%>
-				var specList = '${detail.item.specList}';
-				if (specList) {
-					specList = JSON.parse(specList);
-					<%--switch ('${detail.item.modelType}') {--%>
-					<%--	case '1':--%>
-					<%--		$("#supplyPriceFloat").val(fenToYuan(specList[0].supplyPrice));--%>
-					<%--		$("#salePriceFloat").val(fenToYuan(specList[0].salePrice));--%>
-					<%--		break;--%>
-					<%--	case '2':--%>
-							for (const spec in specList) {
-								spec.supplyPriceFloat = fenToYuan(spec.supplyPrice);
-								spec.salePriceFloat = fenToYuan(spec.salePrice);
-							}
-							specs = specList;
-					// 		break;
-					// 	default:
-					// 		break;
-					// }
-				}
-
+				$("#deliveryFeeFloat").val(fenToYuan(${item.deliveryFee}));
+				$("#deliveryThresholdFloat").val(fenToYuan(${item.deliveryThreshold}));
 				break;
 			default:
 				break;
 		}
 
-		var itemPictures = '${detail.picList}';
+		var itemPictures = '${picList}';
 		if (itemPictures) {
-			itemPictures = JSON.parse('${detail.picList}');
+			itemPictures = JSON.parse('${picList}');
 		} else {
 			itemPictures = [];
 		}
@@ -305,9 +280,9 @@ layui.config({
 			]],
 		});
 
-		var itemDesc = '${detail.desc}';
+		var itemDesc = '${desc}';
 		if (itemDesc) {
-			itemDesc = JSON.parse('${detail.desc}');
+			itemDesc = JSON.parse('${desc}');
 		} else {
 			itemDesc = [];
 		}
@@ -333,6 +308,15 @@ layui.config({
 				{fixed:'right', title: '操作', width: '20%', align:'center',toolbar: '#resPicBar'}
 			]],
 		});
+
+		var specs = '${specList}';
+		if (specs) {
+			specs = JSON.parse(specs);
+			for (const spec of specs) {
+				spec.supplyPriceFloat = fenToYuan(spec.supplyPrice);
+				spec.salePriceFloat = fenToYuan(spec.salePrice);
+			}
+		}
 
 		table.render({
 			elem: '#specTable',
@@ -372,7 +356,7 @@ layui.config({
 		<%--		'b[style|class],strong[style|class],i[style|class],em[style|class]',--%>
 		<%--	setup: function(editor) {--%>
 		<%--		editor.on('init', function() {--%>
-		<%--			this.setContent('${detail.item.itemDetail}');--%>
+		<%--			this.setContent('${item.itemDetail}');--%>
 		<%--		});--%>
 		<%--	},--%>
 		<%--	// 图片--%>
@@ -635,16 +619,17 @@ layui.config({
 	});
 
 	// 查询分类
-	function queryCategory(level, pid) {
+	function queryCategory(level, pid, sel, async=true) {
 		$.ajax({
 			type: "POST",
 			url: "${ctx}/category/list.do",
+			async: async,
 			dataType: "json",
 			data: {pId: pid},
 			success: function (data) {
 				var id = "#itemCategory"+level;
 				$(id).empty();
-				$(id).append('<option selected="selected" value="">请选择'+level+'级分类</option>');
+				$(id).append('<option ' + (sel?'':'selected="selected"') + ' value="">请选择'+level+'级分类</option>');
 				switch (level) {
 					case 1:
 						$('#itemCategory2 option').not(":first").remove();
@@ -660,7 +645,7 @@ layui.config({
 				}
 				$(data.data).each(function(index, item) {
 					$(id).append(
-						'<option value="'+item.id+'">'+item.categoryName+'</option>'
+						'<option value="'+item.id+'"' + (sel && sel==item.id?'selected="selected"':'') + '>'+item.categoryName+'</option>'
 					);
 				});
 				form.render('select');
@@ -698,10 +683,12 @@ layui.config({
 				obj.del();
 				break;
 			case 'res_up':
-				obj.specStatus = 1;
+				obj.dataCache.specStatus = 1;
+				table.renderData('specTable');
 				break;
 			case 'res_down':
-				obj.specStatus = 2;
+				obj.dataCache.specStatus = 2;
+				table.renderData('specTable');
 				break;
 			default:
 				break;
@@ -731,7 +718,7 @@ layui.config({
 			skin : 'layui-layer-molv',
 			offset: '50px',
 			content : url,
-			area: ['500px','500px'],
+			area: ['400','400px'],
 			resize:true,
 			anim:1,
 			btn: ['确定', '取消'],
@@ -744,8 +731,8 @@ layui.config({
 					common.cmsLayErrorMsg('规格名称只能为中文、数字、字母或-_');
 					return ;
 				}
-				var addSpecsalePriceFloat = sub.$('#addSpecsalePriceFloat').val();
-				var addSpecsupplyPriceFloat = sub.$('#addSpecsupplyPriceFloat').val();
+				var addSpecsalePriceFloat = sub.$('#addSpecSalePriceFloat').val();
+				var addSpecsupplyPriceFloat = sub.$('#addSpecSupplyPriceFloat').val();
 				var checkResult = checkPrice(addSpecsalePriceFloat, addSpecsupplyPriceFloat);
 				if (checkResult) {
 					common.cmsLayErrorMsg(checkResult);
@@ -775,31 +762,6 @@ layui.config({
 			return '销售价格过低，至少达到'+minPrice+'元，或者调低供货价格';
 		}
 	}
-
-	$('#supplyPriceFloat').on('change', function(e) {
-		if ($('#salePriceFloat').val() === '') {
-			return;
-		}
-		return form.validate('#supplyPriceFloat');
-	});
-	$('#salePriceFloat').on('change', function(e) {
-		if ($('#supplyPriceFloat').val() === '') {
-			return;
-		}
-		return form.validate('#salePriceFloat');
-	});
-	form.on('input-affix(supplyPriceFloat)', function(data){
-		if ($('#salePriceFloat').val() === '') {
-			return;
-		}
-		return form.validate('#supplyPriceFloat');
-	});
-	form.on('input-affix(salePriceFloat)', function(data){
-		if ($('#supplyPriceFloat').val() === '') {
-			return;
-		}
-		return form.validate('#salePriceFloat');
-	});
 
 	/**表单验证*/
 	form.verify({
@@ -856,7 +818,7 @@ layui.config({
 
 	function save(data, type) {
 		var pageFlag = $("#pageFlag").val();
-		var itemImageUrl = $('#itemImage').attr('data-url');
+		var itemImageUrl = $('#itemImage').attr('src');
 		if (!itemImageUrl) {
 			common.cmsLayErrorMsg("商品封面图不能为空，请上传商品封面图");
 			return;
@@ -909,11 +871,11 @@ layui.config({
 			data : JSON.stringify(postData),
 			success : function(data) {
 				if (data.code === "0000") {
-					common.cmsLaySucMsg("保存成功");
+					common.cmsLaySucMsg("保存成功，请刷新列表查看");
 					setTimeout(() => {
 						var layId = top.layui.$('.layui-tab-title .layui-this').attr('lay-id')
 						parent.layui.element.tabDelete('bodyTab', layId).init();
-					}, 500);
+					}, 1000);
 				} else {
 					common.cmsLayErrorMsg(data.msg);
 				}

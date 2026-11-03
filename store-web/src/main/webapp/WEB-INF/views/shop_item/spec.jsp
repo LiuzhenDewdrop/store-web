@@ -42,7 +42,7 @@
 		<div class="layui-inline">
 			<label class="layui-form-label">规格名称</label>
 			<div class="layui-input-inline">
-				<input id="addSpecSpecName" type="text" name="specName" class="layui-input" maxlength="20" lay-verify="required" value="" placeholder="请输入规格名称">
+				<input id="addSpecSpecName" type="text" name="specName" class="layui-input" maxlength="20" lay-verify="required|addSpecSpecName" value="" placeholder="请输入规格名称">
 			</div>
 		</div>
 		<div class="layui-inline">
@@ -59,13 +59,13 @@
 		<div class="layui-inline">
 			<label class="layui-form-label">供货价格（元）</label>
 			<div class="layui-input-inline">
-				<input id="addSpecSupplyPrice" type="text" lay-affix="number" min="0" lay-precision="2" class="layui-input" lay-verify="required" value="" placeholder="请输入供货价格">
+				<input id="addSpecSupplyPriceFloat" type="text" lay-affix="number" min="0" lay-precision="2" class="layui-input" lay-verify="required|addSpecSupplyPriceFloat" value="" placeholder="请输入供货价格">
 			</div>
 		</div>
 		<div class="layui-inline">
 			<label class="layui-form-label">销售价格（元）</label>
 			<div class="layui-input-inline">
-				<input id="addSpecSalePrice" type="text" lay-affix="number" min="0" lay-precision="2" class="layui-input" lay-verify="required" value="" placeholder="请输入销售价格">
+				<input id="addSpecSalePriceFloat" type="text" lay-affix="number" min="0" lay-precision="2" class="layui-input" lay-verify="required|addSpecSalePriceFloat" value="" placeholder="请输入销售价格">
 			</div>
 		</div>
 	</div>
@@ -103,6 +103,58 @@ layui.config({
 		error: function() {
 			return layer.msg('上传失败');
 		},
+	});
+
+	function checkPrice(salePriceFloat, supplyPriceFloat) {
+		var costRatio = '${LOGIN_USER.costRatio}' || 1.25;	// 默认1.25
+		var minPrice = (supplyPriceFloat * costRatio).toFixed(2);
+		if (minPrice > salePriceFloat) {
+			return '销售价格过低，至少达到'+minPrice+'元，或者调低供货价格';
+		}
+	}
+
+	$('#addSpecSupplyPriceFloat').on('change', function(e) {
+		if ($('#addSpecSalePriceFloat').val() === '') {
+			return;
+		}
+		return form.validate('#addSpecSupplyPriceFloat');
+	});
+	$('#addSpecSalePriceFloat').on('change', function(e) {
+		if ($('#addSpecSupplyPriceFloat').val() === '') {
+			return;
+		}
+		return form.validate('#addSpecSalePriceFloat');
+	});
+	form.on('input-affix(addSpecSupplyPriceFloat)', function(data){
+		if ($('#addSpecSalePriceFloat').val() === '') {
+			return;
+		}
+		return form.validate('#addSpecSupplyPriceFloat');
+	});
+	form.on('input-affix(addSpecSalePriceFloat)', function(data){
+		if ($('#addSpecSupplyPriceFloat').val() === '') {
+			return;
+		}
+		return form.validate('#addSpecSalePriceFloat');
+	});
+
+	/**表单验证*/
+	form.verify({
+		addSpecSpecName: function(value, item) {
+			// 验证规格名称
+				if (!new RegExp("^[0-9a-zA-Z\u4e00-\u9fa5\-_]+$").test(value)) {
+					return '规格名称只能为中文、数字、字母或-_';
+				}
+		},
+		addSpecSalePriceFloat: function(value, item) {
+			// 验证价格
+			return checkPrice(value, $('#addSpecSupplyPriceFloat').val());
+		},
+		addSpecSupplyPriceFloat: function(value, item) {
+			// 验证价格
+			return checkPrice($('#addSpecSalePriceFloat').val(), value);
+		},
+
 	});
 });
 </script>

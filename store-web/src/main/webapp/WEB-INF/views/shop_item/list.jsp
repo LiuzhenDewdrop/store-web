@@ -214,8 +214,9 @@
 			var url;
 			switch (layEvent) {
 				case 'res_edit':
-					url =  '${ctx}/item/upd?id=' + data.id;
-					common.cmsLayOpen('编辑商品',url,'880px','600px');
+					top.addTab($(this));
+					<%--url =  '${ctx}/item/upd?id=' + data.id;--%>
+					<%--common.cmsLayOpen('编辑商品',url,'880px','600px');--%>
 					break;
 				case 'res_del':
 					url = "${ctx}/item/del.do";
@@ -283,7 +284,7 @@
 			{{# if(d.itemStatus == 1){ }}
 			<a class="layui-btn layui-btn-xs layui-btn-disabled"><i class="layui-icon  layui-icon-edit"></i>编辑</a>
 			{{# } else if(d.itemStatus == 2 || d.itemStatus == 3){ }}
-			<a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="res_edit"><i class="layui-icon  layui-icon-edit"></i>编辑</a>
+			<a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="res_edit" href="javascript:;" data-url="/store-web/item/upd?id={{= d.id }}"><i class="layui-icon  layui-icon-edit" data-icon="layui-icon-edit"></i><cite>编辑</cite></a>
 			{{# } }}
 		</shiro:hasPermission>
 		<shiro:hasPermission name="shop:item:operate">

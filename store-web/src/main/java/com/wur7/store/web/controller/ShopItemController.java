@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.github.pagehelper.PageInfo;
 import com.wur7.store.bean.IReturnBean;
 import com.wur7.store.entity.ShopItem;
+import com.wur7.store.util.util.JsonUtil;
 import com.wur7.store.web.bean.LayPage;
 import com.wur7.store.web.bean.response.ShopItemDetail;
 import com.wur7.store.web.service.ShopItemService;
@@ -145,7 +146,10 @@ public class ShopItemController extends BasicController {
 	public String toUpd(HttpServletRequest request, Integer id) {
 		IReturnBean<ShopItemDetail> detail = shopItemService.detail(id);
 		if (detail.isSuccess()) {
-			request.setAttribute("detail", detail);
+			request.setAttribute("item", detail.getData().getItem());
+			request.setAttribute("specList", JsonUtil.toJSONString(detail.getData().getSpecList()));
+			request.setAttribute("picList", JsonUtil.toJSONString(detail.getData().getPicList()));
+			request.setAttribute("desc", JsonUtil.toJSONString(detail.getData().getDesc()));
 		}
 		request.setAttribute("pageFlag", "upd");
 		return "shop_item/addEdit";
@@ -161,7 +165,7 @@ public class ShopItemController extends BasicController {
 	@RequestMapping(value = "/upd.do")
 	@ResponseBody
 	@RequiresPermissions("shop:item:upd")
-	public IReturnBean<?> upd(HttpServletRequest request, ShopItemDetail detail) {
+	public IReturnBean<?> upd(HttpServletRequest request, @RequestBody ShopItemDetail detail) {
 		try {
 			return shopItemService.update(detail, getCurrentUser());
 		} catch (Exception e) {
