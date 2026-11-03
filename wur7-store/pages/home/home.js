@@ -132,11 +132,6 @@ Page({
           goodsListLoadStatus: 3,
           hasLoaded: true,
         });
-        wx.showToast({
-          title: '查询失败',
-          icon: 'error',
-          message: result.msg,
-        });
         return
       }
       const nextList = result.data;

@@ -28,8 +28,8 @@ import com.wur7.store.bean.IReturnBean;
 import com.wur7.store.constant.CommonConstant;
 import com.wur7.store.entity.ShopCustomer;
 import com.wur7.store.util.util.Base64;
-import com.wur7.store.web.bean.WxLoginRequest;
-import com.wur7.store.web.bean.WxLoginResponse;
+import com.wur7.store.web.bean.request.WxLoginRequest;
+import com.wur7.store.web.bean.response.WxLoginResponse;
 import com.wur7.store.web.mapper.MapperSupport;
 
 @Service
@@ -87,6 +87,8 @@ public class WxLoginService {
 					customer.setUpperId(request.getInviterId());
 				}
 			}
+			// 上级增加一个邀请用户
+			mapperSupport.shopCustomerMapper.increasePerson(customer.getUpperId());
             mapperSupport.shopCustomerMapper.insert(customer);
         } else if (customer.getStatus() == CommonConstant.NO) {
 			// 禁用

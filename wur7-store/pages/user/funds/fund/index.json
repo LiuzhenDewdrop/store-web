@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "已到账",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark",
+  "usingComponents": {
+    "funds-list": "../../components/funds-list/index",
+    "price": "/components/price/index"
+  }
+}

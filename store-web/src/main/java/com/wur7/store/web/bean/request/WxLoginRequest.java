@@ -1,4 +1,4 @@
-package com.wur7.store.web.bean;
+package com.wur7.store.web.bean.request;
 
 import lombok.Data;
 

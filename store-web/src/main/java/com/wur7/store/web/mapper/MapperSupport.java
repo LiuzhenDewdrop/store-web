@@ -9,6 +9,7 @@ import com.wur7.store.mapper.ShopCustomerMapper;
 import com.wur7.store.mapper.ShopItemMapper;
 import com.wur7.store.mapper.ShopItemPicMapper;
 import com.wur7.store.mapper.ShopItemSpecMapper;
+import com.wur7.store.mapper.ShopProfitShareRecordMapper;
 import com.wur7.store.mapper.SysDictMapper;
 import com.wur7.store.mapper.SysItemCategoryMapper;
 import com.wur7.store.mapper.SysMenuMapper;
@@ -44,4 +45,6 @@ public class MapperSupport {
 	public ShopCartMapper shopCartMapper;
 	@Resource
 	public SysSwiperMapper sysSwiperMapper;
+	@Resource
+	public ShopProfitShareRecordMapper shopProfitShareRecordMapper;
 }

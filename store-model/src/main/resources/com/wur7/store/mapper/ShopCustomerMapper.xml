@@ -255,4 +255,18 @@
 			AND  nickname like CONCAT('%',#{nickname},'%')
 		</if>
 	</select>
+
+	<select id="findAllByUpper" resultMap="BaseResultMap">
+		SELECT <include refid="Base_Column_List" />
+		FROM shop_customer
+		WHERE upper_id = #{upper}
+		AND del_status = 0
+	</select>
+
+	<update id="increasePerson">
+		UPDATE shop_customer
+		SET person_num = person_num + 1
+		WHERE id = #{id}
+	</update>
+
 </mapper>

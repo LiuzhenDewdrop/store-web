@@ -1,0 +1,42 @@
+.list-card {
+  margin: 24rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+.list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 96rpx;
+  padding: 0 28rpx;
+}
+.col-name {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+  min-width: 0;
+  padding-right: 24rpx;
+}
+.col-time {
+  flex-shrink: 0;
+  color: #9b9b9b;
+}
+.list-footer {
+  text-align: center;
+  padding: 24rpx 0 32rpx;
+}
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 200rpx;
+}
+.empty-img {
+  width: 240rpx;
+  height: 240rpx;
+  margin-bottom: 24rpx;
+}
+.empty-text {
+  color: #9b9b9b;
+}

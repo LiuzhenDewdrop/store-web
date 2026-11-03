@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "邀请人数",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark",
+  "usingComponents": {
+    "invite-list": "../components/invite-list/index"
+  }
+}

@@ -1,0 +1,19 @@
+<view class="page-wrap">
+  <view class="summary-card">
+    <view class="summary-label">累计已到账(元)</view>
+    <view class="summary-amount">
+      <price price="{{totalAmt}}" priceUnit="fen" symbol="￥" fill decimalSmaller wr-class="total-amount received" symbol-class="total-symbol" decimal-class="total-decimal" />
+    </view>
+    <view class="summary-tip">已经结算到账的收益</view>
+  </view>
+
+  <view class="list-wrap">
+    <funds-list
+      list="{{list}}"
+      time-key="receiveTime"
+      loading="{{loading}}"
+      finished="{{finished}}"
+      empty-text="暂无到账记录"
+    />
+  </view>
+</view>

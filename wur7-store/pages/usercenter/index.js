@@ -81,9 +81,9 @@ const getDefaultData = () => ({
   currAuthStep: 1, // 1=未登录 2=已登录
   showKefu: true,
   versionNo: '',
-  unfundAmt: 103001,
-  persons: 20,
-  fundAmt: 2655654,
+  unfundAmt: 0,
+  persons: 0,
+  fundAmt: 0,
 });
 
 Page({
@@ -116,7 +116,10 @@ Page({
           avatarUrl: localUser.avatarUrl || '',
           nickName: localUser.userName || '微信用户',
           phoneNumber: localUser.phoneNumber || ''
-        }
+        },
+        unfundAmt: localUser.unfundAmt || 0,
+        persons: localUser.personNum || 0,
+        fundAmt: localUser.fundAmt || 0,
       });
       this.fetUseriInfoHandle();
     } else {
@@ -313,13 +316,7 @@ Page({
         this.handleLogin();
         return;
       }
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: '待到账列表',
-        icon: '',
-        duration: 1000,
-      });
+      wx.navigateTo({ url: '/pages/user/funds/unfund/index' });
     },
   
     // 邀请人数
@@ -328,13 +325,7 @@ Page({
         this.handleLogin();
         return;
       }
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: '被邀请人列表',
-        icon: '',
-        duration: 1000,
-      });
+      wx.navigateTo({ url: '/pages/user/invite-list/index' });
     },
   
     // 已到账
@@ -343,12 +334,6 @@ Page({
         this.handleLogin();
         return;
       }
-      Toast({
-        context: this,
-        selector: '#t-toast',
-        message: '已到账列表',
-        icon: '',
-        duration: 1000,
-      });
+      wx.navigateTo({ url: '/pages/user/funds/fund/index' });
     },
 });

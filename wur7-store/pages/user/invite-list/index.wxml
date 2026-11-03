@@ -1,0 +1,12 @@
+<view class="page">
+  <view class="summary-card">
+    <view class="summary-count ft-super fw-super">{{totalPersons}}<text class="unit">人</text></view>
+    <view class="summary-label">邀请的好友</view>
+  </view>
+  <invite-list
+    list="{{list}}"
+    loading="{{loading}}"
+    finished="{{finished}}"
+    empty-text="暂无邀请记录"
+  />
+</view>

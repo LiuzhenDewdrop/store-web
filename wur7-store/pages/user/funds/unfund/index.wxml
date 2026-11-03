@@ -1,0 +1,21 @@
+<view class="page-wrap">
+  <!-- 顶部汇总卡片 -->
+  <view class="summary-card">
+    <view class="summary-label">待到账总额(元)</view>
+    <view class="summary-amount">
+      <price price="{{totalAmt}}" priceUnit="fen" symbol="￥" fill decimalSmaller wr-class="total-amount unfund" symbol-class="total-symbol" decimal-class="total-decimal" />
+    </view>
+    <view class="summary-tip">收益结算后自动到账</view>
+  </view>
+
+  <!-- 列表 -->
+  <view class="list-wrap">
+    <funds-list
+      list="{{list}}"
+      time-key="payTime"
+      loading="{{loading}}"
+      finished="{{finished}}"
+      empty-text="暂无待到账记录"
+    />
+  </view>
+</view>

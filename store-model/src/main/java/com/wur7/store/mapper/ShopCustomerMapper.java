@@ -58,4 +58,8 @@ public interface ShopCustomerMapper {
 	ShopCustomer selectByOpenid(@Param("openid") String openid);
 	
 	List<ShopCustomer> findAll(ShopCustomer query);
+	
+	List<ShopCustomer> findAllByUpper(@Param("upper") Integer upper);
+	
+	void increasePerson(@Param("id") Integer id);
 }

@@ -13,8 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.wur7.store.bean.IReturnBean;
 import com.wur7.store.entity.ShopCustomer;
-import com.wur7.store.web.bean.WxLoginRequest;
-import com.wur7.store.web.bean.WxLoginResponse;
+import com.wur7.store.web.bean.request.WxLoginRequest;
+import com.wur7.store.web.bean.response.WxLoginResponse;
 import com.wur7.store.web.service.WxLoginService;
 
 import lombok.extern.slf4j.Slf4j;

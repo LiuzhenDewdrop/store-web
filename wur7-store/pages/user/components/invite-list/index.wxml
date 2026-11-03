@@ -1,0 +1,14 @@
+<view class="list-card" wx:if="{{rows.length > 0}}">
+  <view class="list-item border-b-1px" wx:for="{{rows}}" wx:key="id">
+    <view class="col-name text-line1">{{item.nickname}}</view>
+    <view class="col-time text-small">{{item.timeText}}</view>
+  </view>
+  <view class="list-footer">
+    <view wx:if="{{loading}}" class="text-small text-normal">加载中...</view>
+    <view wx:elif="{{finished}}" class="text-small text-normal">— 没有更多了 —</view>
+  </view>
+</view>
+<view class="empty-state" wx:else>
+  <image class="empty-img" src="/images/empty.png" mode="aspectFit" />
+  <view class="empty-text text-small text-normal">{{emptyText}}</view>
+</view>

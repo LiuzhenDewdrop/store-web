@@ -15,9 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.wur7.store.bean.IReturnBean;
 import com.wur7.store.entity.ShopItem;
-import com.wur7.store.web.bean.response.ShopItemDetail;
 import com.wur7.store.web.bean.request.AppQuery;
-import com.wur7.store.web.controller.BasicController;
+import com.wur7.store.web.bean.response.ShopItemDetail;
 import com.wur7.store.web.service.ShopItemService;
 import com.wur7.store.web.service.SysMenuService;
 import com.wur7.store.web.service.SysRoleService;
@@ -27,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/wx/item")
-public class WxShopItemController extends BasicController {
+public class WxShopItemController extends WxBasicController {
 	
 	@Resource
 	private SysRoleService sysRoleService;

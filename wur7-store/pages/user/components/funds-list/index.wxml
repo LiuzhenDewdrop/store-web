@@ -1,0 +1,26 @@
+<view class="funds-list">
+  <!-- 表格行：金额 | 时间 | 昵称，仅横线分隔、无表头、无竖线 -->
+  <view wx:for="{{rows}}" wx:key="id" class="funds-row border-b-1px">
+    <view class="col col-amount">
+      <price price="{{item.profitAmt}}" priceUnit="fen" symbol="￥" fill decimalSmaller wr-class="fund-amount" symbol-class="fund-symbol" decimal-class="fund-decimal" />
+    </view>
+    <view class="col col-time">
+      <text class="time-text">{{item._time}}</text>
+    </view>
+    <view class="col col-name">
+      <text class="nick-text text-line1">{{item.nickname}}</text>
+    </view>
+  </view>
+
+  <!-- 空态 -->
+  <view wx:if="{{!loading && finished && rows.length === 0}}" class="empty-box">
+    <image class="empty-img" src="https://tdesign.gtimg.com/miniprogram/template/retail/order/empty-order-list.png" mode="aspectFit" />
+    <view class="empty-text">{{emptyText}}</view>
+  </view>
+
+  <!-- 底部状态 -->
+  <view wx:if="{{rows.length > 0}}" class="list-footer">
+    <view wx:if="{{loading}}" class="footer-text">加载中...</view>
+    <view wx:elif="{{finished}}" class="footer-text">— 没有更多了 —</view>
+  </view>
+</view>

@@ -5,6 +5,8 @@ public class CommonConstant {
 	public static final int YES = 1;
 	public static final int NO = 0;
 	
+	public static final String DEFAULT_NICKNAME = "微信用户";
+	
 	// 公共
 	
 	// `del_status` int(11) DEFAULT NULL COMMENT '删除状态【1：已删除，0：未删除】',
@@ -30,6 +32,12 @@ public class CommonConstant {
 	// `pic_type` int(11) DEFAULT NULL COMMENT '图片类型【1：轮播图，2：详情图】',
 	public final static int PIC_TYPE_SWIPER = 1;
 	public final static int PIC_TYPE_DETAIL = 2;
+	
+	// shop_profit_share_record
+	// `share_status` int(11) DEFAULT NULL COMMENT '分润状态【1：待到账，2：已到账，3：已撤销】',
+	public final static int SHARE_STATUS_UNFUND = 1;
+	public final static int SHARE_STATUS_FUND = 2;
+	public final static int SHARE_STATUS_CANCEL = 3;
 	
 	// 字典组group
 	/**
