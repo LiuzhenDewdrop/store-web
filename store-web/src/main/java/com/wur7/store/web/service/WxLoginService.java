@@ -75,6 +75,9 @@ public class WxLoginService {
             // 新用户自动注册
             customer = new ShopCustomer();
             customer.setOpenid(openid);
+			customer.setUnfundAmt(0);
+			customer.setFundAmt(0);
+			customer.setPersonNum(0);
             customer.setGender(0);
         	customer.setCreateTime(new Date());
             customer.setStatus(1);

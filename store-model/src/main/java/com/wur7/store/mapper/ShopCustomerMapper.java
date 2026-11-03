@@ -62,4 +62,9 @@ public interface ShopCustomerMapper {
 	List<ShopCustomer> findAllByUpper(@Param("upper") Integer upper);
 	
 	void increasePerson(@Param("id") Integer id);
+	
+	void increaseUnfund(@Param("id") Integer id, @Param("amt") Integer amt);
+	
+	void increaseFund(@Param("id") Integer id, @Param("amt") Integer amt);
+	
 }
