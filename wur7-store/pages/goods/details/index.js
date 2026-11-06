@@ -275,7 +275,7 @@ Page({
     const customInfo = {
       imageUrl: this.data.details.item.itemImage,
       title: this.data.details.item.itemName + shareSubTitle,
-      path: `/pages/goods/details/index?spuId=${this.data.spuId}&inviterId=${localUser.id}&specIdNum=${this.data.selectItem.id}&quantity=${this.data.buyNum}`,
+      path: `/pages/goods/details/index?spuId=${this.data.spuId}&inviterId=${localUser.userId}&specIdNum=${this.data.selectItem.id}&quantity=${this.data.buyNum}`,
     };
     return customInfo;
   },
@@ -303,7 +303,7 @@ Page({
     }
     return {
       title: this.data.details.item.itemName + shareSubTitle,
-      query: `spuId=${this.data.spuId}&inviterId=${localUser.id}&specIdNum=${this.data.selectItem.id}&quantity=${this.data.buyNum}`
+      query: `spuId=${this.data.spuId}&inviterId=${localUser.userId}&specIdNum=${this.data.selectItem.id}&quantity=${this.data.buyNum}`
     };
   },
 
@@ -353,7 +353,7 @@ Page({
     }
     // 生成海报
     const localUser = getLocalUserInfo();
-    this.fetchPoster(localUser.id, this.data.spuId);
+    this.fetchPoster(localUser.userId, this.data.spuId);
   },
 
   async fetchPoster(inviterId, spuId, specId, quantity) {
