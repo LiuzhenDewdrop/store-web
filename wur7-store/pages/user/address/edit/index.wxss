@@ -51,7 +51,7 @@ page .divider-line {
 .form-address .label-list {
   background: #f5f5f5;
   color: #333;
-  min-width: 100rpx;
+  min-width: 85rpx;
   margin-right: 32rpx;
   font-size: 26rpx;
   border: 2rpx solid transparent;

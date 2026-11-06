@@ -38,6 +38,17 @@
     </view>
   </view>
 
+    <!-- 分享按钮 -->
+  <view class="share-btn-wrapper cell-box">
+    <image 
+      wx:if="{{share_img}}" 
+      src="{{share_img}}" 
+      class="share-btn-img" 
+      mode="widthFix" 
+      bindtap="openSharePopup"
+    />
+  </view>
+
 
   <view class="order-group-wrapper">
     <t-order-group orderTagInfos="{{orderTagInfos}}" bind:onClickTop="jumpAllOrder" bind:onClickItem="jumpNav" />
@@ -65,7 +76,7 @@
   </view>
 </view>
 <view class="footer__version" wx:if="{{versionNo !== ''}}">当前版本 {{versionNo}}</view>
-<t-popup visible="{{showMakePhone}}" placement="bottom" bind:visible-change="closeMakePhone" data-index="2">
+<!-- <t-popup visible="{{showMakePhone}}" placement="bottom" bind:visible-change="closeMakePhone" data-index="2">
   <view class="popup-content">
     <view class="popup-title border-bottom-1px" wx:if="{{customerServiceInfo.serviceTimeDuration}}">
       服务时间: {{customerServiceInfo.serviceTimeDuration}}
@@ -74,5 +85,59 @@
     <button class="popup-phone border-bottom-1px online" open-type="contact" wx:if="{{showKefu}}">在线客服</button>
     <view class="popup-close" bind:tap="closeMakePhone">取消</view>
   </view>
-</t-popup>
+</t-popup> -->
+<!-- 客服二维码弹窗 -->
+<view class="support-mask" wx:if="{{showSupportQrcode}}" bind:tap="closeSupportQrcode">
+  <view class="support-modal" catch:tap="noop">
+    <view class="support-qrcode-wrapper">
+      <image 
+        src="{{support}}" 
+        class="support-qrcode-img" 
+        mode="aspectFit"
+        bindtap="previewSupport"
+        show-menu-by-longpress
+      />
+    </view>
+    <view class="support-tip">长按二维码添加客服微信</view>
+    <view class="support-close" bind:tap="closeSupportQrcode">关闭</view>
+  </view>
+</view>
 <t-toast id="t-toast" />
+
+<!-- 分享弹窗 -->
+<t-popup visible="{{showSharePopup}}" placement="bottom" bindtap="closeSharePopup">
+  <view class="share-panel">
+    <!-- 上部：海报 -->
+    <view class="poster-area">
+      <image wx:if="{{posterPath}}" src="{{posterPath}}" mode="widthFix" class="poster-img" show-menu-by-longpress />
+      <view wx:else class="poster-loading">海报生成中...</view>
+      <view class="poster-tip">长按识别 / 保存图片分享给好友</view>
+    </view>
+
+    <!-- 下部：三个按钮 -->
+    <view class="share-action-area">
+      <view class="share-action-item">
+        <button open-type="share" class="share-native-btn">
+          <t-icon name="share" size="48rpx" color="#333" />
+          <view class="share-action-label">发送给朋友</view>
+        </button>
+      </view>
+      <view class="share-action-item" bindtap="onShareToTimeline">
+        <t-icon name="image" size="48rpx" color="#333" />
+        <view class="share-action-label">分享到朋友圈</view>
+      </view>
+      <view class="share-action-item" bindtap="onSaveImage">
+        <t-icon name="download" size="48rpx" color="#333" />
+        <view class="share-action-label">保存图片</view>
+      </view>
+    </view>
+
+    <!-- 取消 -->
+    <view class="share-cancel-btn" bindtap="closeSharePopup">取消</view>
+  </view>
+</t-popup>
+<canvas 
+  type="2d" 
+  id="userSharePosterCanvas" 
+  style="width: 750px; height: 1100px; position: fixed; left: -9999px; top: 0; z-index: -1;"
+></canvas>

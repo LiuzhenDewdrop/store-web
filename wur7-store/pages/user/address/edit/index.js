@@ -8,6 +8,8 @@ const innerNameReg = '^[a-zA-Z\\d\\u4e00-\\u9fa5]+$';
 const labelsOptions = [
   { id: 0, name: '家' },
   { id: 1, name: '公司' },
+  { id: 2, name: '学校' },
+  { id: 3, name: '亲友' },
 ];
 
 Page({
@@ -17,7 +19,7 @@ Page({
   externalClasses: ['theme-wrapper-class'],
   data: {
     locationState: {
-      labelIndex: null,
+      tagIndex: null,
       addressId: '',
       addressTag: '',
       cityCode: '',
@@ -120,39 +122,20 @@ Page({
   onPickLabels(e) {
     const { item } = e.currentTarget.dataset;
     const {
-      locationState: { labelIndex = undefined },
+      locationState: { tagIndex = undefined },
       labels = [],
     } = this.data;
     let payload = {
-      labelIndex: item,
+      tagIndex: item,
       addressTag: labels[item].name,
     };
-    if (item === labelIndex) {
-      payload = { labelIndex: null, addressTag: '' };
+    if (item === tagIndex) {
+      payload = { tagIndex: null, addressTag: '' };
     }
     this.setData({
-      'locationState.labelIndex': payload.labelIndex,
+      'locationState.tagIndex': payload.tagIndex,
     });
     this.triggerEvent('triggerUpdateValue', payload);
-  },
-  addLabels() {
-    this.setData({
-      visible: true,
-    });
-  },
-  confirmHandle() {
-    const { labels, labelValue } = this.data;
-    this.setData({
-      visible: false,
-      labels: [...labels, { id: labels[labels.length - 1].id + 1, name: labelValue }],
-      labelValue: '',
-    });
-  },
-  cancelHandle() {
-    this.setData({
-      visible: false,
-      labelValue: '',
-    });
   },
   onCheckDefaultAddress({ detail }) {
     const { value } = detail;

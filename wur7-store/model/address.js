@@ -1,5 +1,6 @@
 /** 地址 */
 export function genAddress(id) {
+  
   return {
     saasId: '88888888',
     uid: `8888888820550${id}`,
@@ -18,7 +19,7 @@ export function genAddress(id) {
     districtCode: '623026',
     detailAddress: `松日鼎盛大厦${id}层${id}号`,
     isDefault: `${id}` === '0' ? 1 : 0,
-    addressTag: id === 0 ? '' : '公司',
+    tagIndex: id % 4,
     latitude: '34.59103',
     longitude: '102.48699',
     storeId: null,

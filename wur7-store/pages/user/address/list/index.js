@@ -3,6 +3,12 @@ import { fetchDeliveryAddressList } from '../../../../services/address/fetchAddr
 import Toast from 'tdesign-miniprogram/toast/index';
 import { resolveAddress, rejectAddress } from '../../../../services/address/list';
 import { getAddressPromise } from '../../../../services/address/edit';
+const labelsOptions = [
+  { id: 0, name: '家' },
+  { id: 1, name: '公司' },
+  { id: 2, name: '学校' },
+  { id: 3, name: '亲友' },
+];
 
 Page({
   data: {
@@ -29,6 +35,7 @@ Page({
 
   init() {
     this.getAddressList();
+    const a = 1;
   },
   onUnload() {
     if (this.selectMode && !this.hasSelect) {
@@ -42,6 +49,7 @@ Page({
         if (address.id === id) {
           address.checked = true;
         }
+        address.tag = labelsOptions[address.tagIndex].name;
       });
       this.setData({ addressList });
     });

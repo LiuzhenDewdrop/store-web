@@ -75,14 +75,11 @@
               wx:for-item="label"
               wx:key="index"
               size="extra-small"
-              t-class="label-list {{locationState.labelIndex === index ? 'active-btn':''}}"
+              t-class="label-list {{locationState.tagIndex === index ? 'active-btn':''}}"
               bindtap="onPickLabels"
               data-item="{{index}}"
             >
               {{label.name}}
-            </t-button>
-            <t-button size="extra-small" t-class="label-list" bindtap="addLabels">
-              <t-icon name="add" size="40rpx" color="#bbb" />
             </t-button>
           </view>
         </t-cell>
@@ -112,16 +109,4 @@
     bind:change="onInputValue"
   ></t-cascader>
 </view>
-<t-dialog
-  visible="{{visible}}"
-  t-class-confirm="dialog__button-confirm"
-  t-class-cancel="dialog__button-cancel"
-  title="填写标签名称"
-  confirm-btn="确定"
-  cancel-btn="取消"
-  bind:confirm="confirmHandle"
-  bind:cancel="cancelHandle"
->
-  <t-input slot="content" class="dialog__input" model:value="{{labelValue}}" placeholder="请输入标签名称" borderless />
-</t-dialog>
 <t-toast id="t-toast" />

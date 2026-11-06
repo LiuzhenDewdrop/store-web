@@ -26,6 +26,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wur7.store.bean.IReturnBean;
 import com.wur7.store.constant.CommonConstant;
+import com.wur7.store.entity.ShopCusLogin;
 import com.wur7.store.entity.ShopCustomer;
 import com.wur7.store.util.util.Base64;
 import com.wur7.store.web.bean.request.WxLoginRequest;
@@ -47,10 +48,6 @@ public class WxLoginService {
     @Value("${wx.secret}")
     private String secret;
 
-    // 内存缓存token -> userId
-    private static final Map<String, Integer> TOKEN_CACHE = new HashMap<>();
-    // 内存缓存userId -> sessionKey
-    private static final Map<Integer, String> SESSION_KEY_CACHE = new HashMap<>();
     // access_token缓存
     private static String accessToken = null;
     private static long accessTokenExpireTime = 0;
@@ -101,15 +98,22 @@ public class WxLoginService {
 			customer.setDelStatus(CommonConstant.DEL_STATUS_EXIST);
 			mapperSupport.shopCustomerMapper.updateByPrimaryKeySelective(customer);
 		}
-        
-        // 缓存session_key
-        if (sessionKey != null) {
-        	SESSION_KEY_CACHE.put(customer.getId(), sessionKey);
-        }
+		
 
         // 生成token
         String token = UUID.randomUUID().toString().replace("-", "");
-        TOKEN_CACHE.put(token, customer.getId());
+        // 存session_key、token
+		ShopCusLogin query = new ShopCusLogin();
+		query.setCustomerId(customer.getId());
+		query.setToken(token);
+		query.setSessionKey(sessionKey);
+		ShopCusLogin record = mapperSupport.shopCusLoginMapper.selectByCustomer(query.getCustomerId());
+		if (record == null) {
+			mapperSupport.shopCusLoginMapper.insert(query);
+		} else {
+			query.setId(record.getId());
+			mapperSupport.shopCusLoginMapper.updateByPrimaryKey(query);
+		}
 
         // 返回登录信息
         WxLoginResponse response = new WxLoginResponse();
@@ -127,16 +131,17 @@ public class WxLoginService {
     }
 
     public ShopCustomer getCustomerByToken(String token) {
-        Integer userId = TOKEN_CACHE.get(token);
-        if (userId == null) return null;
-        return mapperSupport.shopCustomerMapper.selectByPrimaryKey(userId);
+		ShopCusLogin record = mapperSupport.shopCusLoginMapper.selectByToken(token);
+        if (record == null) return null;
+        return mapperSupport.shopCustomerMapper.selectByPrimaryKey(record.getCustomerId());
     }
 
     public void logout(String token) {
-        Integer userId = TOKEN_CACHE.remove(token);
-        if (userId != null) {
-        	SESSION_KEY_CACHE.remove(userId);
-        }
+		ShopCusLogin record = mapperSupport.shopCusLoginMapper.selectByToken(token);
+		if (record == null) {
+			return;
+		}
+		mapperSupport.shopCusLoginMapper.deleteByPrimaryKey(record.getId());
     }
 
     /**
@@ -245,7 +250,11 @@ public class WxLoginService {
 		String token = getAccessToken();
 		String url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" + token;
 		JSONObject body = new JSONObject();
-		body.put("scene", "inviterId=" + inviterId + "&spuId=" + id);		// scene 最长 32 字符
+		String scene = "inviterId=" + inviterId;
+		if (id != null) {
+			scene += "&spuId=" + id;
+		}
+		body.put("scene", scene);		// scene 最长 32 字符
 		body.put("page", page);
 		body.put("check_path", false);			// todo 联调期 false，上线后可改 true
 		body.put("width", 430);

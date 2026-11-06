@@ -73,10 +73,11 @@ export default class PosterGenerator {
   }
 }
 
-// 海报固定尺寸：宽度750px，高度1100px
-const POSTER_SIZE = { width: 750, height: 1100 }
+
 
 export async function generatePoster(canvasId, goodsInfo, qrCode) {
+  // 海报固定尺寸：宽度750px，高度1100px
+const POSTER_SIZE = { width: 750, height: 1100 }
   const generator = new PosterGenerator(canvasId)
   await generator.init(POSTER_SIZE.width, POSTER_SIZE.height)
   const ctx = generator.ctx
@@ -139,4 +140,37 @@ function priceFmt(priceInt) {
   pArr[0] = price >= 100 ? `${price}`.slice(0, -2) : '0';
   pArr[1] = `${price + 100}`.slice(-2);
   return pArr;
+}
+
+// 生成首页分享海报
+export async function generateHomePoster(canvasId, posterImg, qrCode) {
+  const POSTER_SIZE = { width: 550, height: 1100 }
+  const generator = new PosterGenerator(canvasId)
+  await generator.init(POSTER_SIZE.width, POSTER_SIZE.height)
+  const ctx = generator.ctx
+  patchRoundRect(ctx);
+
+  // 1. 加载并绘制海报主图
+  const mainPosterImg = await generator.preloadImage(posterImg)
+  ctx.drawImage(mainPosterImg, 0, 0, POSTER_SIZE.width, POSTER_SIZE.height)
+
+  // 2. 绘制半透明白色背景卡片放二维码
+  // ctx.fillStyle = 'rgba(255, 255, 255, 0.95)'
+  // ctx.roundRect(550, 880, 170, 170, 16)
+  // ctx.fill()
+
+  // 3. 绘制引导文案
+  // ctx.font = 'bold 32px Noto Sans SC'
+  // ctx.fillStyle = '#1f2937'
+  // ctx.fillText('长按扫码进入商城', 80, 940)
+  // ctx.font = '24px Noto Sans SC'
+  // ctx.fillStyle = '#6b7280'
+  // ctx.fillText('精选好物 优惠不停', 80, 985)
+
+  // 4. 绘制小程序二维码
+  const qrImg = await generator.preloadImage(qrCode)
+  ctx.drawImage(qrImg, 420, 980, 100, 100)
+
+  // 5. 导出生成完成的海报
+  return await generator.exportTempFilePath()
 }
