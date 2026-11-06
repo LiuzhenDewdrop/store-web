@@ -316,6 +316,8 @@ layui.config({
 				spec.supplyPriceFloat = fenToYuan(spec.supplyPrice);
 				spec.salePriceFloat = fenToYuan(spec.salePrice);
 			}
+		} else {
+			specs = [];
 		}
 
 		table.render({
@@ -471,11 +473,12 @@ layui.config({
 	});
 
 	table.on('tool(picTable)', function(obj) {
-		var data = obj.data;
+		var index = obj.index;
 		var layEvent = obj.event;
 		switch (layEvent) {
 			case 'delPic':
-				obj.del();
+				table.cache['picTable'].splice(index, 1);
+				table.renderData('picTable');
 				break;
 			case 'changeSort':
 				layer.prompt({title: '请输入排序数字0靠前，9靠后', formType: 0, type: 'number'}, function(text, index){
@@ -571,11 +574,12 @@ layui.config({
 	});
 
 	table.on('tool(descTable)', function(obj) {
-		var data = obj.data;
+		var index = obj.index;
 		var layEvent = obj.event;
 		switch (layEvent) {
 			case 'delPic':
-				obj.del();
+				table.cache['descTable'].splice(index, 1);
+				table.renderData('descTable');
 				break;
 			case 'changeSort':
 				layer.prompt({title: '请输入排序数字0靠前，9靠后', formType: 0, type: 'number'}, function(text, index){
@@ -676,11 +680,12 @@ layui.config({
 	// });
 
 	table.on('tool(specTable)', function(obj) {
-		var data = obj.data;
+		var index = obj.index;
 		var layEvent = obj.event;
 		switch (layEvent) {
 			case 'res_del':
-				obj.del();
+				table.cache['specTable'].splice(index, 1);
+				table.renderData('specTable');
 				break;
 			case 'res_up':
 				obj.dataCache.specStatus = 1;
@@ -718,7 +723,7 @@ layui.config({
 			skin : 'layui-layer-molv',
 			offset: '50px',
 			content : url,
-			area: ['400','400px'],
+			area: ['400px','400px'],
 			resize:true,
 			anim:1,
 			btn: ['确定', '取消'],
@@ -731,8 +736,8 @@ layui.config({
 					common.cmsLayErrorMsg('规格名称只能为中文、数字、字母或-_');
 					return ;
 				}
-				var addSpecsalePriceFloat = sub.$('#addSpecSalePriceFloat').val();
-				var addSpecsupplyPriceFloat = sub.$('#addSpecSupplyPriceFloat').val();
+				var addSpecsalePriceFloat = Number(sub.$('#addSpecSalePriceFloat').val());
+				var addSpecsupplyPriceFloat = Number(sub.$('#addSpecSupplyPriceFloat').val());
 				var checkResult = checkPrice(addSpecsalePriceFloat, addSpecsupplyPriceFloat);
 				if (checkResult) {
 					common.cmsLayErrorMsg(checkResult);
@@ -761,6 +766,7 @@ layui.config({
 		if (minPrice > salePriceFloat) {
 			return '销售价格过低，至少达到'+minPrice+'元，或者调低供货价格';
 		}
+		return false;
 	}
 
 	/**表单验证*/

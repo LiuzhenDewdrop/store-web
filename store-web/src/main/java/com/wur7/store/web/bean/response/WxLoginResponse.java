@@ -13,6 +13,10 @@ public class WxLoginResponse {
     private String phone;
     private String phoneNumber; // 手机号别名
     private Integer gender;
+	
+	private Integer unfundAmt;		// 个人中心 待到账
+	private Integer personNum;		// 个人中心 邀请人数
+	private Integer fundAmt;		// 个人中心 已到账
     
     // 兼容前端字段：设置avatar同时设置avatarUrl
     public void setAvatar(String avatar) {

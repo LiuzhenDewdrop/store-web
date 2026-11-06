@@ -191,9 +191,8 @@ public class ShopItemService {
 			mapperSupport.shopItemPicMapper.updateByPrimaryKeySelective(pic);
 		}
 		// 3.详情图
-		List<ShopItemPic> desc = detail.getDesc();
 		List<ShopItemPic> descOld = mapperSupport.shopItemPicMapper.getByItem(itemId, CommonConstant.PIC_TYPE_DETAIL);
-		Set<Integer> descOldSet = picsOld.stream().map(ShopItemPic::getId).collect(Collectors.toSet());
+		Set<Integer> descOldSet = descOld.stream().map(ShopItemPic::getId).collect(Collectors.toSet());
 		// 区分 增/删/改 (不变归入改)
 		for (ShopItemPic pic : detail.getDesc()) {
 			pic.setItemId(itemId);
@@ -208,11 +207,11 @@ public class ShopItemService {
 					continue;
 				}
 				mapperSupport.shopItemPicMapper.updateByPrimaryKeySelective(pic);
-				picsOldSet.remove(pic.getId());
+				descOldSet.remove(pic.getId());
 			}
 		}
 		// 剩下的都删掉
-		for (Integer id : picsOldSet) {
+		for (Integer id : descOldSet) {
 			ShopItemPic pic = new ShopItemPic();
 			pic.setId(id);
 			pic.setDelStatus(CommonConstant.DEL_STATUS_DEL);

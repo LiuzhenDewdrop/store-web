@@ -41,15 +41,15 @@ Page({
 
   refresh() {
     this.page.num = 1;
-    this.setData({ finished: false, list: [], totalAmt: 0 });
+    this.setData({ finished: false, list: []});
     return this.loadMore(true);
   },
 
   async loadMore(isFirst = false) {
     this.setData({ loading: true });
-    // if (true) {
-    //   return  this.mockData(isFirst);
-    // }
+    if (true) {
+      return  this.mockData(isFirst);
+    }
     try {
       const params = {
         offset: (this.page.num-1)*this.page.size,

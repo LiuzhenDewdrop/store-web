@@ -78,16 +78,19 @@ export function wxCartUpd(cart) {
 export function wxCartSel(sel) {
   return request('/wx/cart/sel', 'POST', sel);
 }
+
+// 获取个人中心三个数据
+export function wxProfitOverall(id) {
+  return request('/wx/profit/overall', 'POST', {id:id});
+}
 // 查询swiper列表
 export function wxSysSwiper() {
   return request('/wx/sys/swiper', 'POST');
 }
-
 // 查询收益明细列表
 export function wxProfitList(params) {
   return request('/wx/profit/list', 'POST', params);
 }
-
 // 查询受邀请人列表
 export function wxProfitPerson(id) {
   return request('/wx/profit/person', 'POST', {id:id});

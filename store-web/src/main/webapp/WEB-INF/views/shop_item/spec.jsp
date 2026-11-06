@@ -108,7 +108,7 @@ layui.config({
 	function checkPrice(salePriceFloat, supplyPriceFloat) {
 		var costRatio = '${LOGIN_USER.costRatio}' || 1.25;	// 默认1.25
 		var minPrice = (supplyPriceFloat * costRatio).toFixed(2);
-		if (minPrice > salePriceFloat) {
+		if (Number(minPrice) > Number(salePriceFloat)) {
 			return '销售价格过低，至少达到'+minPrice+'元，或者调低供货价格';
 		}
 	}

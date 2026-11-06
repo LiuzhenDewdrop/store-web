@@ -1,6 +1,6 @@
 import { fetchUserCenter } from '../../services/usercenter/fetchUsercenter';
-import { doWxLogin, isLogin, getLocalUserInfo, clearLoginInfo } from '../../utils/auth';
-import { wxLogout } from '../../services/_utils/api';
+import { doWxLogin, isLogin, getLocalUserInfo, clearLoginInfo, setLoginInfo, getToken } from '../../utils/auth';
+import { wxProfitOverall } from '../../services/_utils/api';
 import Toast from 'tdesign-miniprogram/toast/index';
 
 const menuData = [
@@ -117,10 +117,8 @@ Page({
           nickName: localUser.userName || '微信用户',
           phoneNumber: localUser.phoneNumber || ''
         },
-        unfundAmt: localUser.unfundAmt || 0,
-        persons: localUser.personNum || 0,
-        fundAmt: localUser.fundAmt || 0,
       });
+      this.fetchOverall(localUser.id);
       this.fetUseriInfoHandle();
     } else {
       // 未登录
@@ -134,6 +132,28 @@ Page({
       });
       wx.stopPullDownRefresh();
     }
+  },
+
+  // 拉取三个总账信息
+  async fetchOverall(id) {
+    const res = await wxProfitOverall(id);
+    if (res.code !== '0000') {
+      return;
+    }
+    const data = res.data;
+    // 更新本地缓存
+    const localUser = getLocalUserInfo();
+    setLoginInfo(getToken(), {
+      ...localUser, 
+      unfundAmt: data.unfundAmt,
+      persons: data.personNum,
+      fundAmt: data.fundAmt,
+    });
+    this.setData({
+      unfundAmt: data.unfundAmt || 0,
+      persons: data.personNum || 0,
+      fundAmt: data.fundAmt || 0,
+    });
   },
 
   // 微信一键登录

@@ -52,5 +52,9 @@ public class ShopProfitShareService {
 	public IReturnBean<List<ShopCustomer>> person(CommonReq req) {
 		return IReturnBean.success(mapperSupport.shopCustomerMapper.findAllByUpper(req.getId()));
 	}
+	
+	public IReturnBean<ShopCustomer> overall(CommonReq req) {
+		return IReturnBean.success(mapperSupport.shopCustomerMapper.selectByPrimaryKey(req.getId()));
+	}
 
 }

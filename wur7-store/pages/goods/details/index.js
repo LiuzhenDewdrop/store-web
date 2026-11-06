@@ -415,7 +415,7 @@ Page({
     // 2. 保存本地临时图片到相册
     wx.showLoading({ title: '保存中...', mask: true });
     try {
-      await this.saveToAlbum(posterPath);
+      await this.saveToAlbum(this.data.posterPath);
       wx.hideLoading();
       Toast({
         context: this,
@@ -435,7 +435,7 @@ Page({
       if (/auth/i.test(errMsg) && (await this.guideToOpenSetting())) {
         try {
           wx.showLoading({ title: '保存中...', mask: true });
-          await this.saveToAlbum(posterPath);
+          await this.saveToAlbum(this.data.posterPath);
           wx.hideLoading();
           Toast({
             context: this,

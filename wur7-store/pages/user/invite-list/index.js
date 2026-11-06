@@ -35,10 +35,10 @@ Page({
     }
     if (this.data.finished) return;
     this.setData({ loading: true });
-    // if (true) {
-    //   this.mock();
-    //   return
-    // }
+    if (true) {
+      this.mock();
+      return
+    }
 
     try {
       const params = {

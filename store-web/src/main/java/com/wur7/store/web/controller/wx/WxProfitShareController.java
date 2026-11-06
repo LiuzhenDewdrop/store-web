@@ -27,6 +27,26 @@ public class WxProfitShareController extends WxBasicController {
 	
 	/**
 	 * @title  list
+	 * @description 查询三个总账信息
+	 * @param request
+	 * @param req
+	 * @return
+	 */
+	@RequestMapping(value = "/overall")
+	public IReturnBean<ShopCustomer> overall(HttpServletRequest request, @RequestBody CommonReq req) {
+		try {
+			if (checkWxUnlogin(request)) {
+				return IReturnBean.unlogin();
+			}
+			return shopProfitShareService.overall(req);
+		} catch (Exception e) {
+			log.error("查询三个总账信息 error:", e);
+			return IReturnBean.error();
+		}
+	}
+	
+	/**
+	 * @title  list
 	 * @description 查询收益明细列表
 	 * @param request
 	 * @param req

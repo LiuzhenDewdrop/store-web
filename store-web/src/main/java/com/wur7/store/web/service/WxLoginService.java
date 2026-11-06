@@ -119,6 +119,10 @@ public class WxLoginService {
         response.setAvatarUrl(customer.getAvatar());
         response.setPhone(customer.getPhone());
         response.setGender(customer.getGender());
+	
+		response.setUnfundAmt(customer.getUnfundAmt());		// 个人中心 待到账
+		response.setPersonNum(customer.getPersonNum());		// 个人中心 邀请人数
+		response.setFundAmt(customer.getFundAmt());			// 个人中心 已到账
         return IReturnBean.success(response);
     }
 
