@@ -12,6 +12,7 @@ import com.wur7.store.bean.IReturnBean;
 import com.wur7.store.constant.CommonConstant;
 import com.wur7.store.entity.ShopCustomer;
 import com.wur7.store.entity.ShopProfitShareRecord;
+import com.wur7.store.web.bean.response.ProfitOverallVO;
 import com.wur7.store.web.bean.response.ProfitShareResp;
 import com.wur7.store.web.mapper.MapperSupport;
 
@@ -53,8 +54,13 @@ public class ShopProfitShareService {
 		return IReturnBean.success(mapperSupport.shopCustomerMapper.findAllByUpper(req.getId()));
 	}
 	
-	public IReturnBean<ShopCustomer> overall(CommonReq req) {
-		return IReturnBean.success(mapperSupport.shopCustomerMapper.selectByPrimaryKey(req.getId()));
+	public IReturnBean<ProfitOverallVO> overall(CommonReq req) {
+		ShopCustomer cus = mapperSupport.shopCustomerMapper.selectByPrimaryKey(req.getId());
+		ProfitOverallVO vo = new ProfitOverallVO();
+		vo.setPersonNum(cus.getPersonNum());
+		vo.setUnfundAmt(cus.getUnfundAmt());
+		vo.setFundAmt(cus.getFundAmt());
+		return IReturnBean.success(vo);
 	}
 
 }

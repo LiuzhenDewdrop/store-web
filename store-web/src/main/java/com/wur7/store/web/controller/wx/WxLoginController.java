@@ -72,7 +72,7 @@ public class WxLoginController extends WxBasicController {
 			return IReturnBean.fail("更新用户信息失败：" + e.getMessage());
 		}
     }
-    
+
     // 上传用户头像
     @PostMapping("/uploadAvatar")
     public IReturnBean<String> uploadAvatar(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
@@ -112,9 +112,12 @@ public class WxLoginController extends WxBasicController {
     }
 	
 	@PostMapping("/qrCode")
-	public IReturnBean<String> qrCode(@RequestBody WxLoginRequest request) {
+	public IReturnBean<String> qrCode(HttpServletRequest request, @RequestBody WxLoginRequest req) {
 		try {
-			return wxLoginService.qrCode(request.getInviterId(), request.getSpuId(), request.getPage());
+			if (checkWxUnlogin(request)) {
+				return IReturnBean.unlogin();
+			}
+			return wxLoginService.qrCode(req.getInviterId(), req.getSpuId(), req.getPage());
 		} catch (Exception e) {
 			log.error("wx login error", e);
 			return IReturnBean.fail("生成二维码失败：" + e.getMessage());

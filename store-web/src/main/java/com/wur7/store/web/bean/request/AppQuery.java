@@ -7,6 +7,6 @@ public class AppQuery {
 	
 	private String keyword;
 	private Integer itemType;
-	private Integer pageNum;
-	private Integer pageSize;
+	private Integer pageNum=1;
+	private Integer pageSize=20;
 }

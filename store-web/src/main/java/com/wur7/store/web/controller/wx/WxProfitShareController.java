@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.wur7.store.bean.CommonReq;
 import com.wur7.store.bean.IReturnBean;
 import com.wur7.store.entity.ShopCustomer;
+import com.wur7.store.web.bean.response.ProfitOverallVO;
 import com.wur7.store.web.bean.response.ProfitShareResp;
 import com.wur7.store.web.service.ShopProfitShareService;
 
@@ -33,9 +34,12 @@ public class WxProfitShareController extends WxBasicController {
 	 * @return
 	 */
 	@RequestMapping(value = "/overall")
-	public IReturnBean<ShopCustomer> overall(HttpServletRequest request, @RequestBody CommonReq req) {
+	public IReturnBean<ProfitOverallVO> overall(HttpServletRequest request, @RequestBody CommonReq req) {
 		try {
-			if (checkWxUnlogin(request)) {
+			ShopCustomer loginUser = getWxLoginUser(request);
+			if (loginUser == null || loginUser.getId() == null
+				|| req == null || req.getId() == null
+				|| loginUser.getId() != req.getId()) {
 				return IReturnBean.unlogin();
 			}
 			return shopProfitShareService.overall(req);
@@ -55,7 +59,10 @@ public class WxProfitShareController extends WxBasicController {
 	@RequestMapping(value = "/list")
 	public IReturnBean<List<ProfitShareResp>> list(HttpServletRequest request, @RequestBody CommonReq req) {
 		try {
-			if (checkWxUnlogin(request)) {
+			ShopCustomer loginUser = getWxLoginUser(request);
+			if (loginUser == null || loginUser.getId() == null
+					|| req == null || req.getId() == null
+					|| loginUser.getId() != req.getId()) {
 				return IReturnBean.unlogin();
 			}
 			return shopProfitShareService.list(req);
@@ -75,7 +82,10 @@ public class WxProfitShareController extends WxBasicController {
 	@RequestMapping(value = "/person")
 	public IReturnBean<List<ShopCustomer>> person(HttpServletRequest request, @RequestBody CommonReq req) {
 		try {
-			if (checkWxUnlogin(request)) {
+			ShopCustomer loginUser = getWxLoginUser(request);
+			if (loginUser == null || loginUser.getId() == null
+					|| req == null || req.getId() == null
+					|| loginUser.getId() != req.getId()) {
 				return IReturnBean.unlogin();
 			}
 			return shopProfitShareService.person(req);

@@ -22,10 +22,10 @@ public class WxLoginResponse {
     public void setAvatar(String avatar) {
     	this.avatar = avatar;
     	this.avatarUrl = avatar;
-    }
+	}
     
     // 兼容前端字段：设置phone同时设置phoneNumber和userName
-    public void setPhone(String phone) {
+	public void setPhone(String phone) {
     	this.phone = phone;
     	this.phoneNumber = phone;
     }

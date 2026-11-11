@@ -5,13 +5,9 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.shiro.authz.annotation.Logical;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.wur7.store.bean.IReturnBean;
 import com.wur7.store.entity.ShopItem;
@@ -88,26 +84,4 @@ public class WxShopItemController extends WxBasicController {
 			return IReturnBean.error();
 		}
 	}
-	
-
-	
-	/**
-	 *  上传图片
-	 */
-	@RequestMapping(value = "/upload.do")
-	@ResponseBody
-	@RequiresPermissions(value={"shop:item:add", "shop:item:upd"}, logical = Logical.OR)
-	public IReturnBean<String> upload(HttpServletRequest request, MultipartFile file) {
-		try{
-			return shopItemService.uploadImage(file);
-		} catch (Exception e) {
-			log.error("upload error:"+e);
-			return IReturnBean.error();
-		}
-	}
-	
-
-
-	
-
 }

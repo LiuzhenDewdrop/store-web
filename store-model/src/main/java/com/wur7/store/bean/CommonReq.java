@@ -8,7 +8,7 @@ public class CommonReq {
 	
 	private Integer intValue;
 	
-	private Integer offset;
-	private Integer pageSize;
+	private Integer offset=0;
+	private Integer pageSize=20;
 	
 }
