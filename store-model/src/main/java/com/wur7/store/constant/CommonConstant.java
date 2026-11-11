@@ -18,9 +18,14 @@ public class CommonConstant {
 	public final static int ITEM_STATUS_DOWN = 2;
 	
 	// shop_item
-	// `model_type` int(11) DEFAULT NULL COMMENT '型号类别【1：单一型号规格，2：多种型号规格】',
-	public final static int MODEL_TYPE_SINGLE = 1;
-	public final static int MODEL_TYPE_MULTI = 2;
+	// `commission_type` int(11) DEFAULT NULL COMMENT '佣金类别【1：给推荐人分佣，0：不给推荐人分佣】',
+	public final static int COMMISSION_TYPE_INVITER_SHARE = 1;
+	public final static int COMMISSION_TYPE_INVITER_UNSHARE = 0;
+	// `sell_status` int(11) DEFAULT NULL COMMENT '销售状态【0：正常，+1：已购买，+10：售罄，+100：截止】',
+	public final static int SELL_STATUS_NORMAL = 0;
+	public final static int SELL_STATUS_BUY = 1;
+	public final static int SELL_STATUS_SOLDOUT = 10;
+	public final static int SELL_STATUS_EXPIRED = 100;
 	
 	
 	// shop_cart
@@ -68,4 +73,5 @@ public class CommonConstant {
 	 * 特殊的角色ID ROLE_ID 【SUPER_ADMIN】 1
 	 */
     public static final int ROLE_ID_SUPER_ADMIN = 1;
+    public static final int ROLE_ID_SHOP = 2;
 }

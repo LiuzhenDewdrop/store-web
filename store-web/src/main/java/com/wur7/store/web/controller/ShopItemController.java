@@ -67,7 +67,8 @@ public class ShopItemController extends BasicController {
 	@RequiresPermissions("shop:item:list")
 	public IReturnBean<List<ShopItem>> list(HttpServletRequest request, ShopItem query, LayPage page) {
 		try {
-			PageInfo<ShopItem> result = shopItemService.allOfPage(query, page);
+			
+			PageInfo<ShopItem> result = shopItemService.allOfPage(query, page, getCurrentUser());
 			return IReturnBean.success(result.getTotal(), result.getList());
 		} catch (Exception e) {
 			log.error("查询商品列表 error:", e);
@@ -131,6 +132,7 @@ public class ShopItemController extends BasicController {
 	@RequestMapping(value = "/spec")
 	@RequiresPermissions(value={"shop:item:add", "shop:item:upd"}, logical = Logical.OR)
 	public String toSpec(HttpServletRequest request) {
+		
 		return "shop_item/spec";
 	}
 	

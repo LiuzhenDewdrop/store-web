@@ -46,7 +46,7 @@ Page({
         showCartNum: true,
       },
     ],
-    isStock: true,
+    isStock: false,
     cartNum: 0,
     soldout: false,
     buttonType: 1,
@@ -66,7 +66,7 @@ Page({
     autoplay: true,
     duration: 500,
     interval: 5000,
-    soldUnitNum: 0, // 已售数量
+    soldNum: 0, // 已售数量
     showSharePopup: false,
     posterPath: '' // 海报
   },
@@ -226,7 +226,7 @@ Page({
     this.setData({
       details,
       primaryImage: details.item.itemImage,
-      soldUnitNum: details.item.soldUnitNum,
+      soldNum: details.item.soldNum,
     });
     if (!refresh) {
       const salePrice = details.specList.reduce((min, obj) => {

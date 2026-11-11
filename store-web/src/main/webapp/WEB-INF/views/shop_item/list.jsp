@@ -32,7 +32,7 @@
                     <div class="layui-inline">
                         <form class="layui-form" id="cusSearchForm">
                             <div class="layui-form-item" style="margin-bottom:3px;">
-								<label class="layui-form-label">商品类型</label>
+								<label class="layui-form-label">商品类别</label>
 								<div class="layui-input-inline" style="width:140px;">
 									<select name="itemType" >
 										<option selected="selected"></option>

@@ -60,6 +60,21 @@
 			</div>
 		</div>
 	</div>
+	<div class="layui-form-item"  id="commissionTypeDiv">
+		<div class="layui-inline">
+			<label class="layui-form-label">分佣设置</label>
+			<div class="layui-input-inline" style="width:320px;">
+				<c:if test="${pageFlag == 'add' }">
+					<input type="radio" name="commissionType" lay-filter="commissionTypeFilter" value="1" title="给推荐人分佣">
+					<input type="radio" name="commissionType" lay-filter="commissionTypeFilter" value="0" title="不给推荐人分佣" checked="checked">
+				</c:if>
+				<c:if test="${pageFlag == 'upd' }">
+					<input type="radio" name="commissionType" lay-filter="commissionTypeFilter" value="1" title="给推荐人分佣" <c:if test="${item.commissionType == 1 }">checked</c:if>/>
+					<input type="radio" name="commissionType" lay-filter="commissionTypeFilter" value="0" title="不给推荐人分佣" <c:if test="${item.commissionType == null || item.commissionType == 0 }">checked</c:if>/>
+				</c:if>
+			</div>
+		</div>
+	</div>
 	<div class="layui-form-item">
 		<div class="layui-inline">
 			<label class="layui-form-label">商品名称</label>
@@ -190,6 +205,14 @@
 	<table id="descTable"></table>
 	<div class="layui-form-item">
 		<div class="layui-inline">
+			<label class="layui-form-label">报名截止时间</label>
+			<div class="layui-input-inline">
+				<input id="enrollDdlTime" name="enrollDdlTime" type="text" class="layui-input" placeholder="请选择报名截止日期">
+			</div>
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<div class="layui-inline">
 			<label class="layui-form-label">快递费(元)</label>
 			<div class="layui-input-inline">
 				<input id="deliveryFeeFloat" name="deliveryFeeFloat" type="text" lay-affix="number" min="0" lay-precision="2" class="layui-input" lay-verify="required|number" placeholder="请输入快递费">
@@ -223,7 +246,8 @@ layui.config({
 	upload = layui.upload,
 	element = layui.element,
 	table = layui.table,
-	tinymce = layui.tinymce,
+	// tinymce = layui.tinymce,
+	laydate = layui.laydate,
 	layer = parent.layer === undefined ? layui.layer : parent.layer;
 
 	function resInit() {
@@ -232,6 +256,9 @@ layui.config({
 			case "add":
 				queryCategory(1, 0);
 				$("#catergoryDiv").hide();
+				// 初始时设0
+				$("#deliveryFeeFloat").val(0.0);
+				$("#deliveryThresholdFloat").val(0.0);
 				break;
 			case "upd":
 				const isShow = changeItemType('${item.itemType}');
@@ -367,6 +394,11 @@ layui.config({
 		<%--		name: 'file',--%>
 		<%--	}--%>
 		<%--});--%>
+		laydate.render({
+			elem: '#enrollDdlTime',
+			type: 'datetime',
+			fullPanel: true
+		});
 	}
 
 	/*初始化*/
@@ -377,15 +409,19 @@ layui.config({
 		changeItemType(data.value)
 	});
 	function changeItemType(itemType) {
-		// $('input[name="itemType"][value="' + itemType + '"]').prop('checked', true);
 		var isShow = false;
 		switch (itemType) {
 			case '1':
+				$("#catergoryDiv").hide();
+				$("#commissionTypeDiv").show();
+				break;
 			case '2':
 				$("#catergoryDiv").hide();
+				$("#commissionTypeDiv").hide();
 				break;
 			case '3':
 				$("#catergoryDiv").show();
+				$("#commissionTypeDiv").hide();
 				isShow = true;
 				break;
 			default:
@@ -760,14 +796,27 @@ layui.config({
 		});
 	});
 
-	function checkPrice(salePriceFloat, supplyPriceFloat) {
-		var costRatio = '${LOGIN_USER.costRatio}' || 1.25;	// 默认1.25
-		var minPrice = (supplyPriceFloat * costRatio).toFixed(2);
+	// 父页面：costRatio 挂 window，子页面能读到
+	window.COST_RATIO = parseFloat('${LOGIN_USER.costRatio}') || 1.25;
+	window.checkPrice = function(salePriceFloat, supplyPriceFloat){
+		salePriceFloat = parseFloat(salePriceFloat);
+		supplyPriceFloat = parseFloat(supplyPriceFloat);
+		var itemTypeEl       = document.querySelector('input[name="itemType"]:checked');
+		var commissionTypeEl = document.querySelector('input[name="commissionType"]:checked');
+		var itemTypeVal       = itemTypeEl ? itemTypeEl.value : null;
+		var commissionTypeVal = commissionTypeEl ? commissionTypeEl.value : null;
+		if (itemTypeVal == 1 && commissionTypeVal == 0) {
+			if (supplyPriceFloat > salePriceFloat) {
+				return '销售价格不能低于供货价格';
+			}
+			return false;
+		}
+		var minPrice = (supplyPriceFloat * window.COST_RATIO).toFixed(2);
 		if (minPrice > salePriceFloat) {
-			return '销售价格过低，至少达到'+minPrice+'元，或者调低供货价格';
+			return '销售价格过低，至少达到' + minPrice + '元，或者调低供货价格';
 		}
 		return false;
-	}
+	};
 
 	/**表单验证*/
 	form.verify({

@@ -17,7 +17,7 @@ const allGoods = [
       deliveryFee: '',
       deliveryThreshold: '',
       itemStatus: '',
-      soldUnitNum: 1020,
+      soldNum: 1020,
       salePrice: 29700,
     },
     spuId: '123456780',
@@ -77,7 +77,7 @@ const allGoods = [
       deliveryFee: '',
       deliveryThreshold: '',
       itemStatus: '',
-      soldUnitNum: 1032,
+      soldNum: 1032,
     },
     spuId: '123456781',
     picList: [{
@@ -134,7 +134,7 @@ const allGoods = [
       deliveryFee: '',
       deliveryThreshold: '',
       itemStatus: '',
-      soldUnitNum: 1022,
+      soldNum: 1022,
     },
     spuId: '123456782',
     itemType: 3,
@@ -195,7 +195,7 @@ const allGoods = [
       deliveryFee: '',
       deliveryThreshold: '',
       itemStatus: '',
-      soldUnitNum: 102,
+      soldNum: 102,
     },
     spuId: '135686623',
     picList: [{
@@ -255,7 +255,7 @@ const allGoods = [
       deliveryThreshold: '',
       itemStatus: '',
 
-      soldUnitNum: '',
+      soldNum: '',
     },
     spuId: '135681628',
     itemType: 3,
@@ -316,7 +316,7 @@ const allGoods = [
       deliveryThreshold: '',
       itemStatus: '',
 
-      soldUnitNum: '',
+      soldNum: '',
     },
     spuId: '135681626',
     itemType: 3,
@@ -377,7 +377,7 @@ const allGoods = [
       deliveryThreshold: '',
       itemStatus: '',
 
-      soldUnitNum: '',
+      soldNum: '',
     },
     spuId: '135681622',
     itemType: 3,
@@ -438,7 +438,7 @@ const allGoods = [
       deliveryThreshold: '',
       itemStatus: '',
 
-      soldUnitNum: '',
+      soldNum: '',
     },
     spuId: '135681624',
     itemType: 3,
@@ -500,7 +500,7 @@ const allGoods = [
       deliveryThreshold: '',
       itemStatus: '',
 
-      soldUnitNum: '',
+      soldNum: '',
     },
     spuId: '105681628',
     itemType: 3,

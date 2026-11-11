@@ -39,9 +39,22 @@ public class ShopItemService {
 	@Resource
 	private MapperSupport mapperSupport;
 	
-	public PageInfo<ShopItem> allOfPage(ShopItem query, LayPage layPage) {
+	public PageInfo<ShopItem> allOfPage(ShopItem query, LayPage layPage, SysUser loginUser) {
+		if (loginUser.getRoleId() == CommonConstant.ROLE_ID_SHOP) {
+			query.setShopId(loginUser.getId());
+		}
+		
 		PageHelper.startPage(layPage.getPage(), layPage.getLimit());
 		List<ShopItem> list = mapperSupport.shopItemMapper.findAll(query);
+		// 活动需要额外查看购买记录，以判断是否还能再买
+		for (ShopItem shopItem : list) {
+			if (shopItem.getItemType() == Category.ACTIVITY.getItemType()
+				&& shopItem.getSellStatus() > CommonConstant.SELL_STATUS_NORMAL) {
+				continue;
+			}
+			// 查看购买记录
+			// todo
+		}
 		return new PageInfo<>(list);
 	}
 	
@@ -67,12 +80,23 @@ public class ShopItemService {
 		}
 		if (item.getItemType() == Category.ACTIVITY.getItemType()
 				|| item.getItemType() == Category.COURSE.getItemType()) {
+			// 活动/课程没有分类
 			item.setItemCategory1(null);
 			item.setItemCategory2(null);
 			item.setItemCategory3(null);
+		} else {
+			// 商品没有报名截止时间
+			item.setEnrollDdlTime(null);
+		}
+		if (item.getItemType() != Category.ACTIVITY.getItemType()) {
+			// 非活动都是分佣的
+			item.setCommissionType(CommonConstant.COMMISSION_TYPE_INVITER_SHARE);
+			// 非活动都不看库存
+			item.setStockNum(null);
 		}
 		item.setDelStatus(CommonConstant.DEL_STATUS_EXIST);
-		item.setSoldUnitNum(0);
+		item.setSoldNum(0);
+		item.setSellStatus(CommonConstant.SELL_STATUS_NORMAL);
 		item.setCreator(operator.getId());
 		item.setCreateTime(new Date());
 		mapperSupport.shopItemMapper.insert(item);

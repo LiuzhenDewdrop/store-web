@@ -148,11 +148,11 @@ layui.config({
 		},
 		addSpecSalePriceFloat: function(value, item) {
 			// 验证价格
-			return checkPrice(value, $('#addSpecSupplyPriceFloat').val());
+			return parent.checkPrice(value, $('#addSpecSupplyPriceFloat').val());
 		},
 		addSpecSupplyPriceFloat: function(value, item) {
 			// 验证价格
-			return checkPrice($('#addSpecSalePriceFloat').val(), value);
+			return parent.checkPrice($('#addSpecSalePriceFloat').val(), value);
 		},
 
 	});

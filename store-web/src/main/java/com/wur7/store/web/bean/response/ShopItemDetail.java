@@ -15,7 +15,7 @@ public class ShopItemDetail implements Serializable {
 	private List<ShopItemSpec> specList;
 	private List<ShopItemPic> picList;
 	private List<ShopItemPic> desc;
-	
+
 	public ShopItemDetail() {
 	}
 	

@@ -20,18 +20,12 @@
             type="lighter"
           />
         </view>
-        <view class="sold-num">已售{{soldUnitNum}}</view>
+        <view class="sold-num">已售{{soldNum}}</view>
       </view>
 
       <view class="goods-title">
         <view class="goods-name">{{details.item.itemName}}</view>
         <view class="goods-tag">
-          <!-- <t-button open-type="share" t-class="shareBtn" variant="text">
-            <view class="btn-icon">
-              <t-icon name="share" size="40rpx" color="#000" />
-              <view class="share-text">分享</view>
-            </view>
-          </t-button> -->
           <view class="share-btn" bindtap="openSharePopup">
             <view class="btn-icon">
               <t-icon name="share" size="40rpx" color="#000" />
@@ -72,7 +66,12 @@
           </t-popup>
         </view>
       </view>
-      <view class="goods-intro">{{intro}}</view>
+      <view wx:if="{{details.item.itemType === 1}}" class="goods-activity" bindtap="showPromotionPopup">
+        <view class="tags-container">
+            <view class="goods-activity-tag">每人最多接龙1次</view>
+        </view>
+      </view>
+      <view wx:if="{{details.item.enrollDdlTime}}" class="goods-intro">将于{{details.item.enrollDdlTime}}结束</view>
     </view>
     <view class="spu-select" bindtap="showSkuSelectPopup">
       <view class="label">已选</view>
