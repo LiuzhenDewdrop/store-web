@@ -1,7 +1,8 @@
 import Toast from 'tdesign-miniprogram/toast/index';
+
+import { wxDeliveryAdd, wxDeliveryUpd, wxDeliveryDetail } from '../../../../services/_utils/api'
+
 import { fetchDeliveryAddress } from '../../../../services/address/fetchAddress';
-import { areaData } from '../../../../config/index';
-import { resolveAddress, rejectAddress } from '../../../../services/address/list';
 
 const innerPhoneReg = '^1(?:3\\d|4[4-9]|5[0-35-9]|6[67]|7[0-8]|8\\d|9\\d)\\d{8}$';
 const innerNameReg = '^[a-zA-Z\\d\\u4e00-\\u9fa5]+$';
@@ -19,17 +20,12 @@ Page({
   externalClasses: ['theme-wrapper-class'],
   data: {
     locationState: {
+      id: '',
       tagIndex: null,
-      addressId: '',
       addressTag: '',
-      cityCode: '',
-      cityName: '',
-      countryCode: '',
-      countryName: '',
       detailAddress: '',
-      districtCode: '',
-      districtName: '',
       isDefault: false,
+      defaultStatus: 0,
       name: '',
       phone: '',
       provinceCode: '',
@@ -38,9 +34,7 @@ Page({
       isOrderDetail: false,
       isOrderSure: false,
     },
-    areaData: areaData,
     labels: labelsOptions,
-    areaPickerVisible: false,
     submitActive: false,
     visible: false,
     labelValue: '',
@@ -51,56 +45,36 @@ Page({
   },
   onLoad(options) {
     const { id } = options;
-    this.init(id);
-  },
-
-  onUnload() {
-    if (!this.hasSava) {
-      rejectAddress();
-    }
-  },
-
-  hasSava: false,
-
-  init(id) {
-    if (id) {
-      this.getAddressDetail(Number(id));
-    }
-  },
-  getAddressDetail(id) {
-    fetchDeliveryAddress(id).then((detail) => {
-      this.setData({ locationState: detail }, () => {
-        const { isLegal, tips } = this.onVerifyInputLegal();
-        this.setData({
-          submitActive: isLegal,
-        });
-        this.privateData.verifyTips = tips;
-      });
+    this.setData({
+      'locationState.id': id,
     });
   },
+  onUnload() {
+  },
+
+  onShow() {
+    const { id } = this.data.locationState;
+    if (id) {
+      this.getAddressDetail(id);
+    }
+  },
+
+  async getAddressDetail(id) {
+    const res = await wxDeliveryDetail(id);
+    if (res.code !== '0000') {
+      return;
+    }
+    this.setData({ locationState: res.data }, () => {
+      const { isLegal, tips } = this.onVerifyInputLegal();
+      this.setData({
+        submitActive: isLegal,
+      });
+      this.privateData.verifyTips = tips;
+    });
+  },
+
   onInputValue(e) {
     const { item } = e.currentTarget.dataset;
-    if (item === 'address') {
-      const { selectedOptions = [] } = e.detail;
-      this.setData(
-        {
-          'locationState.provinceCode': selectedOptions[0].value,
-          'locationState.provinceName': selectedOptions[0].label,
-          'locationState.cityName': selectedOptions[1].label,
-          'locationState.cityCode': selectedOptions[1].value,
-          'locationState.districtCode': selectedOptions[2].value,
-          'locationState.districtName': selectedOptions[2].label,
-          areaPickerVisible: false,
-        },
-        () => {
-          const { isLegal, tips } = this.onVerifyInputLegal();
-          this.setData({
-            submitActive: isLegal,
-          });
-          this.privateData.verifyTips = tips;
-        },
-      );
-    } else {
       const { value = '' } = e.detail;
       this.setData(
         {
@@ -114,11 +88,8 @@ Page({
           this.privateData.verifyTips = tips;
         },
       );
-    }
   },
-  onPickArea() {
-    this.setData({ areaPickerVisible: true });
-  },
+
   onPickLabels(e) {
     const { item } = e.currentTarget.dataset;
     const {
@@ -137,15 +108,17 @@ Page({
     });
     this.triggerEvent('triggerUpdateValue', payload);
   },
+
   onCheckDefaultAddress({ detail }) {
     const { value } = detail;
     this.setData({
       'locationState.isDefault': value,
+      'locationState.defaultStatus': value?1:0,
     });
   },
 
   onVerifyInputLegal() {
-    const { name, phone, detailAddress, districtName } = this.data.locationState;
+    const { name, phone, detailAddress } = this.data.locationState;
     const prefixPhoneReg = String(this.properties.phoneReg || innerPhoneReg);
     const prefixNameReg = String(this.properties.nameReg || innerNameReg);
     const nameRegExp = new RegExp(prefixNameReg);
@@ -175,22 +148,16 @@ Page({
         tips: '请填写正确的手机号',
       };
     }
-    if (!districtName || !districtName.trim()) {
-      return {
-        isLegal: false,
-        tips: '请选择省市区信息',
-      };
-    }
     if (!detailAddress || !detailAddress.trim()) {
       return {
         isLegal: false,
         tips: '请完善详细地址',
       };
     }
-    if (detailAddress && detailAddress.trim().length > 50) {
+    if (detailAddress && detailAddress.trim().length > 100) {
       return {
         isLegal: false,
-        tips: '详细地址不能超过50个字符',
+        tips: '详细地址不能超过100个字符',
       };
     }
     return {
@@ -199,54 +166,54 @@ Page({
     };
   },
 
-  builtInSearch({ code, name }) {
-    return new Promise((resolve, reject) => {
-      wx.getSetting({
-        success: (res) => {
-          if (res.authSetting[code] === false) {
-            wx.showModal({
-              title: `获取${name}失败`,
-              content: `获取${name}失败，请在【右上角】-小程序【设置】项中，将【${name}】开启。`,
-              confirmText: '去设置',
-              confirmColor: '#FA550F',
-              cancelColor: '取消',
-              success(res) {
-                if (res.confirm) {
-                  wx.openSetting({
-                    success(settingRes) {
-                      if (settingRes.authSetting[code] === true) {
-                        resolve();
-                      } else {
-                        console.warn('用户未打开权限', name, code);
-                        reject();
-                      }
-                    },
-                  });
-                } else {
-                  reject();
-                }
-              },
-              fail() {
-                reject();
-              },
-            });
-          } else {
-            resolve();
-          }
-        },
-        fail() {
-          reject();
-        },
-      });
-    });
-  },
+  // builtInSearch({ code, name }) {
+  //   return new Promise((resolve, reject) => {
+  //     wx.getSetting({
+  //       success: (res) => {
+  //         if (res.authSetting[code] === false) {
+  //           wx.showModal({
+  //             title: `获取${name}失败`,
+  //             content: `获取${name}失败，请在【右上角】-小程序【设置】项中，将【${name}】开启。`,
+  //             confirmText: '去设置',
+  //             confirmColor: '#FA550F',
+  //             cancelColor: '取消',
+  //             success(res) {
+  //               if (res.confirm) {
+  //                 wx.openSetting({
+  //                   success(settingRes) {
+  //                     if (settingRes.authSetting[code] === true) {
+  //                       resolve();
+  //                     } else {
+  //                       console.warn('用户未打开权限', name, code);
+  //                       reject();
+  //                     }
+  //                   },
+  //                 });
+  //               } else {
+  //                 reject();
+  //               }
+  //             },
+  //             fail() {
+  //               reject();
+  //             },
+  //           });
+  //         } else {
+  //           resolve();
+  //         }
+  //       },
+  //       fail() {
+  //         reject();
+  //       },
+  //     });
+  //   });
+  // },
 
-  onSearchAddress() {
-    this.builtInSearch({ code: 'scope.userLocation', name: '地址位置' }).then(() => {
-      // todo chooseLocation
-    });
-  },
-  formSubmit() {
+  // onSearchAddress() {
+  //   this.builtInSearch({ code: 'scope.userLocation', name: '地址位置' }).then(() => {
+  //     // todo chooseLocation
+  //   });
+  // },
+  async formSubmit() {
     const { submitActive } = this.data;
     if (!submitActive) {
       Toast({
@@ -259,50 +226,17 @@ Page({
       return;
     }
     const { locationState } = this.data;
-
-    this.hasSava = true;
-
-    resolveAddress({
-      saasId: '88888888',
-      uid: `88888888205500`,
-      authToken: null,
-      id: locationState.addressId,
-      addressId: locationState.addressId,
-      phone: locationState.phone,
-      name: locationState.name,
-      countryName: locationState.countryName,
-      countryCode: locationState.countryCode,
-      provinceName: locationState.provinceName,
-      provinceCode: locationState.provinceCode,
-      cityName: locationState.cityName,
-      cityCode: locationState.cityCode,
-      districtName: locationState.districtName,
-      districtCode: locationState.districtCode,
-      detailAddress: locationState.detailAddress,
-      isDefault: locationState.isDefault === 1 ? 1 : 0,
-      addressTag: locationState.addressTag,
-      latitude: locationState.latitude,
-      longitude: locationState.longitude,
-      storeId: null,
-    });
-
+    if (locationState.id) {
+      const res = await wxDeliveryUpd(locationState);
+      if (res.code !== '0000') {
+        return;
+      }
+    } else {
+      const res = await wxDeliveryAdd(locationState);
+      if (res.code !== '0000') {
+        return;
+      }
+    }
     wx.navigateBack({ delta: 1 });
-  },
-
-  getWeixinAddress(e) {
-    const { locationState } = this.data;
-    const weixinAddress = e.detail;
-    this.setData(
-      {
-        locationState: { ...locationState, ...weixinAddress },
-      },
-      () => {
-        const { isLegal, tips } = this.onVerifyInputLegal();
-        this.setData({
-          submitActive: isLegal,
-        });
-        this.privateData.verifyTips = tips;
-      },
-    );
   },
 });

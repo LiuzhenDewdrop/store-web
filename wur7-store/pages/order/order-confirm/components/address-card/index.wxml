@@ -18,7 +18,6 @@
 					<view class="address-tag" wx:if="{{addressData.addressTag}}">
 						{{addressData.addressTag}}
 					</view>
-					{{addressData.provinceName}} {{addressData.cityName}} {{addressData.districtName}}
 				</view>
 				<view class="detail">{{addressData.detailAddress}}</view>
 				<view class="info">

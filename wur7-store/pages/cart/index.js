@@ -145,18 +145,27 @@ Page({
     const {
       goods: { cart: {id} },
     } = e.detail;
-    Dialog.confirm({
-      content: '确认删除该商品吗?',
-      confirmBtn: '确定',
-      cancelBtn: '取消',
-    }).then(async() => {
-      const res = await wxCartDel(id);
-      if (res.code !== '0000') {
-        return
-      }
-      Toast({ context: this, selector: '#t-toast', message: '商品删除成功' });
-      this.getCartGroupData();
+    try {
+      await Dialog.confirm({
+        content: '确认删除该商品吗?',
+        confirmBtn: '确定',
+        cancelBtn: '取消',
+      });
+        // TDesign Dialog.confirm 确认后 resolve，取消 reject
+    } catch (e) {
+      // 用户点取消，直接返回
+      return;
+    }
+    const res = await wxCartDel(id);
+    if (!res || res.code !== '0000') {
+      return
+    }
+    Toast({
+      context: this, 
+      selector: '#t-toast', 
+      message: '商品删除成功' 
     });
+    this.getCartGroupData();
   },
 
   goGoodsDetail(e) {

@@ -95,3 +95,24 @@ export function wxProfitList(params) {
 export function wxProfitPerson(id) {
   return request('/wx/profit/person', 'POST', {id:id});
 }
+
+// 查询地址列表
+export function wxDeliveryList() {
+  return request('/wx/delivery/list', 'POST');
+}
+// 添加地址
+export function wxDeliveryAdd(delivery) {
+  return request('/wx/delivery/add', 'POST', delivery);
+}
+// 删除地址
+export function wxDeliveryDel(id) {
+  return request('/wx/delivery/del', 'POST', id);
+}
+// 修改地址
+export function wxDeliveryUpd(delivery) {
+  return request('/wx/delivery/upd', 'POST', delivery);
+}
+// 查看地址详情
+export function wxDeliveryDetail(id) {
+  return request('/wx/delivery/detail', 'POST', id);
+}

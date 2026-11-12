@@ -15,7 +15,6 @@ import com.wur7.store.entity.ShopCustomer;
 import com.wur7.store.web.bean.request.CartSelectReq;
 import com.wur7.store.web.bean.response.ShopCartResp;
 import com.wur7.store.web.service.ShopCartService;
-import com.wur7.store.web.service.WxLoginService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,8 +25,6 @@ public class WxCartController extends WxBasicController {
 	
 	@Resource
 	private ShopCartService shopCartService;
-	@Resource
-	private WxLoginService wxLoginService;
 
 	/**
 	 * @title  list

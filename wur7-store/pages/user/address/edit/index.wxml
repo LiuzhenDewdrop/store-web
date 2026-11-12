@@ -5,7 +5,7 @@
   <view class="form-address">
     <form class="form-content">
       <t-cell-group>
-        <t-cell class="form-cell" t-class-title="t-cell-title" title="收货人" t-class-note="t-cell-note">
+        <t-cell class="form-cell" t-class-title="t-cell-title" title="收件人" t-class-note="t-cell-note">
           <t-input
             class="t-input"
             slot="note"
@@ -15,7 +15,7 @@
             maxlength="20"
             type="text"
             value="{{locationState.name}}"
-            placeholder="您的姓名"
+            placeholder="收件人姓名/昵称"
             bind:change="onInputValue"
           />
         </t-cell>
@@ -28,24 +28,10 @@
             type="number"
             value="{{locationState.phone}}"
             maxlength="11"
-            placeholder="联系您的手机号"
+            placeholder="联系收件人的手机号"
             bind:change="onInputValue"
             data-item="phone"
           />
-        </t-cell>
-        <t-cell class="form-cell" t-class-title="t-cell-title" title="地区">
-          <t-input
-            slot="note"
-            class="t-input"
-            t-class="field-text"
-            borderless
-            placeholder="省/市/区"
-            data-item="address"
-            value="{{locationState.provinceName ? locationState.provinceName+'/':'' }}{{locationState.cityName ? locationState.cityName+'/':''}}{{locationState.districtName}}"
-            catch:tap="onPickArea"
-            disabled
-          />
-          <t-icon slot="right-icon" t-class="map" prefix="wr" name="location" catch:tap="onSearchAddress" />
         </t-cell>
         <t-cell class="form-cell" t-class-title="t-cell-title" title="详细地址" bordered="{{false}}">
           <view slot="note" class="textarea__wrapper">
@@ -53,7 +39,7 @@
               slot="note"
               type="text"
               value="{{locationState.detailAddress}}"
-              placeholder="门牌号等(例如:10栋1001号)"
+              placeholder="精确到门牌号(例如:10栋1001号)"
               autosize
               bind:change="onInputValue"
               data-item="detailAddress"
@@ -98,15 +84,5 @@
       </view>
     </form>
   </view>
-  <t-cascader
-    data-item="address"
-    data-type="1"
-    visible="{{areaPickerVisible}}"
-    theme="tab"
-    options="{{areaData}}"
-    value="{{locationState.districtCode}}"
-    title="选择地区"
-    bind:change="onInputValue"
-  ></t-cascader>
 </view>
 <t-toast id="t-toast" />

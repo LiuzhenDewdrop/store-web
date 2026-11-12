@@ -1,18 +1,6 @@
 let addressPromise = [];
 
-/** 地址编辑Promise */
-export const getAddressPromise = () => {
-  let resolver;
-  let rejecter;
-  const nextPromise = new Promise((resolve, reject) => {
-    resolver = resolve;
-    rejecter = reject;
-  });
 
-  addressPromise.push({ resolver, rejecter });
-
-  return nextPromise;
-};
 
 /** 用户保存了一个地址 */
 export const resolveAddress = (address) => {

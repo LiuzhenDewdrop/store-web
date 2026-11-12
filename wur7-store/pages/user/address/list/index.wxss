@@ -107,3 +107,8 @@ page {
   margin-right: 12rpx;
   font-weight: normal;
 }
+
+.t-button {
+  --td-button-default-color: #000;
+  --td-button-primary-text-color: #fa4126;
+}
