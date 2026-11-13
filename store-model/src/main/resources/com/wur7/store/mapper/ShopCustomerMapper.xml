@@ -282,4 +282,16 @@
 		WHERE id = #{id}
 	</update>
 
+	<update id="decreaseUnfund">
+		UPDATE shop_customer
+		SET unfund_amt = unfund_amt - #{amt}
+		WHERE id = #{id}
+	</update>
+
+	<update id="decreaseFund">
+		UPDATE shop_customer
+		SET fund_amt = fund_amt - #{amt}
+		WHERE id = #{id}
+	</update>
+
 </mapper>

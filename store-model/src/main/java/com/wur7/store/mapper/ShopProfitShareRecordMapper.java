@@ -1,6 +1,9 @@
 package com.wur7.store.mapper;
 
+import java.util.Date;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 
 import com.wur7.store.bean.CommonReq;
 import com.wur7.store.entity.ShopProfitShareRecord;
@@ -58,4 +61,21 @@ public interface ShopProfitShareRecordMapper {
 	
 	List<ShopProfitShareRecord> findByCustomer(CommonReq req);
 	
+	List<ShopProfitShareRecord> selectByOrderId(@Param("orderId") Integer orderId);
+	
+	List<ShopProfitShareRecord> selectBySettleNo(@Param("settleNo") String settleNo);
+	
+	int updateShareStatusToFund(@Param("id") Integer id,
+								@Param("receiveTime") Date receiveTime,
+								@Param("version") Integer version);
+	
+	int updateShareStatusToCancel(@Param("id") Integer id,
+								  @Param("revokeAmt") Integer revokeAmt,
+								  @Param("cancelTime") Date cancelTime,
+								  @Param("version") Integer version);
+	
+	// 部分冲销，不改状态
+	void addRevokeAmt(@Param("id") Integer id,
+				 @Param("revokeAmt") Integer revokeAmt,
+				 @Param("version") Integer version);
 }

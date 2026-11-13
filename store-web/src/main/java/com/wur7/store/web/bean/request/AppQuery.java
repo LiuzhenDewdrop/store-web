@@ -9,4 +9,6 @@ public class AppQuery {
 	private Integer itemType;
 	private Integer pageNum=1;
 	private Integer pageSize=20;
+	private Integer orderStatus;
+	
 }

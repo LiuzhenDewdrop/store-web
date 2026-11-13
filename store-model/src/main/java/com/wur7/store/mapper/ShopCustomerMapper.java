@@ -67,4 +67,8 @@ public interface ShopCustomerMapper {
 	
 	void increaseFund(@Param("id") Integer id, @Param("amt") Integer amt);
 	
+	void decreaseUnfund(@Param("id") Integer id, @Param("amt") Integer amt);
+	
+	void decreaseFund(@Param("id") Integer id, @Param("amt") Integer amt);
+	
 }

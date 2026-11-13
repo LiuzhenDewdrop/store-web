@@ -24,7 +24,7 @@ public interface BaseScheduledTask extends Runnable{
         ScheduledTaskLogMapper scheduledTaskLogMapper = SpringContextUtil.getBean(ScheduledTaskLogMapper.class);
         try {
             log.setCreateTime(new Date());
-            log.setAbleStatus(CommonConstant.ENABLE);
+            log.setAbleStatus(CommonConstant.YES);
             log.setCronKey(this.getClass().getName());
             log.setStartTime(new Date());
             log.setHandleResult(CommonConstant.INIT);
