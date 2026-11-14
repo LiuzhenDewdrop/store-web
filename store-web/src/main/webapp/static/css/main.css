@@ -47,7 +47,7 @@
 /*右侧body*/
 .layui-body{overflow:hidden;}
 .layui-tab-content{ height:100%; padding:0; }
-.layui-tab-item{ position: absolute; top: 42px; bottom:0; left: 0; right: 0; padding: 0; margin: 0;-webkit-overflow-scrolling: touch;}
+.layui-tab-item{ padding: 0; margin: 0;}
 .layui-body{ border-top: 5px solid #1AA094;border-left: 2px solid #1AA094;}
 .marg0{ margin:0; }
 .layui-tab-title .layui-this{ background-color:#1AA094; color:#fff; }
@@ -135,4 +135,24 @@
     border-radius: 4px;
     border-bottom:0px;
     position: relative;
+}
+
+/* 彻底修复 iframe 高度被截断的问题 */
+.layui-tab-content {
+	height: auto !important;
+	overflow: visible !important;
+}
+
+.layui-tab-content .layui-tab-item {
+	position: static !important;
+	height: auto !important;
+	overflow: visible !important;
+}
+
+.layui-tab-content .layui-tab-item iframe {
+	width: 100%;
+	height: calc(100vh - 90px) !important; /* 90px 是顶栏+标签栏的高度，如果底部有偏差可以微调 */
+	min-height: 600px; /* 保底高度 */
+	border: none;
+	display: block;
 }

@@ -196,7 +196,46 @@ function addTab(_this) {
 }
 
 </script>
+	<style>
+		/* 保证整体页面高度撑满 */
+		html, body {
+			height: 100%;
+			margin: 0;
+			overflow: hidden;
+		}
 
+		/* 让 layui-body 撑满底部 */
+		.layui-layout-admin .layui-body {
+			bottom: 0 !important;
+		}
+
+		/* 父容器相对定位，控制内部排版 */
+		#larry-tab.layui-tab {
+			position: relative;
+			height: 100%;
+			margin: 0;
+		}
+
+		/* 选项卡标题固定高度 */
+		#larry-tab .layui-tab-title {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			z-index: 10;
+		}
+
+		/* 内容区绝对定位，占满整个下方空间 */
+		#larry-tab .layui-tab-content.clildFrame {
+			position: absolute;
+			top: 40px; /* 选项卡标题的高度 */
+			bottom: 0;
+			left: 0;
+			right: 0;
+			padding: 0;
+			margin: 0;
+		}
+	</style>
 </head>
 <body class="main_body larryTheme-A">
 
@@ -253,7 +292,7 @@ function addTab(_this) {
             <ul class="layui-tab-title top_tab" id="top_tabs">
                 <li class="layui-this" lay-id=""><i class="layui-icon layui-icon-home"></i></li>
             </ul>
-            <div class="layui-tab-content clildFrame" style="height:793px;">
+            <div class="layui-tab-content clildFrame">
                 <div class="layui-tab-item layui-show layui-anim layui-anim-upbit" >
                     <iframe src="${ctx}/home" data-id="0" name="ifr_0" id="ifr_0"></iframe>
                 </div>

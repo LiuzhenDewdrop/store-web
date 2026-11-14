@@ -14,37 +14,41 @@ layui.define(['layer'], function (exports) {
         },
 
         /**ajax Confirm 对话框*/
-        ajaxCmsConfirm: function (title, text, url,param,reloadWindow) {
-            layer.confirm(text, {
-                title: title,
-                resize: false,
-                offset: '50px',
-                btn: ['确定', '取消'],
-                btnAlign: 'c',
-                anim:1,
-                icon: 3
-            }, function () {
-                $.ajax({
-                    url : url,
-                    type : 'post',
-                    async: false,
-                    data : param,
-                    success : function(data) {
-                        if(data.code == "0000"){
-                            layer.msg(data.msg,{time: 3000,offset: "t",icon: 6});
-                            reloadWindow.reload();
-                        }else{
-                            layer.msg(data.msg,{time: 3000,offset: "t",icon: 5});
-                        }
-                    },error:function(data){
-
-                    }
-                });
-            }, function () {
-
-            })
-
-        },
+		ajaxCmsConfirm: function (title, text, url, param, reloadWindow) {
+			layer.confirm(text, {
+				title: title,
+				resize: false,
+				offset: '50px',
+				btn: ['确定', '取消'],
+				btnAlign: 'c',
+				anim: 1,
+				icon: 3
+			}, function (index) {
+				$.ajax({
+					url: url,
+					type: 'post',
+					async: false,
+					data: param,
+					success: function (data) {
+						if (data.code == "0000") {
+							layer.msg(data.msg, { time: 3000, offset: "t", icon: 6 });
+							if (reloadWindow && typeof reloadWindow.reload === 'function') {
+								reloadWindow.reload();
+							} else {
+								// 没传刷新对象，兜底刷新当前页
+								location.reload();
+							}
+						} else {
+							layer.msg(data.msg, { time: 3000, offset: "t", icon: 5 });
+						}
+					},
+					error: function (data) {
+					}
+				});
+				layer.close(index);   // 顺手把确认框关掉
+			}, function () {
+			});
+		},
 
         /** ajax 带遮罩层*/
         ajaxMask:function(url,params){

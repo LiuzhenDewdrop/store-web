@@ -62,7 +62,7 @@ public class CommonConstant {
 	public static final int SHARE_TYPE_FIXED = 2;
 	
 	// ==================== shop_order ====================
-	// `order_status` int(11) NOT NULL DEFAULT '0' COMMENT '订单状态【0：待付款，10：待发货，20：待收货，31：正常完成，32：用户取消，33：超时关闭，34：全额退款关闭】',
+	// `order_status` int(11) NOT NULL DEFAULT '0' COMMENT '订单状态【0：待付款，10：待发货，20：待收货，31：正常完成，32：用户取消，33：超时关闭，34：全额退款关闭, 35：平台关闭】',
 	public static final int ORDER_STATUS_UNPAID      = 0;
 	public static final int ORDER_STATUS_UNSHIPPED   = 10;
 	public static final int ORDER_STATUS_UNRECEIVED  = 20;
@@ -70,6 +70,7 @@ public class CommonConstant {
 	public static final int ORDER_STATUS_CANCELED    = 32;
 	public static final int ORDER_STATUS_TIMEOUT     = 33;
 	public static final int ORDER_STATUS_FULL_REFUND = 34;
+	public static final int ORDER_STATUS_PLATFORM_CLOSE = 35;
 	
 	// `pay_status` int(11) NOT NULL DEFAULT '0' COMMENT '支付状态【0：未支付，1：已支付，2：部分退款，3：全额退款】',
 	public static final int PAY_STATUS_UNPAID      = 0;

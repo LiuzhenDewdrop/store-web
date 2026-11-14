@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.github.pagehelper.PageInfo;
 import com.wur7.store.bean.IReturnBean;
-import com.wur7.store.entity.ShopOrder;
 import com.wur7.store.web.bean.LayPage;
 import com.wur7.store.web.bean.request.OrderShipReq;
+import com.wur7.store.bean.vo.ShopOrderQuery;
 import com.wur7.store.web.bean.response.ShopOrderDetail;
+import com.wur7.store.bean.vo.ShopOrderResp;
 import com.wur7.store.web.service.ShopOrderService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -57,10 +57,9 @@ public class ShopOrderController extends BasicController {
 	@RequestMapping(value = "/list.do")
 	@ResponseBody
 	@RequiresPermissions("shop:order:list")
-	public IReturnBean<List<ShopOrder>> list(HttpServletRequest request, ShopOrder query, LayPage page) {
+	public IReturnBean<List<ShopOrderResp>> list(HttpServletRequest request, ShopOrderQuery query, LayPage page) {
 		try {
-			PageInfo<ShopOrder> result = shopOrderService.allOfPage(query, page, getCurrentUser());
-			return IReturnBean.success(result.getTotal(), result.getList());
+			return shopOrderService.allOfPage(query, page, getCurrentUser());
 		} catch (Exception e) {
 			log.error("查询订单列表 error:", e);
 			return IReturnBean.error();
@@ -70,18 +69,22 @@ public class ShopOrderController extends BasicController {
 	/**
 	 * @title  toDetail
 	 * @description 跳转到订单详情页面
-	 * @param request
-	 * @param id
-	 * @return
 	 */
 	@RequestMapping(value = "/detail")
 	@RequiresPermissions("shop:order:view")
 	public String toDetail(HttpServletRequest request, Integer id) {
-		IReturnBean<ShopOrderDetail> detail = shopOrderService.detail(id);
-		if (detail.isSuccess()) {
-			request.setAttribute("order", detail.getData().getOrder());
-			request.setAttribute("itemList", detail.getData().getItemList());
-			request.setAttribute("logList", detail.getData().getLogList());
+		try {
+			IReturnBean<ShopOrderDetail> detail = shopOrderService.detail(id, getCurrentUser());
+			if (detail.isSuccess()) {
+				request.setAttribute("order", detail.getData().getOrder());
+				request.setAttribute("itemList", detail.getData().getItemList());
+				request.setAttribute("logList", detail.getData().getLogList());
+			} else {
+				request.setAttribute("errorMsg", detail.getMsg());
+			}
+		} catch (Exception e) {
+			log.error("订单详情 error:", e);
+			request.setAttribute("errorMsg", "系统异常，请稍后重试");
 		}
 		return "shop_order/detail";
 	}

@@ -142,3 +142,13 @@ html,body{
 .label-danger[href]:focus, .label-danger[href]:hover {
     background-color: #c9302c
 }
+
+/* 子页面通用的滚动处理 */
+html, body {
+	height: 100%;
+	margin: 0;
+}
+body.childrenBody {
+	overflow-x: hidden !important;
+	box-sizing: border-box;
+}

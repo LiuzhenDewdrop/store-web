@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -17,6 +18,7 @@ import com.wur7.store.entity.ShopOrder;
 import com.wur7.store.entity.ShopOrderItem;
 import com.wur7.store.entity.ShopOrderStatusLog;
 import com.wur7.store.web.bean.LayPage;
+import com.wur7.store.web.bean.request.AfterSaleRefundReq;
 import com.wur7.store.web.mapper.MapperSupport;
 import com.wur7.store.web.service.ShopAfterSaleService;
 
@@ -67,15 +69,12 @@ public class ShopAfterSaleController extends BasicController {
 			ShopAfterSale afterSale = detail.getData();
 			request.setAttribute("afterSale", afterSale);
 			
-			// 订单信息
 			ShopOrder order = mapperSupport.shopOrderMapper.selectByPrimaryKey(afterSale.getOrderId());
 			request.setAttribute("order", order);
 			
-			// 商品明细
 			List<ShopOrderItem> itemList = mapperSupport.shopOrderItemMapper.selectByOrderId(afterSale.getOrderId());
 			request.setAttribute("itemList", itemList);
 			
-			// 状态流转日志
 			List<ShopOrderStatusLog> logList = mapperSupport.shopOrderStatusLogMapper.selectByOrderId(afterSale.getOrderId());
 			request.setAttribute("logList", logList);
 			
@@ -84,5 +83,32 @@ public class ShopAfterSaleController extends BasicController {
 			request.setAttribute("errorMsg", "系统异常，请稍后重试");
 		}
 		return "shop_after_sale/detail";
+	}
+	
+	/** 同意退款（金额可改） */
+	@RequestMapping(value = "/agreeRefund.do")
+	@ResponseBody
+	@RequiresPermissions("shop:afterSale:refund")
+	public IReturnBean<?> agreeRefund(HttpServletRequest request, @RequestBody AfterSaleRefundReq req) {
+		try {
+			return shopAfterSaleService.agreeRefund(req.getAfterSaleId(), req.getRefundAmt(),
+					req.getRemark(), getCurrentUser());
+		} catch (Exception e) {
+			log.error("同意退款 error:", e);
+			return IReturnBean.error();
+		}
+	}
+	
+	/** 拒绝售后 */
+	@RequestMapping(value = "/rejectRefund.do")
+	@ResponseBody
+	@RequiresPermissions("shop:afterSale:refund")
+	public IReturnBean<?> rejectRefund(HttpServletRequest request, @RequestBody AfterSaleRefundReq req) {
+		try {
+			return shopAfterSaleService.rejectRefund(req.getAfterSaleId(), req.getRemark(), getCurrentUser());
+		} catch (Exception e) {
+			log.error("拒绝售后 error:", e);
+			return IReturnBean.error();
+		}
 	}
 }

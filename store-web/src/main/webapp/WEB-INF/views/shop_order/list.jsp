@@ -35,12 +35,8 @@
 					<form class="layui-form" id="cusSearchForm">
 						<div class="layui-form-item" style="margin-bottom:3px;">
 							<label class="layui-form-label">订单号</label>
-							<div class="layui-input-inline" style="width:160px;">
-								<input type="text" name="orderNo" value="" placeholder="请输入订单号" class="layui-input search_input">
-							</div>
-							<label class="layui-form-label">收货人</label>
 							<div class="layui-input-inline" style="width:140px;">
-								<input type="text" name="receiverName" value="" placeholder="姓名/手机号" class="layui-input search_input">
+								<input type="text" name="orderNo" value="" placeholder="请输入完整订单号" class="layui-input search_input">
 							</div>
 							<label class="layui-form-label">订单状态</label>
 							<div class="layui-input-inline" style="width:140px;">
@@ -53,10 +49,9 @@
 									<option value="32">用户取消</option>
 									<option value="33">超时关闭</option>
 									<option value="34">全额退款关闭</option>
+									<option value="35">平台关闭</option>
 								</select>
 							</div>
-						</div>
-						<div class="layui-form-item" style="margin-bottom:3px;">
 							<label class="layui-form-label">支付状态</label>
 							<div class="layui-input-inline" style="width:140px;">
 								<select name="payStatus">
@@ -67,6 +62,16 @@
 									<option value="3">全额退款</option>
 								</select>
 							</div>
+						</div>
+						<div class="layui-form-item" style="margin-bottom:3px;">
+							<label class="layui-form-label">下单人</label>
+							<div class="layui-input-inline" style="width:140px;">
+								<input type="text" name="customerNickname" value="" placeholder="请输入下单人昵称" class="layui-input search_input">
+							</div>
+							<label class="layui-form-label">收货人</label>
+							<div class="layui-input-inline" style="width:140px;">
+								<input type="text" name="receiverName" value="" placeholder="姓名/手机号" class="layui-input search_input">
+							</div>
 							<label class="layui-form-label">下单时间</label>
 							<div class="layui-input-inline" style="width:140px;">
 								<input type="text" name="createTimeStart" id="createTimeStart" placeholder="开始时间" class="layui-input">
@@ -76,6 +81,7 @@
 							</div>
 							<shiro:hasPermission name="shop:order:list">
 								<a class="layui-btn layui-btn-normal searchList_btn" lay-submit lay-filter="searchFilter"><i class="layui-icon layui-icon-search"></i>查询</a>
+								<button type="reset" class="layui-btn layui-btn-primary" id="resetBtn"><i class="layui-icon layui-icon-refresh"></i>重置</button>
 							</shiro:hasPermission>
 						</div>
 					</form>
@@ -118,14 +124,14 @@
 				where: field,
 				cols: [[
 					{ field: 'orderNo', title: '订单号', width: '14%', align: 'center' },
-					{ field: 'shopName', title: '店铺', width: '9%', align: 'center' },
-					{ field: 'goods', title: '商品', width: '16%', align: 'center', templet: '#goodsTpl' },
+					{ field: 'customerNickname', title: '下单人', width: '10%', align: 'center', templet: '#customerTpl' },
+					{ field: 'goods', title: '商品', width: '22%', align: 'center', templet: '#goodsTpl' },
 					{ field: 'receiverName', title: '收货人', width: '10%', align: 'center', templet: '#receiverTpl' },
 					{ field: 'paidAmt', title: '实付金额', width: '8%', align: 'center', templet: '#amtTpl' },
 					{ field: 'orderStatus', title: '订单状态', width: '9%', align: 'center', templet: '#orderStatusTpl' },
 					{ field: 'payStatus', title: '支付状态', width: '8%', align: 'center', templet: '#payStatusTpl' },
 					{ field: 'afterSaleStatus', title: '售后状态', width: '8%', align: 'center', templet: '#afterSaleStatusTpl' },
-					{ field: 'createTime', title: '下单时间', width: '14%', align: 'center', templet: '#createTimeTpl' },
+					{ field: 'createTime', title: '下单时间', width: 170, align: 'center', templet: '#createTimeTpl' },
 					{ fixed: 'right', title: '操作', width: '14%', align: 'center', toolbar: '#resBar' }
 				]],
 				page: true,
@@ -144,6 +150,23 @@
 			});
 		});
 
+		/**清空查询条件*/
+		$("#resetBtn").click(function () {
+			// 1. 清空表单数据
+			$('#cusSearchForm')[0].reset();
+
+			// 2. 清空 layui 的下拉框和日期选择器（必须重新渲染）
+			form.render('select');
+			form.render('date'); // 如果用了 laydate，直接把 input 的 value 置空也可以
+
+			// 3. 把时间控件也清空（laydate 绑定的可能有些残留）
+			$('#createTimeStart').val('');
+			$('#createTimeEnd').val('');
+
+			// 4. 重新查询列表（不带任何条件）
+			searchList();
+		});
+
 		/**监听工具条*/
 		table.on('tool(resTableId)', function (obj) {
 			var data = obj.data;
@@ -151,8 +174,7 @@
 			var url;
 			switch (layEvent) {
 				case 'res_detail':
-					url = '${ctx}/order/detail?id=' + data.id;
-					top.addTab($(this).attr('data-url', '/store-web/order/detail?id=' + data.id));
+					top.addTab($(this));
 					break;
 				case 'res_ship':
 					openShip(data);
@@ -162,8 +184,11 @@
 					break;
 				case 'res_close':
 					url = "${ctx}/order/close.do";
-					common.ajaxCmsConfirm('系统提示', '确定关闭该订单?', url, { id: data.id });
-					searchList();
+					common.ajaxCmsConfirm('系统提示', '确定关闭该订单?', url, { id: data.id }, {
+						reload: function () {
+							table.reload('resTableId', { page: { curr: 1 } });
+						}
+					});
 					break;
 				default:
 					break;
@@ -191,7 +216,7 @@
 						if (res.code === '0000') {
 							layer.msg('发货成功', { icon: 1 });
 							layer.close(index);
-							searchList();
+							table.reload('resTableId', { page: { curr: 1 } });
 						} else {
 							layer.msg(res.msg || '发货失败');
 						}
@@ -225,7 +250,7 @@
 						if (res.code === '0000') {
 							layer.msg('退款已提交', { icon: 1 });
 							layer.close(index);
-							searchList();
+							table.reload('resTableId', { page: { curr: 1 } });
 						} else {
 							layer.msg(res.msg || '退款失败');
 						}
@@ -236,15 +261,31 @@
 	});
 </script>
 
+<!-- 下单人 tpl -->
+<!-- 下单人 tpl -->
+<script type="text/html" id="customerTpl">
+	<div style="line-height: 20px;">
+		<span style="font-weight: bold; color: #333;">{{= d.customerNickname || '未设置昵称' }}</span>
+		<br>
+		<span style="font-size: 12px; color: #999;">ID: {{= d.customerId }}</span>
+	</div>
+</script>
+
 <!-- 商品 tpl -->
 <script type="text/html" id="goodsTpl">
-	<div class="order-goods">
+	<div class="order-goods" style="text-align: left;">
 		{{# if(d.itemList && d.itemList.length > 0){ }}
 		{{# layui.each(d.itemList.slice(0, 2), function(i, item){ }}
-		<div class="goods-name">{{= item.itemName }}</div>
+		<div class="goods-name" style="font-weight: bold;">{{= item.itemName }}</div>
+		<div class="goods-count" style="font-size: 11px; color: #999; line-height: 14px;">
+			{{= item.specName || '默认规格' }} | ￥{{= ((item.salePrice || 0) / 100).toFixed(2) }} × {{= item.quantity }}
+		</div>
 		{{# }); }}
+
 		{{# if(d.itemList.length > 2){ }}
-		<div class="goods-count">等 {{= d.itemList.length }} 件商品</div>
+		<div class="goods-count" style="margin-top: 2px; color: #666;">
+			... 等 {{= d.itemList.length }} 件商品
+		</div>
 		{{# } }}
 		{{# } else { }}
 		-
@@ -279,6 +320,8 @@
 	<span class="label label-default">超时关闭</span>
 	{{# } else if(d.orderStatus == 34){ }}
 	<span class="label label-danger">全额退款关闭</span>
+	{{# } else if(d.orderStatus == 35){ }}
+	<span class="label label-default">平台关闭</span>
 	{{# } }}
 </script>
 
@@ -319,7 +362,7 @@
 <script type="text/html" id="resBar">
 	<div class="layui-btn-group">
 		<shiro:hasPermission name="shop:order:view">
-			<a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="res_detail" href="javascript:;" data-url="/store-web/order/detail?id={{= d.id }}"><i class="layui-icon layui-icon-form"></i><cite>详情</cite></a>
+			<a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="res_detail" href="javascript:;" data-url="/store-web/order/detail?id={{= d.id }}"><i class="layui-icon layui-icon-form" data-icon="layui-icon-form"></i><cite>详情</cite></a>
 		</shiro:hasPermission>
 		<shiro:hasPermission name="shop:order:ship">
 			{{# if(d.orderStatus == 10){ }}

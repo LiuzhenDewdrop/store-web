@@ -8,4 +8,5 @@ public class OrderRefundReq {
 	private Integer itemId;      // 可选：行级退款
 	private Integer refundAmt;   // 单位：分
 	private String reason;
+	private String applyImages;  // 凭证图片 JSON 数组
 }
